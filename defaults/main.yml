@@ -50,6 +50,8 @@ networking_calico_git_repo: https://git.openstack.org/openstack/networking-calic
 networking_calico_git_install_branch: master
 dragonflow_git_repo: https://git.openstack.org/openstack/dragonflow
 dragonflow_git_install_branch: master
+networking_odl_git_repo: https://git.openstack.org/openstack/networking-odl
+networking_odl_git_install_branch: master
 
 # Developer mode
 neutron_developer_mode: false
@@ -123,6 +125,7 @@ neutron_metering_agent_init_overrides: {}
 neutron_ml2_conf_ini_overrides: {}
 neutron_neutron_conf_overrides: {}
 neutron_nuage_conf_ini_overrides: {}
+neutron_opendaylight_conf_ini_overrides: {}
 neutron_openvswitch_agent_ini_overrides: {}
 neutron_openvswitch_agent_init_overrides: {}
 # Provide a list of access controls to update the default policy.json with.

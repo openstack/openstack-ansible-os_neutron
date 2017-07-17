@@ -1,0 +1,40 @@
+---
+# Copyright 2017, Ericsson AB
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+
+### Ensure the openvswitch kernel module is loaded
+openstack_host_specific_kernel_modules:
+  - name: "openvswitch"
+    pattern: "CONFIG_OPENVSWITCH"
+    group: "network_hosts"
+
+### Use OpenDaylight SDN Controller
+neutron_plugin_type: "ml2.opendaylight"
+neutron_opendaylight_conf_ini_overrides:
+  ml2_odl:
+    url: "http://{{ hostvars[groups['neutron_server'][0]]['ansible_default_ipv4']['address'] }}:8080/controller/nb/v2/neutron"
+    username: admin
+    password: admin
+    port_binding_controller: "pseudo-agentdb-binding"
+
+tempest_run: yes
+
+tempest_plugins:
+  - name: neutron
+    repo: https://git.openstack.org/openstack/neutron
+    branch: master
+
+tempest_test_whitelist:
+  - neutron.tests.tempest.api.test_networks*

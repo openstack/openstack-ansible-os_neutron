@@ -58,3 +58,7 @@
   src: https://git.openstack.org/openstack/openstack-ansible-os_neutron
   scm: git
   version: stable/ocata
+- name: opendaylight
+  scm: git
+  src: https://git.opendaylight.org/gerrit/p/integration/packaging/ansible-opendaylight.git
+  version: master

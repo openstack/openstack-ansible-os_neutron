@@ -19,6 +19,8 @@ neutron_ovs_distro_packages:
   - openvswitch-common
   - openvswitch-switch
 
+neutron_ovs_service_name: openvswitch-switch
+
 neutron_driver_vpnaas: neutron_vpnaas.services.vpn.device_drivers.strongswan_ipsec.StrongSwanDriver
 neutron_vpnaas_service_provider: VPN:strongswan:neutron_vpnaas.services.vpn.service_drivers.ipsec.IPsecVPNDriver:default
 

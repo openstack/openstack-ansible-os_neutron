@@ -53,3 +53,9 @@ dependencies:
               neutron_services['neutron-server']['group']
             ]) | length > 0
          }}"
+  - role: opendaylight
+    install_method: "{{ opendaylight_install_method }}"
+    extra_features: "{{ opendaylight_extra_features }}"
+    when:
+     - neutron_plugin_type == "ml2.opendaylight"
+     - inventory_hostname in groups["opendaylight"]
