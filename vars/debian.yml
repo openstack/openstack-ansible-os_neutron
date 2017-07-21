@@ -52,6 +52,7 @@ neutron_distro_packages:
   - dnsmasq-base
   - dnsmasq-utils
   - ebtables
+  - libxml2
   - ipset
   - iptables
   - iputils-arping

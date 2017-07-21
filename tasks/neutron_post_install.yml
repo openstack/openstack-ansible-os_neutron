@@ -41,6 +41,7 @@
     - rootwrap.d/*
   notify:
     - Restart neutron services
+    - Restart uwsgi services
 
 - name: Copy common neutron config
   openstack.config_template.config_template:
@@ -62,6 +63,7 @@
       config_type: "ini"
   notify:
     - Restart neutron services
+    - Restart uwsgi services
 
 - name: Implement policy.yaml if there are overrides configured
   openstack.config_template.config_template:
@@ -119,6 +121,7 @@
   with_items: "{{ neutron_core_files }}"
   notify:
     - Restart neutron services
+    - Restart uwsgi services
 
 - name: Cleanup fetched temp files
   file:
@@ -158,6 +161,7 @@
     mode: "0640"
   notify:
     - Restart neutron services
+    - Restart uwsgi services
   when:
     - neutron_services['neutron-dhcp-agent']['group'] in group_names
 
@@ -173,6 +177,7 @@
   with_items: "{{ filtered_neutron_services }}"
   notify:
     - Restart neutron services
+    - Restart uwsgi services
   when:
     - "'service_conf_path' in item"
     - "'service_conf' in item"
@@ -186,6 +191,7 @@
     mode: "0640"
   notify:
     - Restart neutron services
+    - Restart uwsgi services
   when:
     - "'bgpvpn' in neutron_plugin_base"
 

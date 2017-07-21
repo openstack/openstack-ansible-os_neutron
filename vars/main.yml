@@ -349,12 +349,34 @@ filtered_neutron_services: |-
   {% for key, value in neutron_services.items() %}
   {%   if (value['group'] in group_names) and
           (('service_en' not in value) or
-           ('service_en' in value and value['service_en'])) %}
+           ('service_en' in value and value['service_en'])) and
+           not ('wsgi_app' in value and value['wsgi_app']) %}
   {%     set _ = value.update({'service_key': key}) %}
   {%     set _ = services.append(value) %}
   {%   endif %}
   {% endfor %}
   {{ services | sort(attribute='start_order') }}
+
+uwsgi_neutron_services: |-
+  {% set services = {} %}
+  {% for name, service in neutron_services.items() %}
+  {%   if (service['group'] in group_names) and
+         (('condition' not in service) or ('condition' in service and service['condition']))
+         and ('wsgi_app' in service and service['wsgi_app']) %}
+  {%     set _ = service.update(
+            {
+             'wsgi_path': neutron_bin ~ '/' ~ service.wsgi_name,
+             'wsgi_venv': ((neutron_install_method == 'source') | ternary(neutron_bin | dirname, None)),
+             'uwsgi_uid': neutron_system_user_name,
+             'uwsgi_guid': neutron_system_group_name,
+             'uwsgi_processes': neutron_wsgi_processes,
+             'uwsgi_threads': neutron_wsgi_threads
+           }
+         ) %}
+  {%     set _ = services.update({name: service}) %}
+  {%   endif %}
+  {% endfor %}
+  {{ services }}
 
 ###
 ### Internals: neutron_services mappings
@@ -448,9 +470,21 @@ neutron_services:
     group: neutron_server
     service_name: neutron-server
     service_en: True
+    start_order: 1
+    wsgi_app: "{{ neutron_use_uwsgi }}"
+    uwsgi_overrides: "{{ neutron_api_uwsgi_ini_overrides }}"
+    uwsgi_bind_address: "{{ neutron_api_bind_address }}"
+    uwsgi_port: "{{ neutron_service_port }}"
+    wsgi_name: "neutron-api"
     execstarts: "{{ neutron_bin }}/neutron-server --config-file {{ neutron_conf_dir }}/neutron.conf --config-file {{ neutron_conf_dir }}/{{ neutron_plugins[neutron_plugin_type].plugin_ini }}{%- if ('ml2.genericswitch' in neutron_plugin_types) %} --config-file {{ neutron_conf_dir }}/{{ neutron_plugins['ml2.genericswitch'].plugin_ini }}{%- endif %}"
     init_config_overrides: "{{ neutron_server_init_overrides }}"
-    start_order: 1
+  neutron-rpc-server:
+    group: neutron_server
+    service_name: neutron-rpc-server
+    service_en: "{{ neutron_use_uwsgi }}"
+    init_config_overrides: "{{ neutron_rpc_server_init_overrides | combine(neutron_server_init_overrides) }}"
+    start_order: 2
+    execstarts: "{{ neutron_bin }}/neutron-rpc-server --config-file {{ neutron_conf_dir }}/neutron.conf --config-file {{ neutron_conf_dir }}/{{ neutron_plugins[neutron_plugin_type].plugin_ini }}{%- if ('ml2.genericswitch' in neutron_plugin_types) %} --config-file {{ neutron_conf_dir }}/{{ neutron_plugins['ml2.genericswitch'].plugin_ini }}{%- endif %}"
   calico-felix:
     group: neutron_calico_dhcp_agent
     systemd_user_name: root
@@ -555,7 +589,7 @@ neutron_role_project_group: neutron_all
 neutron_core_files:
   - tmp_f: "/tmp/api-paste.ini.original"
     target_f: "{{ neutron_conf_version_dir }}/api-paste.ini"
-    config_overrides: "{{ _neutron_api_paste_ini_overrides | combine(neutron_api_paste_ini_overrides, recursive=True) }}"
+    config_overrides: "{{ neutron_api_paste_ini_overrides }}"
     config_type: "ini"
   - tmp_f: "/tmp/rootwrap.conf.original"
     target_f: "{{ neutron_conf_version_dir }}/rootwrap.conf"

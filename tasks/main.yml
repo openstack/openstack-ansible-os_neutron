@@ -173,9 +173,19 @@
 
 - import_tasks: neutron_db_setup.yml
   when:
-    - "neutron_services['neutron-server']['group'] in group_names"
+    - "_neutron_is_first_play_host"
   tags:
     - neutron-config
+
+- name: Import uwsgi role
+  import_role:
+    name: uwsgi
+  vars:
+    uwsgi_services: "{{ uwsgi_neutron_services }}"
+    uwsgi_install_method: "{{ neutron_install_method }}"
+  tags:
+    - neutron-config
+    - uwsgi
 
 - include_role:
     name: openstack.osa.service_setup

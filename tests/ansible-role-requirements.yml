@@ -63,3 +63,7 @@
   src: https://opendev.org/openstack/ansible-role-python_venv_build
   scm: git
   version: master
+- name: uwsgi
+  src: https://git.openstack.org/openstack/ansible-role-uwsgi
+  scm: git
+  version: master

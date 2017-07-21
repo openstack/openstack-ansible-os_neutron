@@ -134,11 +134,6 @@ neutron_dnsmasq_noresolv: False
 # 'Overriding OpenStack configuration defaults' in the
 # 'Advanced configuration' appendix of the Deploy Guide.
 neutron_api_paste_ini_overrides: {}
-_neutron_api_paste_ini_overrides:
-  "composite:neutronapi_v2_0":
-    noauth: "cors http_proxy_to_wsgi request_id catch_errors osprofiler extensions neutronapiapp_v2_0"
-    keystone: "cors http_proxy_to_wsgi request_id catch_errors osprofiler authtoken keystonecontext extensions neutronapiapp_v2_0"
-
 neutron_bgp_dragent_ini_overrides: {}
 neutron_bgp_dragent_init_overrides: {}
 neutron_calico_dhcp_agent_ini_overrides: {}
@@ -175,16 +170,27 @@ neutron_policy_overrides: {}
 _neutron_rootwrap_conf_overrides:
   DEFAULT:
     filters_path: "{{ neutron_conf_dir }}/rootwrap.d,/usr/share/neutron/rootwrap"
-    exec_dirs: "{{ neutron_bin }},/sbin,/usr/sbin,/bin,/usr/bin,/usr/local/bin,/usr/local/sbin"
+    exec_dirs: "{{ neutron_bin }},/sbin,/usr/sbin,/bin,/usr/bin,/usr/local/bin,/usr/local/sbin,/etc/neutron/kill_scripts"
 neutron_rootwrap_conf_overrides: {}
 
+neutron_api_uwsgi_ini_overrides: {}
 neutron_server_init_overrides: {}
+neutron_rpc_server_init_overrides: {}
 neutron_sriov_nic_agent_ini_overrides: {}
 neutron_sriov_nic_agent_init_overrides: {}
 neutron_vpn_agent_init_overrides: {}
 neutron_vpnaas_agent_ini_overrides: {}
 neutron_ovn_metadata_agent_ini_overrides: {}
 neutron_ovn_metadata_agent_init_overrides: {}
+
+###
+### UWSGI
+###
+# NOTE(noonedeadpunk): uWSGI is still not fully supported. See: https://bugs.launchpad.net/neutron/+bug/1912359
+neutron_use_uwsgi: "{{ (neutron_plugin_type not in ['ml2.ovn', 'ml2.calico']) }}"
+neutron_wsgi_processes_max: 16
+neutron_wsgi_processes: "{{ [[ansible_processor_vcpus|default(1), 1] | max * 2, neutron_wsgi_processes_max] | min }}"
+neutron_wsgi_threads: 1
 
 ###
 ### Quotas
