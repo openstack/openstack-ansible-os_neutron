@@ -47,7 +47,7 @@
   changed_when: False
 
 - name: Set ODL as OvS manager
-  command: ovs-vsctl set-manager [{{ ovs-managers-odls | join(' ') }}]
+  command: ovs-vsctl set-manager [{{ ovs_manager_list | join(' ') }}]
   when: ovs_manager.stdout == ""
 
 - name: Configure hosts for networking-odl, force kernel datapath
