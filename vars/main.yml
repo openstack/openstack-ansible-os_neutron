@@ -240,7 +240,7 @@ ovs_manager_list: |-
   {% set ovs_managers_odls = [] %}
   {% for host in groups["neutron_server_container"] %}
      {% set odl_ip_address =  hostvars[host]['container_address']|string %}
-     {% set _ = ovs_managers_odls.extend("tcp:" + odl_ip_address + ":" + "6640") %}
+     {% set _ = ovs_managers_odls.append('tcp:' + odl_ip_address + ':6640') %}
   {% endfor %}
   {{ ovs_managers_odls }}
 
