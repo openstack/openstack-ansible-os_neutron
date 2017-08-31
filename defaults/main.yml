@@ -84,7 +84,7 @@ neutron_report_interval: "{{ neutron_agent_down_time | int / 2 | int }}"
 
 neutron_external_network_bridge: ""
 
-neutron_dns_domain: openstacklocal
+neutron_dns_domain: "openstacklocal."
 
 # If ``neutron_num_sync_threads`` is unset, the system will use the value of
 # neutron_api_threads in templates/dhcp_agent.ini.j2 for num_sync_threads.

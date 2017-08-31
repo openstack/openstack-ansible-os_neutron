@@ -43,33 +43,36 @@ Set the following user variables in your
 
   ### Use OpenDaylight SDN Controller
   neutron_plugin_type: "ml2.opendaylight"
+  odl_ip: "{{ hostvars[groups['opendaylight'][0]]['ansible_default_ipv4']['address'] }}"
   neutron_opendaylight_conf_ini_overrides:
     ml2_odl:
-      url: "http://<odl-ip>:<8080/controller/nb/v2/neutron"
+      url: "http://{{ odl_ip }}:8080/controller/nb/v2/neutron"
       username: <username>
       password: <password>
-      port_binding_controller: "pseudo-agentdb-binding"
 
 Most of the content of this file is self-explanatory. The first block is used
 to deploy Open vSwitch in all network hosts.
 
 The second block is instructing Ansible to deploy OpenDaylight SDN Controller.
 This is done by specifying ``neutron_plugin_type`` to ``ml2.opendaylight``.
+
+The IP address of the OpenDaylight controller needs to be inferred from the
+deployment configuration as well. That can be used with a line such as the one
+in the example.
+
 After that, some configuration is needed to integrate OpenDaylight and Neutron,
 using the ``ml2_odl`` section.
 
- * **url**: OpenDaylight's northbound url. This will be the same address as the
-   first host where a neutron_server is running.
+ * **url**: OpenDaylight's northbound url. This is automatically retrieved from
+   the deployment configuration, so just need to copy the example line.
  * **username**: OpenDaylight northbound API username
  * **password**: OpenDaylight northbound API password for <username>
- * **port_binding_controller**: the method used for Neutron port binding,
-   typically ``pseudo-agentdb-binding``.
 
-Apart from these options, the deployer should keep in mind the installation
-method for OpenDaylight Ansible role. It will be autoconfigured to ``deb_repo``
-if the operating system detected belongs to the Debian family (e.g. Ubuntu),
-and it will fall back to ``rpm_repo`` otherwise. Nevertheless, it can be forced
-by the deployer.
+Apart from these options, the deployer might want to change the installation
+method for OpenDaylight Ansible role. This role uses pre-packaged binaries,
+which can be either ``deb`` or ``rpm`` files, and by default it will download
+these binaries from OpenDaylight repositories, trying to guess the correct
+package depending on the underlying operating system.
 
 Also, the set of features that will be enabled in the OpenDaylight SDN
 controller defaults to ``odl-netvirt-openstack``, which is the minimum for an

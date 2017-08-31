@@ -129,7 +129,7 @@
   when:
     - neutron_metadata_checksum_fix | bool
     - neutron_services['neutron-linuxbridge-agent']['group'] in group_names
-    - ansible_pkg_mgr == 'yum'
+    - ansible_pkg_mgr in ['yum', 'dnf']
 
 - name: Ensure the postup/postdown scripts are loaded (SUSE)
   lineinfile:

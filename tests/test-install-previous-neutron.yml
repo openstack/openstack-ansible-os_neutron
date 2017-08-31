@@ -36,7 +36,7 @@
     - name: Set mount path for kernel modules (CentOS)
       set_fact:
         kernel_module_path: "usr/lib/modules"
-      when: ansible_pkg_mgr == 'yum'
+      when: ansible_pkg_mgr in ['yum', 'dnf']
 
     - name: Neutron extra lxc config
       lxc_container:
@@ -81,7 +81,7 @@
         - libffi-devel
       when:
         - inventory_hostname in groups['neutron_all']
-        - ansible_pkg_mgr == 'yum'
+        - ansible_pkg_mgr in ['yum', 'dnf']
     - include: common/ensure-rabbitmq.yml
       vhost_name: "{{ neutron_rabbitmq_vhost }}"
       user_name: "{{ neutron_rabbitmq_userid }}"

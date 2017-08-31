@@ -38,7 +38,7 @@
   register: _offline_migrations_check
   failed_when:
     - "_offline_migrations_check.rc == 1"
-    - "'Need to apply migrations from neutron contract branch' not in _offline_migrations_check.stdout"
+    - "'Need to apply migrations' not in _offline_migrations_check.stdout"
 
 - name: Set the fact for the required offline migrations
   ini_file:
@@ -48,7 +48,7 @@
     value: "True"
   when:
     - "'stdout' in _offline_migrations_check"
-    - "'Need to apply migrations from neutron contract branch' in _offline_migrations_check.stdout"
+    - "'Need to apply migrations' in _offline_migrations_check.stdout"
   notify: Restart neutron services
 
 - name: Refresh local facts

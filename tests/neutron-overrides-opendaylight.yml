@@ -22,12 +22,12 @@ openstack_host_specific_kernel_modules:
 
 ### Use OpenDaylight SDN Controller
 neutron_plugin_type: "ml2.opendaylight"
+odl_ip: "{{ hostvars[groups['opendaylight'][0]]['ansible_default_ipv4']['address'] }}"
 neutron_opendaylight_conf_ini_overrides:
   ml2_odl:
-    url: "http://{{ hostvars[groups['neutron_server'][0]]['ansible_default_ipv4']['address'] }}:8080/controller/nb/v2/neutron"
+    url: "http://{{ odl_ip }}:8080/controller/nb/v2/neutron"
     username: admin
     password: admin
-    port_binding_controller: "pseudo-agentdb-binding"
 
 tempest_run: yes
 
