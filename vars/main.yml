@@ -242,7 +242,7 @@ ovs_manager_list: |-
      {% set odl_ip_address =  hostvars[host]['container_address']|string %}
      {% set _ = ovs_managers_odls.append('tcp:' + odl_ip_address + ':6640') %}
   {% endfor %}
-  {{ ovs_managers_odls }}
+  {{ ovs_managers_odls | join(' ') }}
 
 ###
 ### L3 Agent Plugin Configuration
