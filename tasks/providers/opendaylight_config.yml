@@ -37,14 +37,17 @@
     state: started
     enabled: yes
 
+- name: Set fact with ODL controller IP address
+  set_fact:
+    odl_ip: "{{ hostvars[groups['opendaylight'][0]]['ansible_host'] }}"
+    
 - name: Retrieve current OvS manager
   command: ovs-vsctl get-manager
   register: ovs_manager
   changed_when: False
 
 - name: Set ODL as OvS manager
-  command: ovs-vsctl set-manager tcp:{{ odl_ip }}:6640
-  when: ovs_manager.stdout == ""
+  command: ovs-vsctl set-manager {{ ovs_manager_list | join(' ') }}
 
 - name: Configure hosts for networking-odl, force kernel datapath
   command: "{{ neutron_bin }}/neutron-odl-ovs-hostconfig --noovs_dpdk"

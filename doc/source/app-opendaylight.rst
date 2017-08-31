@@ -31,7 +31,7 @@ OpenStack-Ansible user variables
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Set the following user variables in your
-``/etc/openstack_deploy/user_variables.yml``:
+``/etc/openstack_deploy/user_variables.yml``: *
 
 .. code-block:: yaml
 
@@ -55,6 +55,7 @@ to deploy Open vSwitch in all network hosts.
 
 The second block is instructing Ansible to deploy OpenDaylight SDN Controller.
 This is done by specifying ``neutron_plugin_type`` to ``ml2.opendaylight``.
+
 The IP address of the OpenDaylight controller needs to be inferred from the
 deployment configuration as well. That can be used with a line such as the one
 in the example.
