@@ -71,7 +71,7 @@ agent_down_time = {{ neutron_agent_down_time }}
 l3_ha = True
 l3_ha_net_cidr = {{ neutron_l3_ha_net_cidr }}
 max_l3_agents_per_router = {{ max_l3_router }}
-{% if neutron_provider_networks.network_mappings_list is defined and ((neutron_provider_networks.network_mappings_list | length) > 0) %}
+{% if neutron_provider_networks.network_mappings_list is defined %}
 ha_network_type = {{ neutron_provider_networks.network_mappings_list[0].split(':')[0] }}
 ha_network_physical_name = {{ neutron_provider_networks.network_mappings_list[0].split(':')[-1] }}
 {% endif %}
