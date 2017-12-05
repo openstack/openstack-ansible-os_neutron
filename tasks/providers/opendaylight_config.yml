@@ -1,5 +1,5 @@
 ---
-# Copyright 2017, Ericsson AB
+# Copyright 2014, Rackspace US, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -13,23 +13,145 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-- name: Install OpenDaylight pip packages
-  pip:
-    name: "{{ neutron_optional_opendaylight_pip_packages }}"
-    state: "{{ neutron_pip_package_state }}"
-    virtualenv: "{{ neutron_bin | dirname }}"
-    virtualenv_site_packages: "no"
-    extra_args: >-
-      {{ neutron_developer_mode | ternary(pip_install_developer_constraints | default('--constraint /opt/developer-pip-constraints.txt'), '') }}
-      {{ (pip_install_upper_constraints is defined) | ternary('--constraint ' + pip_install_upper_constraints | default(''),'') }}
-      {{ pip_install_options | default('') }}
-  register: install_packages
-  until: install_packages|success
-  retries: 5
-  delay: 2
-  tags:
-    - opendaylight-install
-    - opendaylight-pip-packages
+- name: Copy common neutron config
+  config_template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    owner: "root"
+    group: "{{ item.group|default(neutron_system_group_name) }}"
+    mode: "0640"
+    config_overrides: "{{ item.config_overrides }}"
+    config_type: "{{ item.config_type }}"
+  with_items:
+    - src: "neutron.conf.j2"
+      dest: "{{ neutron_conf_dir }}/neutron.conf"
+      config_overrides: "{{ neutron_neutron_conf_overrides }}"
+      config_type: "ini"
+    - src: "{{ neutron_plugins[neutron_plugin_type].plugin_ini }}.j2"
+      dest: "{{ neutron_conf_dir }}/{{ neutron_plugins[neutron_plugin_type].plugin_ini }}"
+      config_overrides: "{{ neutron_plugins[neutron_plugin_type].plugin_conf_ini_overrides }}"
+      config_type: "ini"
+    - src: "api-paste.ini.j2"
+      dest: "{{ neutron_conf_dir }}/api-paste.ini"
+      config_overrides: "{{ neutron_api_paste_ini_overrides }}"
+      config_type: "ini"
+    - src: "rootwrap.conf.j2"
+      dest: "{{ neutron_conf_dir }}/rootwrap.conf"
+      config_overrides: "{{ neutron_rootwrap_conf_overrides }}"
+      config_type: "ini"
+    - src: "policy.json.j2"
+      dest: "{{ neutron_conf_dir }}/policy.json-{{ neutron_venv_tag }}"
+      config_overrides: "{{ neutron_policy_overrides }}"
+      config_type: "json"
+  notify:
+    - Restart neutron services
 
-- include: setup_ovs_opendaylight.yml
-  when: neutron_services['neutron-server']['group'] not in group_names
+- name: Copy neutron ml2 plugin config
+  config_template:
+    src: "{{ neutron_plugins[item].plugin_ini }}.j2"
+    dest: "{{ neutron_conf_dir }}/{{ neutron_plugins[item].plugin_ini }}"
+    owner: "root"
+    group: "{{ neutron_system_group_name }}"
+    mode: "0640"
+    config_overrides: "{{ neutron_plugins[item].plugin_conf_ini_overrides }}"
+    config_type: "ini"
+  with_items: "{{ neutron_plugin_types }}"
+
+- name: Generate neutron dnsmasq Config
+  template:
+    src: "dnsmasq-neutron.conf.j2"
+    dest: "{{ neutron_conf_dir }}/dnsmasq-neutron.conf"
+    owner: "root"
+    group: "{{ neutron_system_group_name }}"
+    mode: "0640"
+  notify:
+    - Restart neutron services
+  when:
+    - neutron_services['neutron-dhcp-agent']['group'] in group_names
+
+- name: Generate neutron agent only Config
+  config_template:
+    src: "{{ item.service_conf }}.j2"
+    dest: "{{ item.service_conf_path }}/{{ item.service_conf }}"
+    owner: "root"
+    group: "{{ neutron_system_group_name }}"
+    mode: "0640"
+    config_overrides: "{{ item.config_overrides }}"
+    config_type: "{{ item.config_type }}"
+  with_items: "{{ filtered_neutron_services }}"
+  notify:
+    - Restart neutron services
+  when:
+    - "'service_conf_path' in item"
+    - "'service_conf' in item"
+
+- name: Generate neutron bgpvpn networking configuration
+  template:
+    src: "networking_bgpvpn.conf.j2"
+    dest: "{{ neutron_conf_dir }}/networking_bgpvpn.conf"
+    owner: "root"
+    group: "{{ neutron_system_group_name }}"
+    mode: "0640"
+  notify:
+    - Restart neutron services
+  when:
+    - "'networking_bgpvpn.neutron.services.plugin.BGPVPNPlugin' in neutron_plugin_base"
+
+- name: Copy neutron rootwrap filters
+  copy:
+    src: "{{ item }}"
+    dest: "{{ neutron_conf_dir }}/rootwrap.d/"
+    owner: "root"
+    group: "root"
+  with_fileglob:
+    - rootwrap.d/*
+  notify:
+    - Restart neutron services
+
+- name: Drop neutron agent rootwrap filters
+  copy:
+    src: "{{ item.service_rootwrap }}"
+    dest: "{{ neutron_conf_dir }}/{{ item.service_rootwrap }}"
+    owner: "root"
+    group: "root"
+  with_items: "{{ filtered_neutron_services }}"
+  when:
+      - "'service_rootwrap' in item"
+  notify:
+    - Restart neutron services
+
+- name: Drop metadata iptables checksum fix
+  copy:
+    src: "post-up-metadata-checksum"
+    dest: "{{ neutron_checksum_script }}"
+    owner: "root"
+    group: "root"
+    mode: "0755"
+  when:
+    - neutron_metadata_checksum_fix | bool
+    - neutron_services['neutron-linuxbridge-agent']['group'] in group_names
+
+- name: Ensure the postup/postdown scripts are loaded (RedHat)
+  lineinfile:
+    dest: "/etc/sysconfig/network-scripts/ifup-post"
+    line: ". {{ neutron_checksum_script }}"
+    insertbefore: "^exit 0"
+  when:
+    - neutron_metadata_checksum_fix | bool
+    - neutron_services['neutron-linuxbridge-agent']['group'] in group_names
+    - ansible_pkg_mgr in ['yum', 'dnf']
+
+- name: Ensure the postup/postdown scripts are loaded (SUSE)
+  lineinfile:
+    dest: "/etc/sysconfig/network/config"
+    line: "POST_UP_SCRIPT='wicked:{{ neutron_checksum_script }}'"
+  when:
+    - neutron_metadata_checksum_fix | bool
+    - neutron_services['neutron-linuxbridge-agent']['group'] in group_names
+    - ansible_pkg_mgr == 'zypper'
+
+- name: Run metadata iptables checksum fix
+  command: "{{ neutron_checksum_script }}"
+  when:
+    - neutron_metadata_checksum_fix | bool
+    - neutron_services['neutron-linuxbridge-agent']['group'] in group_names
