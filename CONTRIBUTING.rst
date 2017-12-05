@@ -24,7 +24,7 @@ Submitting Code
 ---------------
 
 Changes to the project should be submitted for review via the Gerrit tool, following
-the workflow documented at: "http://docs.openstack.org/infra/manual/developers.html#development-workflow"
+the workflow documented at: "https://docs.openstack.org/infra/manual/developers.html#development-workflow"
 
 Pull requests submitted through GitHub will be ignored and closed without regard.
 
@@ -32,7 +32,7 @@ Pull requests submitted through GitHub will be ignored and closed without regard
 Extra
 -----
 
-Tags: 
+Tags:
     If it's a bug that needs fixing in a branch in addition to Master, add a '\<release\>-backport-potential' tag (eg ``juno-backport-potential``).  There are predefined tags that will autocomplete.
 
 Status:

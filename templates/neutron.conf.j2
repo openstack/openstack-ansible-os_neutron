@@ -57,6 +57,7 @@ router_auto_schedule = True
 
 # Distributed virtual routing
 router_distributed = {{ neutron_plugins[neutron_plugin_type].router_distributed | default('False') }}
+enable_dvr = {{ neutron_plugins[neutron_plugin_type].router_distributed | default('False') }}
 
 # Agents
 agent_down_time = {{ neutron_agent_down_time }}
@@ -206,12 +207,6 @@ auth_version = 3
 
 {% endif %}
 
-{% if neutron_fwaas | bool %}
-[fwaas]
-enabled = true
-driver = neutron_fwaas.services.firewall.drivers.linux.iptables_fwaas.IptablesFwaasDriver
-{% endif %}
-
 # Agent
 [agent]
 polling_interval = {{ neutron_agent_polling_interval|default(5) }}
@@ -241,5 +236,3 @@ transport_url = rabbit://{% for host in neutron_rabbitmq_telemetry_servers.split
 # Concurrency (locking mechanisms)
 [oslo_concurrency]
 lock_path = {{ neutron_lock_path }}
-
-

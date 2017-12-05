@@ -39,13 +39,30 @@ server2
 
 [opendaylight]
 server1
+server2
 
 [neutron_agent]
+agents1
+agents2
+
 [neutron_dhcp_agent]
+agents1
+agents2
+
 [neutron_metering_agent]
 [neutron_l3_agent]
+agents1
+agents2
+
 [neutron_lbaas_agent]
 [neutron_metadata_agent]
+agents1
+agents2
+
+[neutron_openvswitch_agent]
+agents1
+agents2
+localhost
 
 [neutron_all:children]
 neutron_agent
@@ -54,6 +71,7 @@ neutron_metering_agent
 neutron_l3_agent
 neutron_lbaas_agent
 neutron_metadata_agent
+neutron_openvswitch_agent
 neutron_server
 opendaylight
 

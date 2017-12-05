@@ -24,7 +24,7 @@ Prerequisites
 #. The deployment environment is configured according to OSA best
    practices such as cloning OSA software and bootstrapping Ansible.
    See `OpenStack-Ansible Install Guide
-   <http://docs.openstack.org/project-deploy-guide/openstack-ansible/newton/>`_.
+   <https://docs.openstack.org/project-deploy-guide/openstack-ansible/newton/>`_.
 
 #. VCS stand-alone components, VSD and VSC, are configured and
    deployed. See the Nuage Networks VSD and VSC Install Guides.

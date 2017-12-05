@@ -91,6 +91,14 @@ neutron_dns_domain: "openstacklocal."
 # neutron_num_sync_threads: 4
 
 ###
+### DNSMasq configuration
+###
+# Dnsmasq doesn't work with config_template override, a deployer
+# should instead configure its own neutron_dhcp_config key/values
+neutron_dhcp_config:
+  log-facility: "/var/log/neutron/neutron-dnsmasq.log"
+
+###
 ### Tunable Overrides (Sorted alphabetically)
 ###
 
@@ -107,7 +115,6 @@ neutron_calico_felix_ini_overrides: {}
 neutron_calico_felix_init_overrides: {}
 neutron_dhcp_agent_ini_overrides: {}
 neutron_dhcp_agent_init_overrides: {}
-neutron_dnsmasq_neutron_conf_overrides: {}
 neutron_dragonflow_controller_agent_init_overrides: {}
 neutron_dragonflow_ini_overrides: {}
 neutron_dragonflow_l3_agent_init_overrides: {}
@@ -243,8 +250,9 @@ neutron_notifications_designate: notifications_designate
 # Other plugins can be added to the system by simply extending the list `neutron_plugin_base`.
 # neutron_plugin_base:
 #   - router
-#   - firewall
+#   - firewall/firewall_v2 either one or the other, not both
 #   - lbaas
+#   - neutron_lbaas.services.loadbalancer.plugin.LoadBalancerPluginv2
 #   - neutron_dynamic_routing.services.bgp.bgp_plugin.BgpPlugin
 #   - vpnaas
 #   - metering
@@ -333,6 +341,13 @@ neutron_metadata_backlog: 4096
 # metadata requests, and this results in the checksums being incorrect.
 neutron_metadata_checksum_fix: False
 
+# The protocol used by neutron to access the nova metadata service.
+nova_metadata_protocol: http
+
+# If the nova_metadata_protocol is using a self-signed cert, then
+# this flag should be set to a boolean True.
+nova_metadata_insecure: False
+
 ###
 ### LBaaS Configuration
 ###
@@ -340,6 +355,15 @@ neutron_metadata_checksum_fix: False
 # See documentation section titled "Configuring the Network Load Balancing
 # Service (Optional)" for more details.
 neutron_octavia_request_poll_timeout: 100
+
+###
+### VPNaaS Configuration
+###
+
+# See VPNaaS documentation for driver/service provider selection
+# in case you want to override it.
+neutron_driver_vpnaas: neutron_vpnaas.services.vpn.device_drivers.strongswan_ipsec.StrongSwanDriver
+neutron_vpnaas_service_provider: VPN:strongswan:neutron_vpnaas.services.vpn.service_drivers.ipsec.IPsecVPNDriver:default
 
 ###
 ### Dragonflow Configuration
@@ -370,3 +394,9 @@ dragonflow_ex_peer_patch_port: patch-int
 dragonflow_int_peer_patch_port: patch-ex
 dragonflow_external_network_bridge: br-ex
 dragonflow_publisher_bind_address: "*"
+
+# Install Openvswitch without NSH support
+ovs_nsh_support: False
+
+# Set higher priority to mardim PPA when ovs_nsh_support is True
+ovs_nsh_apt_pinned_packages: [{ package: "*", release: "LP-PPA-mardim-mardim-ppa"}]

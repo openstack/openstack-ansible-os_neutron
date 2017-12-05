@@ -29,6 +29,9 @@ Firewall service (optional)
 The following procedure describes how to modify the
 ``/etc/openstack_deploy/user_variables.yml`` file to enable FWaaS.
 
+Deploying FWaaS v1
+------------------
+
 #. Override the default list of neutron plugins to include
    ``firewall``:
 
@@ -67,6 +70,43 @@ The following procedure describes how to modify the
 The FWaaS default configuration options may be changed through the
 `conf override`_ mechanism using the ``neutron_neutron_conf_overrides``
 dict.
+
+Deploying FWaaS v2
+------------------
+
+FWaaS v2 is the next generation Neutron firewall service and will provide
+a rich set of APIs for securing OpenStack networks. It is still under
+active development.
+
+Refer to the `FWaaS 2.0 API specification
+<https://specs.openstack.org/openstack/neutron-specs/specs/newton/fwaas-api-2.0.html>`_
+for more information on these FWaaS v2 features
+
+Follow the steps below to deploy FWaaS v2:
+
+.. note::
+    FWaaS v1 and v2 cannot be deployed simultaneously.
+
+#. Add the FWaaS v2 plugin to the ``neutron_plugin_base`` variable
+   in ``/etc/openstack_deploy/user_variables.yml``:
+
+   .. code-block:: yaml
+
+      neutron_plugin_base:
+        - router
+        - metering
+        - firewall_v2
+
+   Ensure that ``neutron_plugin_base`` includes all of the plugins that you
+   want to deploy with neutron in addition to the firewall_v2 plugin.
+
+#. Run the neutron playbook to deploy the FWaaS v2 service plugin
+
+   .. code-block:: console
+
+       # cd /opt/openstack-ansible/playbooks
+       # openstack-ansible os-neutron-install.yml
+
 
 Load balancing service (optional)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -204,8 +244,8 @@ as routers. This is especially useful when coupled with the `subnet pools`_
 feature, which enables neutron to be configured in such a way as to allow users
 to create self-service `segmented IPv6 subnets`_.
 
-.. _BGP Dynamic Routing: https://docs.openstack.org/networking-guide/config-bgp-dynamic-routing.html
-.. _subnet pools: https://docs.openstack.org/networking-guide/config-subnet-pools.html
+.. _BGP Dynamic Routing: https://docs.openstack.org/neutron/latest/admin/config-bgp-dynamic-routing.html
+.. _subnet pools: https://docs.openstack.org/neutron/latest/admin/config-subnet-pools.html
 .. _segmented IPv6 subnets: https://cloudbau.github.io/openstack/neutron/networking/2016/05/17/neutron-ipv6.html
 
 The following procedure describes how to modify the

@@ -27,10 +27,14 @@ neutron_distro_packages:
   - ebtables
   - haproxy
   - ipset
+  - iptables
   - iputils
   - keepalived
   - radvd
   - which
+
+neutron_developer_mode_distro_packages:
+  - git
 
 neutron_lxb_distro_packages:
   - bridge-utils

@@ -18,7 +18,7 @@ reading that scenario to get some background. It is also recommended to be
 familiar with OpenDaylight and networking-odl projects and their configuration.
 
  * `Scenario: Open vSwitch <app-openvswitch.html>`_
- * `OpenDaylight SDN Controller <docs.opendaylight.org/en/latest/>`_
+ * `OpenDaylight SDN Controller <http://docs.opendaylight.org/en/latest/>`_
  * `Networking-odl <https://github.com/openstack/networking-odl>`_
 
 Prerequisites
@@ -46,7 +46,7 @@ Set the following user variables in your
   odl_ip: "{{ hostvars[groups['opendaylight'][0]]['ansible_default_ipv4']['address'] }}"
   neutron_opendaylight_conf_ini_overrides:
     ml2_odl:
-      url: "http://{{ odl_ip }}:8080/controller/nb/v2/neutron"
+      url: "http://{{ odl_ip }}:8180/controller/nb/v2/neutron"
       username: <username>
       password: <password>
 
@@ -79,6 +79,30 @@ OpenStack integration. The deployer can modify this value by providing a list
 of feature names in the ``opendaylight_extra_features`` variable.
 
 For more information, see OpenDaylight Ansible role documentation.
+
+L3 configuration
+~~~~~~~~~~~~~~~~
+
+L3 services are by default provided by the neutron-l3-agent. ODL is capable of
+providing L3 services too and if ODL is deployed, it is actually recommended to
+use them instead of neutron. Remember that L3 services allow, among other
+things, to give VMs connectivity to the internet.
+
+To activate the ODL L3 services, you should add to the above explained
+variables:
+
+.. code-block:: yaml
+
+ # Activate the L3 capabilities of ODL
+ neutron_plugin_base:
+  - odl-router_v2
+  - metering
+
+If you want to use the L3 capabilities, you will need to define a external
+Neutron network and set a gateway. Note that the br-vlan interface of the nodes
+could be a perfect interface for that gateway, although it depends on your
+network topology.
+
 
 Security information
 ~~~~~~~~~~~~~~~~~~~~

@@ -18,7 +18,7 @@ For additional configuration about Project Calico and its architecture, please
 reference the `networking-calico`_ and `Project Calico`_ documentation.
 
 .. _networking-calico: https://docs.openstack.org/networking-calico/latest/
-.. _Project Calico: http://docs.projectcalico.org/en/latest/index.html
+.. _Project Calico: https://docs.projectcalico.org/en/latest/index.html
 
 Prerequisites
 ~~~~~~~~~~~~~

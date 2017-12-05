@@ -57,8 +57,8 @@
 - name: os_previous_neutron
   src: https://git.openstack.org/openstack/openstack-ansible-os_neutron
   scm: git
-  version: stable/ocata
+  version: stable/pike
 - name: opendaylight
   scm: git
-  src: https://git.opendaylight.org/gerrit/p/integration/packaging/ansible-opendaylight.git
+  src: https://github.com/opendaylight/integration-packaging-ansible-opendaylight
   version: master

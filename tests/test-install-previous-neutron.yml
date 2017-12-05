@@ -55,6 +55,10 @@
         host: "{{ ansible_host | default(inventory_hostname) }}"
         search_regex: OpenSSH
         delay: 1
+    - name: Ensure presence of iptables inside the agent before running the role
+      package:
+        name: iptables
+        state: present
 
     - name: Add iptables rule for communication w/ metadata agent
       command: /sbin/iptables -t mangle -A POSTROUTING -p tcp --sport 80 -j CHECKSUM --checksum-fill

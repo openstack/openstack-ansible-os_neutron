@@ -15,7 +15,7 @@ Recommended reading
 We recommend that you read the following documents before proceeding:
 
  * Neutron documentation on Open vSwitch OpenStack deployments:
-   `<http://docs.openstack.org/liberty/networking-guide/scenario-classic-ovs.html>`_
+   `<https://docs.openstack.org/liberty/networking-guide/scenario-classic-ovs.html>`_
  * Blog post on how OpenStack-Ansible works with Open vSwitch:
    `<https://medium.com/@travistruman/configuring-openstack-ansible-for-open-vswitch-b7e70e26009d>`_
 
@@ -167,5 +167,5 @@ Set the following user variables in your
 
 Customization is needed to support additional network types such as vxlan,
 GRE or Geneve. Refer to the `neutron agent configuration
-<http://docs.openstack.org/admin-guide/networking-config-agents.html>`_ for
+<https://docs.openstack.org/neutron/latest/configuration/#configuration-reference>`_ for
 more information on these attributes.

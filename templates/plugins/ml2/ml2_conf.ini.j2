@@ -7,6 +7,10 @@ tenant_network_types = {{ neutron_provider_networks.network_types if neutron_pro
 mechanism_drivers = {{ neutron_ml2_mechanism_drivers }}
 extension_drivers = port_security{% if 'qos' in neutron_plugin_base %},qos{% endif %}{% if 'dns' in neutron_plugin_base %},dns{% endif %}
 
+{% if neutron_plugin_type == 'ml2.opendaylight' and ('odl-router_v2' in neutron_plugin_base or 'odl-router' in neutron_plugin_base) %}
+bridge_mappings = {{ neutron_provider_networks.network_mappings }}
+{% endif %}
+
 {% if neutron_provider_networks.network_flat_networks is defined %}
 
 # ML2 flat networks

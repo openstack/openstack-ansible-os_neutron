@@ -58,14 +58,12 @@
   with_items: "{{ neutron_plugin_types }}"
 
 - name: Generate neutron dnsmasq Config
-  config_template:
+  template:
     src: "dnsmasq-neutron.conf.j2"
     dest: "{{ neutron_conf_dir }}/dnsmasq-neutron.conf"
     owner: "root"
     group: "{{ neutron_system_group_name }}"
     mode: "0640"
-    config_overrides: "{{ neutron_dnsmasq_neutron_conf_overrides }}"
-    config_type: "ini"
   notify:
     - Restart neutron services
   when:

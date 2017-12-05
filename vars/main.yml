@@ -27,8 +27,12 @@ neutron_package_list: |-
   {% if (neutron_services['neutron-openvswitch-agent']['group'] in group_names and neutron_services['neutron-openvswitch-agent'].service_en | bool)
       or (neutron_services['dragonflow-controller-agent']['group'] in group_names and neutron_services['dragonflow-controller-agent'].service_en | bool)
       or (neutron_services['dragonflow-l3-agent']['group'] in group_names and neutron_services['dragonflow-l3-agent'].service_en | bool)
-      or (neutron_plugin_type == 'ml2.opendaylight') %}
+      or ((neutron_services['neutron-server']['group'] not in group_names) and neutron_plugin_type == 'ml2.opendaylight') %}
+  {% if (ovs_nsh_support and ansible_pkg_mgr in ['apt', 'zypper']) %}
+  {% set _ = packages.extend(neutron_ovs_nsh_required_packages) %}
+  {% else %}
   {% set _ = packages.extend(neutron_ovs_distro_packages) %}
+  {% endif %}
   {% endif %}
   {% if neutron_services['neutron-linuxbridge-agent']['group'] in group_names and neutron_services['neutron-linuxbridge-agent'].service_en | bool %}
   {% set _ = packages.extend(neutron_lxb_distro_packages) %}
@@ -39,7 +43,12 @@ neutron_package_list: |-
   {% if neutron_services['neutron-vpnaas-agent']['group'] in group_names and neutron_vpnaas | bool %}
   {% set _ = packages.extend(neutron_vpnaas_distro_packages) %}
   {% endif %}
+  {% if neutron_developer_mode | bool %}
+  {%   set _ = packages.extend(neutron_developer_mode_distro_packages) %}
+  {% endif %}
   {{ packages }}
+
+neutron_ovs_nsh_distro_packages: []
 
 # Set the Calico Felix agent executable destination path
 calico_felix_bin: /usr/local/bin/calico-felix
@@ -238,12 +247,10 @@ opendaylight_install_method: "{{ (ansible_os_family=='Debian') | ternary('deb_re
 
 ovs_manager_list: |-
   {% set ovs_managers_odls = [] %}
-  {% for host in groups["neutron_server_container"] %}
-     {% set odl_ip_address =  hostvars[host]['container_address']|string %}
-     {% set _ = ovs_managers_odls.append('tcp:' + odl_ip_address + ':6640') %}
-  {% endfor %}
+  {% for odl_ip_address in groups[neutron_services['neutron-server']['group']] | map('extract', hostvars, 'ansible_host') | list -%}
+    {% set _ = ovs_managers_odls.append('tcp:' ~ odl_ip_address ~ ':6640') %}
+  {%- endfor %}
   {{ ovs_managers_odls | join(' ') }}
-
 ###
 ### L3 Agent Plugin Configuration
 ###
@@ -258,8 +265,6 @@ neutron_l3: "{% if 'router' in neutron_plugin_base or 'neutron.services.l3_route
 ###
 
 neutron_dhcp: "{% if neutron_plugin_type.split('.')[0] == 'ml2' %}True{% else %}False{% endif %}"
-neutron_dhcp_config:
-  log-facility: "/var/log/neutron/neutron-dnsmasq.log"
 
 ###
 ### Metadata Agent Plugin Configuration
@@ -272,7 +277,8 @@ neutron_metadata: "{% if neutron_plugin_type.split('.')[0] == 'ml2' %}True{% els
 ###
 
 # Please add the 'firewall' to the neutron_plugin_base list
-neutron_fwaas: "{% if 'firewall' in neutron_plugin_base %}True{% else %}False{% endif %}"
+neutron_fwaas: "{{ 'firewall' in neutron_plugin_base | ternary('True', 'False') }}"
+neutron_fwaas_v2: "{{ 'firewall_v2' in neutron_plugin_base | ternary('True', 'False') }}"
 
 ###
 ### LBaaS Plugin Configuration

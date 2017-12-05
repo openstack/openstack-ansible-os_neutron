@@ -73,5 +73,5 @@
   tags:
     - dragonflow-config
   when:
-    - (inventory_hostname in groups[neutron_services['dragonflow-l3-agent']['group']]) or
-      (inventory_hostname in groups[neutron_services['dragonflow-controller-agent']['group']])
+    - (neutron_services['dragonflow-l3-agent']['group'] in group_names) or
+      (neutron_services['dragonflow-controller-agent']['group'] in group_names)

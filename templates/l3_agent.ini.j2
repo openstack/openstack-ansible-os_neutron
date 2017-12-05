@@ -23,7 +23,28 @@ ha_confs_path = {{ neutron_system_home_folder }}/ha_confs
 ha_vrrp_advert_int = 2
 ha_vrrp_auth_password = {{ neutron_ha_vrrp_auth_password }}
 ha_vrrp_auth_type = {{ neutron_ha_vrrp_auth_type }}
-send_arp_for_ha = 3
 
 # Metadata
 enable_metadata_proxy = True
+
+{% if neutron_fwaas | bool %}
+
+[fwaas]
+enabled = true
+driver = iptables
+agent_version = v1
+
+[AGENT]
+extensions = fwaas
+
+{% elif neutron_fwaas_v2 | bool %}
+
+[fwaas]
+enabled = true
+driver = iptables_v2
+agent_version = v2
+
+[AGENT]
+extensions = fwaas_v2
+
+{% endif %}

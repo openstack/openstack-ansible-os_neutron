@@ -1,5 +1,5 @@
 ---
-# Copyright 2017, Ericsson AB
+# Copyright 2017, Intracom-Telecom
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -13,12 +13,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
-### Ensure the openvswitch kernel module is loaded
-openstack_host_specific_kernel_modules:
-  - name: "openvswitch"
-    pattern: "CONFIG_OPENVSWITCH"
-    group: "network_hosts"
+### Use OvS with NSH support
+ovs_nsh_support: True
 
 ### Use OpenDaylight SDN Controller
 neutron_plugin_type: "ml2.opendaylight"

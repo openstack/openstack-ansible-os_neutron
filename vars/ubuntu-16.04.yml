@@ -21,8 +21,10 @@ neutron_ovs_distro_packages:
 
 neutron_ovs_service_name: openvswitch-switch
 
-neutron_driver_vpnaas: neutron_vpnaas.services.vpn.device_drivers.strongswan_ipsec.StrongSwanDriver
-neutron_vpnaas_service_provider: VPN:strongswan:neutron_vpnaas.services.vpn.service_drivers.ipsec.IPsecVPNDriver:default
+neutron_ovs_nsh_required_packages:
+  - openvswitch-common
+  - openvswitch-switch
+  - python-openvswitch
 
 ## APT Cache options
 cache_timeout: 600
@@ -34,9 +36,13 @@ neutron_distro_packages:
   - ebtables
   - haproxy
   - ipset
+  - iptables
   - iputils-arping
   - keepalived
   - radvd
+
+neutron_developer_mode_distro_packages:
+  - git-core
 
 neutron_lxb_distro_packages:
   - bridge-utils

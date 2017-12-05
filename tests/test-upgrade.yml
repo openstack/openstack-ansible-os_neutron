@@ -30,5 +30,8 @@
 # Install Keystone
 - include: common/test-install-keystone.yml
 
+# Ensure the repo is setup for previous version
+- include: common/previous/test-repo-setup.yml
+
 # Install previous Neutron
 - include: test-install-previous-neutron.yml

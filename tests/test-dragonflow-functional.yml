@@ -31,18 +31,28 @@
         python -m subunit.run discover dragonflow.tests.fullstack > /var/log/dragonflow-fullstack.subunit
         subunit2html /var/log/dragonflow-fullstack.subunit /var/log/dragonflow-fullstack.html
       register: dragonflow_fullstack_tests
+      tags:
+        - skip_ansible_lint
+
     - name: Ensure etc folder exists in logs
       file:
         path: /var/log/etc
         state: directory
+
     - name: Copy config files
       shell: |
         cp -r /etc/neutron /var/log/etc
       register: dragonflow_fullstack_log_copy
+      tags:
+        - skip_ansible_lint
+
     - name: Verify tests have passed
       shell: |
         . {{ tempest_venv_bin }}/activate
         subunit-filter --without {{ dragonflow_fullstack_failing_tests | join(' --without ') }} -s /var/log/dragonflow-fullstack.subunit | subunit2pyunit
         exit $?
+      tags:
+        - skip_ansible_lint
+
   vars_files:
     - common/test-vars.yml

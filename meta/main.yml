@@ -39,23 +39,26 @@ galaxy_info:
     - openstack
 dependencies:
   - pip_install
-  - apt_package_pinning
+  - role: apt_package_pinning
+    apt_pinned_packages: "{{ ovs_nsh_support | ternary(ovs_nsh_apt_pinned_packages, omit) }}"
+    when:
+      - ansible_pkg_mgr == 'apt'
   - galera_client
   - openstack_openrc
   - role: etcd
     etcd_install_type: proxy
     when:
-      - "{{ neutron_plugin_type in ['ml2.calico', 'ml2.dragonflow'] }}"
-      - "{{ group_names | intersect([
-              neutron_services['calico-dhcp-agent']['group'],
-              neutron_services['calico-felix']['group'],
-              neutron_services['dragonflow-controller-agent']['group'],
-              neutron_services['neutron-server']['group']
-            ]) | length > 0
-         }}"
+      - "neutron_plugin_type in ['ml2.calico', 'ml2.dragonflow']"
+      - "group_names | intersect([
+           neutron_services['calico-dhcp-agent']['group'],
+           neutron_services['calico-felix']['group'],
+           neutron_services['dragonflow-controller-agent']['group'],
+           neutron_services['neutron-server']['group']
+         ]) | length > 0"
   - role: opendaylight
     install_method: "{{ opendaylight_install_method }}"
     extra_features: "{{ opendaylight_extra_features }}"
+    nb_rest_port: "{{ opendaylight_port | default('8180') }}"
     when:
      - neutron_plugin_type == "ml2.opendaylight"
-     - inventory_hostname in groups["opendaylight"]
+     - "'opendaylight' in group_names"
