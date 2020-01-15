@@ -51,6 +51,7 @@ neutron_optional_bgp_pip_packages:
 neutron_optional_calico_pip_packages:
   - networking-calico
   - python-etcd
+  - etcd3gw
 
 neutron_optional_vpnaas_pip_packages:
   - neutron_vpnaas
