@@ -182,3 +182,14 @@
     - Restart neutron services
   when:
     - "'bgpvpn' in neutron_plugin_base"
+
+- name: Stop haproxy service on debian derivatives with standalone network nodes
+  service:
+    name: haproxy
+    state: stopped
+    enabled: false
+  when:
+     - ansible_pkg_mgr == 'apt'
+     - ansible_hostname in groups['neutron_metadata_agent']
+     - groups['haproxy_all'] is defined
+     - ansible_hostname not in groups['haproxy_all']
