@@ -108,7 +108,7 @@ send_events_interval = 2
 
 # required by current dns integration implementation
 url = {{ designate_service_adminurl }}
-
+region_name = {{ neutron_service_region }}
 auth_type = password
 username = {{ neutron_service_user_name }}
 password = {{ neutron_service_password }}
@@ -136,6 +136,7 @@ insecure = {{ keystone_service_adminuri_insecure | bool }}
 endpoint_type = internal
 
 [nova]
+region_name = {{ neutron_service_region }}
 auth_type = password
 username = {{ neutron_service_user_name }}
 password = {{ neutron_service_password }}
