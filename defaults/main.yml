@@ -71,6 +71,8 @@ openstack_ceilometer_git_repo: https://opendev.org/openstack/ceilometer
 openstack_ceilometer_git_install_branch: master
 networking_ovn_git_repo: https://opendev.org/openstack/networking-ovn
 networking_ovn_git_install_branch: master
+networking_generic_switch_git_repo: https://opendev.org/openstack/networking-generic-switch
+networking_generic_switch_git_install_branch: master
 
 neutron_upper_constraints_url: "{{ requirements_git_url | default('https://releases.openstack.org/constraints/upper/' ~ requirements_git_install_branch | default('master')) }}"
 neutron_git_constraints:
@@ -84,6 +86,7 @@ neutron_git_constraints:
   - "git+{{ networking_bgpvpn_git_repo }}@{{ networking_bgpvpn_git_install_branch }}#egg=networking-bgpvpn"
   - "git+{{ openstack_ceilometer_git_repo }}@{{ openstack_ceilometer_git_install_branch }}#egg=ceilometer"
   - "git+{{ networking_ovn_git_repo }}@{{ networking_ovn_git_install_branch }}#egg=networking-ovn"
+  - "git+{{ networking_generic_switch_git_repo }}@{{ networking_generic_switch_git_install_branch }}#egg=networking-generic-switch"
   - "--constraint {{ neutron_upper_constraints_url }}"
 
 neutron_pip_install_args: "{{ pip_install_options | default('') }}"
@@ -162,6 +165,7 @@ neutron_metadata_agent_init_overrides: {}
 neutron_metering_agent_ini_overrides: {}
 neutron_metering_agent_init_overrides: {}
 neutron_ml2_conf_ini_overrides: {}
+neutron_ml2_conf_genericswitch_ini_overrides: {}
 neutron_neutron_conf_overrides: {}
 neutron_nuage_conf_ini_overrides: {}
 neutron_opendaylight_conf_ini_overrides: {}

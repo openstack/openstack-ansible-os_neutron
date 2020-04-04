@@ -134,7 +134,7 @@
 
 - name: Copy neutron ml2 plugin config
   config_template:
-    src: "{{ neutron_plugins[item].plugin_ini }}.j2"
+    src: "{{ ('plugin_conf_bare' not in neutron_plugins[item]) | ternary(neutron_plugins[item].plugin_ini ~ '.j2', omit) }}"
     dest: "{{ neutron_conf_dir }}/{{ neutron_plugins[item].plugin_ini }}"
     owner: "root"
     group: "{{ neutron_system_group_name }}"
