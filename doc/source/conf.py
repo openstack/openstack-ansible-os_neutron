@@ -64,11 +64,6 @@ role_name = 'os_neutron'
 target_name = 'openstack-ansible-' + role_name
 title = 'OpenStack-Ansible Documentation: ' + role_name + ' role'
 
-# The link to the browsable source code (for the left hand menu)
-oslosphinx_cgit_link = (
-    'https://opendev.org/openstack/{}'.format(target_name)
-)
-
 # openstackdocstheme options
 repository_name = 'openstack/' + target_name
 bug_project = "openstack-ansible"
