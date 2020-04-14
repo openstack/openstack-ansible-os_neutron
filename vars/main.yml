@@ -72,6 +72,9 @@ neutron_proprietary_nuage_pip_packages:
 neutron_optional_ovn_pip_packages:
   - networking-ovn
 
+neutron_optional_ngs_pip_packages:
+  - networking-generic-switch
+
 neutron_venv_packages: >-
   {%- set pkg_list = neutron_pip_packages | union(neutron_user_pip_packages) %}
   {%- if neutron_bgp | bool %}
@@ -110,6 +113,10 @@ neutron_venv_packages: >-
           (neutron_services['neutron-ovn-northd']['group'] in group_names) or
           (neutron_services['neutron-ovn-controller']['group'] in group_names)) %}
   {%-     set _ = pkg_list.extend(neutron_optional_ovn_pip_packages) %}
+  {%- endif %}
+  {%- if ('ml2.genericswitch' in neutron_plugin_types) and
+         (neutron_services['neutron-server']['group'] in group_names) %}
+  {%-     set _ = pkg_list.extend(neutron_optional_ngs_pip_packages) %}
   {%- endif %}
   {{- pkg_list | unique }}
 
@@ -208,6 +215,13 @@ neutron_plugins:
     plugin_conf_ini_overrides: "{{ neutron_ml2_conf_ini_overrides }}"
     plugin_core: ml2
     plugin_ini: plugins/ml2/ml2_conf.ini
+  ml2.genericswitch:
+    drivers_type: "vlan"
+    mechanisms: "genericswitch"
+    plugin_conf_bare: True
+    plugin_conf_ini_overrides: "{{ neutron_ml2_conf_genericswitch_ini_overrides }}"
+    plugin_core: ml2
+    plugin_ini: plugins/ml2/ml2_conf_genericswitch.ini
 
 ###
 ### ML2 Plugin Configuration
@@ -446,7 +460,7 @@ neutron_services:
     group: neutron_server
     service_name: neutron-server
     service_en: True
-    execstarts: "{{ neutron_bin }}/neutron-server --config-file {{ neutron_conf_dir }}/neutron.conf --config-file {{ neutron_conf_dir }}/{{ neutron_plugins[neutron_plugin_type].plugin_ini }}"
+    execstarts: "{{ neutron_bin }}/neutron-server --config-file {{ neutron_conf_dir }}/neutron.conf --config-file {{ neutron_conf_dir }}/{{ neutron_plugins[neutron_plugin_type].plugin_ini }}{%- if ('ml2.genericswitch' in neutron_plugin_types) %} --config-file {{ neutron_conf_dir }}/{{ neutron_plugins['ml2.genericswitch'].plugin_ini }}{%- endif %}"
     init_config_overrides: "{{ neutron_server_init_overrides }}"
     start_order: 1
   calico-felix:
