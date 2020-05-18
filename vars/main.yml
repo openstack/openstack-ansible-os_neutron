@@ -69,9 +69,6 @@ neutron_proprietary_nuage_pip_packages:
   - nuage-openstack-neutronclient
   - nuagenetlib
 
-neutron_optional_ovn_pip_packages:
-  - networking-ovn
-
 neutron_optional_ngs_pip_packages:
   - networking-generic-switch
 
@@ -107,12 +104,6 @@ neutron_venv_packages: >-
   {%-   if 'sfc' in neutron_plugin_base %}
   {%-     set _ = pkg_list.extend(neutron_optional_sfc_pip_packages) %}
   {%-   endif %}
-  {%- endif %}
-  {%- if (neutron_plugin_type.split('.')[-1] == 'ovn') and
-         ((neutron_services['neutron-server']['group'] in group_names) or
-          (neutron_services['neutron-ovn-northd']['group'] in group_names) or
-          (neutron_services['neutron-ovn-controller']['group'] in group_names)) %}
-  {%-     set _ = pkg_list.extend(neutron_optional_ovn_pip_packages) %}
   {%- endif %}
   {%- if ('ml2.genericswitch' in neutron_plugin_types) and
          (neutron_services['neutron-server']['group'] in group_names) %}
