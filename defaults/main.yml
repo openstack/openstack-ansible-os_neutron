@@ -69,8 +69,6 @@ networking_bgpvpn_git_repo: https://opendev.org/openstack/networking-bgpvpn
 networking_bgpvpn_git_install_branch: master
 openstack_ceilometer_git_repo: https://opendev.org/openstack/ceilometer
 openstack_ceilometer_git_install_branch: master
-networking_ovn_git_repo: https://opendev.org/openstack/networking-ovn
-networking_ovn_git_install_branch: master
 networking_generic_switch_git_repo: https://opendev.org/openstack/networking-generic-switch
 networking_generic_switch_git_install_branch: master
 
@@ -85,7 +83,6 @@ neutron_git_constraints:
   - "git+{{ networking_sfc_git_repo }}@{{ networking_sfc_git_install_branch }}#egg=networking-sfc"
   - "git+{{ networking_bgpvpn_git_repo }}@{{ networking_bgpvpn_git_install_branch }}#egg=networking-bgpvpn"
   - "git+{{ openstack_ceilometer_git_repo }}@{{ openstack_ceilometer_git_install_branch }}#egg=ceilometer"
-  - "git+{{ networking_ovn_git_repo }}@{{ networking_ovn_git_install_branch }}#egg=networking-ovn"
   - "git+{{ networking_generic_switch_git_repo }}@{{ networking_generic_switch_git_install_branch }}#egg=networking-generic-switch"
   - "--constraint {{ neutron_upper_constraints_url }}"
 
