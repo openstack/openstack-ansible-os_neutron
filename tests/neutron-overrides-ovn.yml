@@ -6,9 +6,6 @@ openstack_host_specific_kernel_modules:
 tempest_run: yes
 
 tempest_plugins:
-  - name: neutron
-    repo: https://git.openstack.org/openstack/neutron
-    branch: master
   - name: neutron-plugins
     repo: https://git.openstack.org/openstack/neutron-tempest-plugin
     branch: master
