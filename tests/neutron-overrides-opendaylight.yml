@@ -32,9 +32,6 @@ neutron_opendaylight_conf_ini_overrides:
 tempest_run: yes
 
 tempest_plugins:
-  - name: neutron
-    repo: https://opendev.org/openstack/neutron
-    branch: master
   - name: neutron-plugins
     repo: https://opendev.org/openstack/neutron-tempest-plugin
     branch: master
