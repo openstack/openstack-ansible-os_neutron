@@ -28,6 +28,7 @@
 - job:
     name: openstack-ansible-ovn-centos-7
     parent: openstack-ansible-functional-centos-7
+    voting: false
     vars:
       tox_env: ovn
 
