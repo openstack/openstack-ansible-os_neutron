@@ -65,9 +65,10 @@ target_name = 'openstack-ansible-' + role_name
 title = 'OpenStack-Ansible Documentation: ' + role_name + ' role'
 
 # openstackdocstheme options
-repository_name = 'openstack/' + target_name
-bug_project = "openstack-ansible"
-bug_tag = ''
+openstackdocs_repo_name = 'openstack/' + target_name
+openstackdocs_pdf_link = True
+openstackdocs_bug_project = "openstack-ansible"
+openstackdocs_bug_tag = ''
 
 # for a list of supported languages.
 #
