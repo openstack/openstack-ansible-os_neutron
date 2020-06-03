@@ -496,16 +496,16 @@ neutron_services:
   neutron-ovn-controller:
     group: neutron_ovn_controller
     service_en: False
-  networking-ovn-metadata-agent:
+  neutron-ovn-metadata-agent:
     group: neutron_ovn_controller
     systemd_user_name: root
     systemd_group_name: root
-    service_name: networking-ovn-metadata-agent
+    service_name: neutron-ovn-metadata-agent
     service_en: "{{ neutron_plugin_type == 'ml2.ovn' }}"
     service_conf_path: "{{ neutron_conf_dir }}"
-    service_conf: networking_ovn_metadata_agent.ini
+    service_conf: neutron_ovn_metadata_agent.ini
     service_rootwrap: rootwrap.d/ovn-plugin.filters
-    execstarts: "{{ neutron_bin }}/networking-ovn-metadata-agent --config-file {{ neutron_conf_dir }}/neutron.conf --config-file {{ neutron_conf_dir }}/plugins/ml2/ml2_conf.ini --config-file {{ neutron_conf_dir }}/networking_ovn_metadata_agent.ini"
+    execstarts: "{{ neutron_bin }}/neutron-ovn-metadata-agent --config-file {{ neutron_conf_dir }}/neutron.conf --config-file {{ neutron_conf_dir }}/plugins/ml2/ml2_conf.ini --config-file {{ neutron_conf_dir }}/neutron_ovn_metadata_agent.ini"
     config_overrides: "{{ neutron_ovn_metadata_agent_ini_overrides }}"
     config_type: "ini"
     init_config_overrides: "{{ neutron_ovn_metadata_agent_init_overrides }}"
