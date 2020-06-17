@@ -66,9 +66,6 @@ neutron_optional_ovs_distro_packages:
 neutron_optional_lxb_distro_packages:
   - openstack-neutron-linuxbridge
 
-neutron_optional_fwaas_distro_packages:
-  - openstack-neutron-fwaas
-
 neutron_optional_vpnaas_distro_packages:
   - openstack-neutron-vpnaas
 

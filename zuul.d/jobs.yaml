@@ -64,9 +64,3 @@
     parent: openstack-ansible-functional-ubuntu-bionic
     vars:
       tox_env: opendaylight-bgpvpn
-
-- job:
-    name: openstack-ansible-ovs-fwaasv2-ubuntu-bionic
-    parent: openstack-ansible-functional-ubuntu-bionic
-    vars:
-      tox_env: ovs-fwaasv2

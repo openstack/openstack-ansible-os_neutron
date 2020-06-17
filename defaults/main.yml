@@ -53,8 +53,6 @@ neutron_pip_package_state: "latest"
 # Source git repo/branch settings
 neutron_git_repo: https://opendev.org/openstack/neutron
 neutron_git_install_branch: master
-neutron_fwaas_git_repo: https://opendev.org/openstack/neutron-fwaas
-neutron_fwaas_git_install_branch: master
 neutron_vpnaas_git_repo: https://opendev.org/openstack/neutron-vpnaas
 neutron_vpnaas_git_install_branch: master
 neutron_dynamic_routing_git_repo: https://opendev.org/openstack/neutron-dynamic-routing
@@ -75,7 +73,6 @@ networking_generic_switch_git_install_branch: master
 neutron_upper_constraints_url: "{{ requirements_git_url | default('https://releases.openstack.org/constraints/upper/' ~ requirements_git_install_branch | default('master')) }}"
 neutron_git_constraints:
   - "git+{{ neutron_git_repo }}@{{ neutron_git_install_branch }}#egg=neutron"
-  - "git+{{ neutron_fwaas_git_repo }}@{{ neutron_fwaas_git_install_branch }}#egg=neutron-fwaas"
   - "git+{{ neutron_vpnaas_git_repo }}@{{ neutron_vpnaas_git_install_branch }}#egg=neutron-vpnaas"
   - "git+{{ neutron_dynamic_routing_git_repo }}@{{ neutron_dynamic_routing_git_install_branch }}#egg=neutron-dynamic-routing"
   - "git+{{ networking_calico_git_repo }}@{{ networking_calico_git_install_branch }}#egg=networking-calico"
@@ -418,13 +415,6 @@ nova_metadata_protocol: http
 # If the nova_metadata_protocol is using a self-signed cert, then
 # this flag should be set to a boolean True.
 nova_metadata_insecure: False
-
-###
-### FWaaS Configuration
-###
-
-neutron_driver_fwaasv2: iptables_v2
-neutron_fwaasv2_service_provider: FIREWALL_V2:fwaas_db:neutron_fwaas.services.firewall.service_drivers.agents.agents.FirewallAgentDriver:default
 
 ###
 ### VPNaaS Configuration

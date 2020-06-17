@@ -13,15 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-- name: Ensure FWaaS v1 and v2 are not enabled simultaneously
-  fail:
-    message: |
-      FWaaS v1 and v2 cannot be enabled at the same time.
-      Verify that your neutron_plugin_base variable is correct.
-  when:
-    - neutron_fwaas | bool
-    - neutron_fwaas_v2 | bool
-
 - name: Fail if service was deployed using a different installation method
   fail:
     msg: "Switching installation methods for OpenStack services is not supported"
