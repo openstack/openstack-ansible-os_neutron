@@ -32,7 +32,7 @@
     ansible_python_interpreter: "{{ _service_setup_host_python_interpreter }}"
   block:
     - name: Add keystone domain
-      os_keystone_domain:
+      openstack.cloud.os_keystone_domain:
         cloud: default
         state: present
         name: "{{ _domain_name }}"
@@ -45,7 +45,7 @@
       delay: 10
 
     - name: Add service project
-      os_project:
+      openstack.cloud.os_project:
         cloud: default
         state: present
         name: "{{ _project_name }}"
@@ -62,7 +62,7 @@
       delay: 10
 
     - name: Add services to the keystone service catalog
-      os_keystone_service:
+      openstack.cloud.os_keystone_service:
         cloud: default
         state: "{{ item.state | default('present') }}"
         name: "{{ item.name }}"
@@ -78,7 +78,7 @@
       delay: 10
 
     - name: Add keystone roles
-      os_keystone_role:
+      openstack.cloud.os_keystone_role:
         cloud: default
         state: present
         name: "{{ item.role }}"
@@ -97,7 +97,7 @@
       no_log: True
 
     - name: Add service users
-      os_user:
+      openstack.cloud.os_user:
         cloud: default
         state: present
         name: "{{ item.name }}"
@@ -121,7 +121,7 @@
       no_log: True
 
     - name: Add service users to the role
-      os_user_role:
+      openstack.cloud.os_user_role:
         cloud: default
         state: present
         user: "{{ item.name }}"
@@ -144,7 +144,7 @@
       no_log: True
 
     - name: Add endpoints to keystone endpoint catalog
-      os_keystone_endpoint:
+      openstack.cloud.os_keystone_endpoint:
         cloud: default
         state: "{{ item.state | default('present') }}"
         service: "{{ item.service }}"
