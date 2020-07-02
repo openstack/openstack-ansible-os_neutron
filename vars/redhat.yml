@@ -57,8 +57,8 @@ neutron_service_distro_packages:
   - openstack-neutron-macvtap-agent
   - openstack-neutron-metering-agent
   - openstack-neutron-l2gw-agent
-  - python-memcached
-  - systemd-python
+  - "{{ ansible_distribution_major_version is version('8', '<') | ternary('python-memcached', 'python3-memcached') }}"
+  - "{{ ansible_distribution_major_version is version('8', '<') | ternary('systemd-python', 'python3-systemd') }}"
 
 neutron_optional_ovs_distro_packages:
   - openstack-neutron-openvswitch
