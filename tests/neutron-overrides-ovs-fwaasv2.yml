@@ -9,14 +9,9 @@ tempest_plugins:
   - name: neutron-plugins
     repo: https://opendev.org/openstack/neutron-tempest-plugin
     branch: master
-  - name: neutron-fwaas
-    repo: https://opendev.org/openstack/neutron-fwaas
-    branch: master
 
 tempest_test_whitelist:
   - "neutron_tempest_plugin.api.test_networks*"
-  - "neutron_fwaas.tests.tempest_plugin.tests.api.test_fwaasv2_extensions*"
-  - "neutron_fwaas.tests.tempest_plugin.tests.api.v2_base*"
 
 tempest_network_ping_gateway: False
 

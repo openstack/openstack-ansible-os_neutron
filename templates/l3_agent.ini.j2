@@ -24,25 +24,6 @@ enable_metadata_proxy = True
 # L3 plugins
 {% set l3_agent_plugins = [] %}
 
-{% if neutron_fwaas | bool %}
-# FWaaS
-{% set _ = l3_agent_plugins.append("fwaas") %}
-[fwaas]
-enabled = true
-driver = iptables
-agent_version = v1
-{% endif %}
-
-{% if neutron_fwaas_v2 | bool %}
-# FWaaS v2
-{% set _ = l3_agent_plugins.append("fwaas_v2") %}
-[fwaas]
-enabled = true
-driver = {{ neutron_driver_fwaasv2 }}
-agent_version = v2
-firewall_l2_driver = noop
-{% endif %}
-
 {% if neutron_vpnaas | bool %}
 # VPNaaS
 {% set _ = l3_agent_plugins.append("vpnaas") %}
