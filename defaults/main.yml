@@ -425,10 +425,6 @@ nova_metadata_insecure: False
 neutron_driver_vpnaas: "{{ _neutron_driver_vpnaas }}"
 neutron_vpnaas_service_provider: "{{ _neutron_vpnaas_service_provider }}"
 
-# neutron_management_ip is used to configure the location (IP) of the
-# neutron-server
-neutron_management_ip: 127.0.0.1
-
 # Calico Felix agent upstream settings
 calico_felix_url: "https://github.com/projectcalico/felix/releases/download/{{ calico_felix_version }}/calico-felix-amd64"
 calico_felix_version: v3.7.0
