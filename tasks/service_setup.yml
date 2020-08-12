@@ -35,6 +35,7 @@
       openstack.cloud.os_keystone_domain:
         cloud: default
         state: present
+        description: "{{ _domain_name_description | default(omit) }}"
         name: "{{ _domain_name }}"
         endpoint_type: admin
         verify: "{{ not _service_adminuri_insecure }}"
