@@ -30,6 +30,8 @@
 
 - name: Check for available offline migrations
   command: "{{ neutron_bin }}/neutron-db-manage has_offline_migrations"
+  environment:
+    LANGUAGE: en_US.UTF-8
   become: yes
   become_user: "{{ neutron_system_user_name }}"
   when:
