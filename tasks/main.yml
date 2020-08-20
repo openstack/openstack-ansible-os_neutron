@@ -38,6 +38,9 @@
     - "inventory_hostname == ((groups[neutron_services['neutron-server']['group']] | intersect(ansible_play_hosts)) | list)[0]"
   vars:
     _oslodb_setup_host: "{{ neutron_db_setup_host }}"
+    _oslodb_ansible_python_interpreter: "{{ neutron_db_setup_python_interpreter }}"
+    _oslodb_setup_endpoint: "{{ neutron_galera_address }}"
+    _oslodb_setup_port: "{{ neutron_galera_port }}"
     _oslodb_databases:
       - name: "{{ neutron_galera_database }}"
         users:
