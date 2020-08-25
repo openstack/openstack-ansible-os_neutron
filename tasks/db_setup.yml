@@ -22,12 +22,16 @@
 
 - name: Setup Database Service (MariaDB)
   delegate_to: "{{ _oslodb_setup_host }}"
+  vars:
+    ansible_python_interpreter: "{{ _oslodb_ansible_python_interpreter }}"
   tags:
     - common-mariadb
   block:
     - name: Create database for service
       mysql_db:
         name: "{{ item.name }}"
+        login_host: "{{ _oslodb_setup_endpoint | default(omit) }}"
+        login_port: "{{ _oslodb_setup_port | default(omit) }}"
       loop: "{{ _oslodb_databases }}"
       no_log: true
 
@@ -38,5 +42,7 @@
         host: "{{ item.1.host | default('%') }}"
         priv: "{{ item.0.name }}.*:{{ item.1.priv | default('ALL') }}"
         append_privs: yes
+        login_host: "{{ _oslodb_setup_endpoint | default(omit) }}"
+        login_port: "{{ _oslodb_setup_port | default(omit) }}"
       loop: "{{ _oslodb_databases | subelements('users') }}"
       no_log: true
