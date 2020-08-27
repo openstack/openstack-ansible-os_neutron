@@ -72,6 +72,10 @@ neutron_proprietary_nuage_pip_packages:
 neutron_optional_ngs_pip_packages:
   - networking-generic-switch
 
+neutron_optional_nsx_pip_packages:
+  - vmware-nsx
+  - vmware-nsxlib
+
 neutron_venv_packages: >-
   {%- set pkg_list = neutron_pip_packages | union(neutron_user_pip_packages) %}
   {%- if neutron_bgp | bool %}
@@ -108,6 +112,10 @@ neutron_venv_packages: >-
   {%- if ('ml2.genericswitch' in neutron_plugin_types) and
          (neutron_services['neutron-server']['group'] in group_names) %}
   {%-     set _ = pkg_list.extend(neutron_optional_ngs_pip_packages) %}
+  {%- endif %}
+  {%- if (neutron_plugin_type.split('.')[-1] == "nsx") and
+         (neutron_services['neutron-server']['group'] in group_names) %}
+  {%-     set _ = pkg_list.extend(neutron_optional_nsx_pip_packages) %}
   {%- endif %}
   {{- pkg_list | unique }}
 
@@ -213,6 +221,10 @@ neutron_plugins:
     plugin_conf_ini_overrides: "{{ neutron_ml2_conf_genericswitch_ini_overrides }}"
     plugin_core: ml2
     plugin_ini: plugins/ml2/ml2_conf_genericswitch.ini
+  vmware.nsx:
+    plugin_core: vmware_nsx.plugin.NsxPolicyPlugin
+    plugin_ini: plugins/vmware/nsx.ini
+    plugin_conf_ini_overrides: "{{ neutron_nsx_conf_ini_overrides }}"
 
 ###
 ### ML2 Plugin Configuration
