@@ -85,9 +85,14 @@ rpc_workers = {{ neutron_rpc_workers }}
 
 {% set dhcp_agents_max = num_agent if num_agent > 2 else 2 %}
 # DHCP
+{% if neutron_plugin_type == 'vmware.nsx' %}
+dhcp_agent_notification = False
+{% else %}
 dhcp_agent_notification = True
 dhcp_agents_per_network = {{ dhcp_agents_max }}
 dhcp_lease_duration = 86400
+{% endif %}
+
 
 # Driver for external DNS integration. (string value)
 {% if neutron_designate_enabled %}
