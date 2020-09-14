@@ -34,8 +34,7 @@
 
 - import_tasks: db_setup.yml
   when:
-    - "neutron_services['neutron-server']['group'] in group_names"
-    - "inventory_hostname == ((groups[neutron_services['neutron-server']['group']] | intersect(ansible_play_hosts)) | list)[0]"
+    - "_neutron_is_first_play_host"
   vars:
     _oslodb_setup_host: "{{ neutron_db_setup_host }}"
     _oslodb_ansible_python_interpreter: "{{ neutron_db_setup_python_interpreter }}"
@@ -52,8 +51,7 @@
 
 - import_tasks: mq_setup.yml
   when:
-    - "neutron_services['neutron-server']['group'] in group_names"
-    - "inventory_hostname == ((groups[neutron_services['neutron-server']['group']]| intersect(ansible_play_hosts)) | list)[0]"
+    - "_neutron_is_first_play_host"
   vars:
     _oslomsg_rpc_setup_host: "{{ neutron_oslomsg_rpc_setup_host }}"
     _oslomsg_rpc_userid: "{{ neutron_oslomsg_rpc_userid }}"
@@ -208,8 +206,7 @@
         type: "{{ neutron_service_type }}"
         description: "{{ neutron_service_description }}"
   when:
-    - "neutron_services['neutron-server']['group'] in group_names"
-    - "inventory_hostname == ((groups[neutron_services['neutron-server']['group']] | intersect(ansible_play_hosts)) | list)[0]"
+    - "_neutron_is_first_play_host"
   tags:
     - neutron-config
 

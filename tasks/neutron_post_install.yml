@@ -100,7 +100,7 @@
     flat: yes
   changed_when: false
   with_items: "{{ neutron_core_files }}"
-  run_once: true
+  when: _neutron_is_first_play_host
 
 - name: Copy common neutron config
   config_template:

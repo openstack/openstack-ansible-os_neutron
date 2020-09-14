@@ -19,7 +19,7 @@
   become_user: "{{ neutron_system_user_name }}"
   when:
     - "ansible_local['openstack_ansible']['neutron']['need_db_expand'] | bool"
-    - "inventory_hostname == ((groups[neutron_services['neutron-server']['group']] | intersect(ansible_play_hosts)) | list)[0]"
+    - "_neutron_is_first_play_host"
 
 - name: Disable the db expand fact
   ini_file:
@@ -35,7 +35,7 @@
   become: yes
   become_user: "{{ neutron_system_user_name }}"
   when:
-    - "inventory_hostname == ((groups[neutron_services['neutron-server']['group']] | intersect(ansible_play_hosts)) | list)[0]"
+    - "_neutron_is_first_play_host"
   changed_when: false
   register: _offline_migrations_check
   failed_when:

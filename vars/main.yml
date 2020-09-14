@@ -13,6 +13,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+_neutron_is_first_play_host: "{{ (neutron_services['neutron-server']['group'] in group_names and inventory_hostname == (groups[neutron_services['neutron-server']['group']] | intersect(ansible_play_hosts)) | first) | bool }}"
+
 ###
 ### Open vSwitch
 ###

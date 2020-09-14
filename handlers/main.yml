@@ -56,8 +56,7 @@
   delegate_to: "{{ groups[neutron_services['neutron-server']['group']][0] }}"
   when:
     - "ansible_local['openstack_ansible']['neutron']['need_db_contract'] | bool"
-    - "neutron_services['neutron-server']['group'] in group_names"
-    - "inventory_hostname == ((groups[neutron_services['neutron-server']['group']] | intersect(ansible_play_hosts)) | list)[0]"
+    - "_neutron_is_first_play_host"
   listen:
     - "Restart neutron services"
     - "venv changed"
