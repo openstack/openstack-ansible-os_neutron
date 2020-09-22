@@ -21,6 +21,8 @@ ha_vrrp_auth_type = {{ neutron_ha_vrrp_auth_type }}
 # Metadata
 enable_metadata_proxy = True
 
+keepalived_use_no_track = {{ neutron_keepalived_no_track }}
+
 # L3 plugins
 {% set l3_agent_plugins = [] %}
 
