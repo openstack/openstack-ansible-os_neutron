@@ -28,7 +28,7 @@
     - common-mariadb
   block:
     - name: Create database for service
-      mysql_db:
+      community.mysql.mysql_db:
         name: "{{ item.name }}"
         login_host: "{{ _oslodb_setup_endpoint | default(omit) }}"
         login_port: "{{ _oslodb_setup_port | default(omit) }}"
@@ -36,7 +36,7 @@
       no_log: true
 
     - name: Grant access to the database for the service
-      mysql_user:
+      community.mysql.mysql_user:
         name: "{{ item.1.username }}"
         password: "{{ item.1.password }}"
         host: "{{ item.1.host | default('%') }}"
