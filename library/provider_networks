@@ -17,7 +17,7 @@
 
 
 # import module snippets
-from ansible.module_utils.basic import *
+from ansible.module_utils.basic import AnsibleModule
 
 
 DOCUMENTATION = """
@@ -216,8 +216,8 @@ class ProviderNetworksParsing(object):
                 if (
                     set(
                         net["network"]["group_binds"]
-                    ).intersection(group_names) or
-                    "neutron_server" in group_names
+                    ).intersection(group_names)
+                    or "neutron_server" in group_names    # noqa W503
                 ):
                     if "vlan" not in self.network_types:
                         self.network_types.append('vlan')
@@ -239,8 +239,8 @@ class ProviderNetworksParsing(object):
                 if (
                     set(
                         net["network"]["group_binds"]
-                    ).intersection(group_names) or
-                    "neutron_server" in group_names
+                    ).intersection(group_names)
+                    or "neutron_server" in group_names  # noqa W503
                 ):
                     if "flat" not in self.network_types:
                         self.network_types.append('flat')

@@ -23,11 +23,11 @@
 
 - name: Set ODL as OvS manager
   command: ovs-vsctl set-manager {{ ovs_manager_list }}
-  when: ovs_manager.stdout == ""
+  when: ovs_manager.stdout | length == 0
 
 - name: Configure hosts for networking-odl, force kernel datapath
   command: "{{ neutron_bin }}/neutron-odl-ovs-hostconfig --noovs_dpdk {% if neutron_provider_networks.network_mappings is defined and 'odl-router_v2' in neutron_plugin_base or 'odl-router' in neutron_plugin_base %}--datapath_type=system --bridge_mappings={{ neutron_provider_networks.network_mappings }} {% endif %}"
-  when: ovs_manager.stdout == ""
+  when: ovs_manager.stdout | length == 0
 
 - name: Retrieve current OvS local ip
   command: ovs-vsctl get Open_vSwitch . other_config:local_ip
