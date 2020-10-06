@@ -24,10 +24,5 @@ physical_host: localhost
 properties:
   service_name: "{{ inventory_hostname }}"
 
-lxc2_container_config_list:
-  - 'lxc.aa_profile=unconfined'
-
-lxc3_container_config_list:
+lxc_container_config_list:
   - 'lxc.apparmor.profile=unconfined'
-
-lxc_container_config_list: "{{ lookup('pipe', 'lxc-info --version || echo 2.0.0') is version_compare('3.0.0', 'lt') | ternary(lxc2_container_config_list, lxc3_container_config_list) }}"
