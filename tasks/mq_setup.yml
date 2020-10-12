@@ -29,12 +29,12 @@
     - common-rabbitmq
   block:
     - name: Add RPC RabbitMQ vhost
-      rabbitmq_vhost:
+      community.rabbitmq.rabbitmq_vhost:
         name: "{{ _oslomsg_rpc_vhost }}"
         state: "present"
 
     - name: Apply RPC RabbitMQ vhost policies
-      rabbitmq_policy:
+      community.rabbitmq.rabbitmq_policy:
         name: "{{ item.name }}"
         pattern: "{{ item.pattern }}"
         priority: "{{ item.priority | default(0) }}"
@@ -43,7 +43,7 @@
       loop: "{{ _oslomsg_rpc_policies | default([]) + oslomsg_rpc_policies }}"
 
     - name: Add RPC RabbitMQ user
-      rabbitmq_user:
+      community.rabbitmq.rabbitmq_user:
         user: "{{ _oslomsg_rpc_userid }}"
         password: "{{ _oslomsg_rpc_password }}"
         update_password: always
@@ -63,7 +63,7 @@
     - common-rabbitmq
   block:
     - name: Add Notify RabbitMQ vhost
-      rabbitmq_vhost:
+      community.rabbitmq.rabbitmq_vhost:
         name: "{{ _oslomsg_notify_vhost }}"
         state: "present"
       when:
@@ -71,7 +71,7 @@
           (_oslomsg_notify_vhost != _oslomsg_rpc_vhost)
 
     - name: Apply Notify RabbitMQ vhost policies
-      rabbitmq_policy:
+      community.rabbitmq.rabbitmq_policy:
         name: "{{ item.name }}"
         pattern: "{{ item.pattern }}"
         priority: "{{ item.priority | default(0) }}"
@@ -83,7 +83,7 @@
           (_oslomsg_notify_vhost != _oslomsg_rpc_vhost)
 
     - name: Add Notify RabbitMQ user
-      rabbitmq_user:
+      community.rabbitmq.rabbitmq_user:
         user: "{{ _oslomsg_notify_userid }}"
         password: "{{ _oslomsg_notify_password }}"
         update_password: always
