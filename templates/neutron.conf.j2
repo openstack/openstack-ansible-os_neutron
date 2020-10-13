@@ -270,12 +270,15 @@ rpc_conn_pool_size = {{ neutron_rpc_conn_pool_size }}
 
 # Notifications
 [oslo_messaging_notifications]
-{% set notification_topics = ['notifications'] %}
+{% set notification_topics = [] %}
+{% if neutron_ceilometer_enabled %}
+{%   set _ = notification_topics.append('notifications') %}
+{% endif %}
 {% if neutron_designate_enabled %}
 {%   set _ = notification_topics.append(neutron_notifications_designate) %}
 {% endif %}
 topics = {{ notification_topics | join(',') }}
-driver = {{ (neutron_ceilometer_enabled | bool) | ternary('messagingv2', 'noop') }}
+driver = {{ (notification_topics | length > 0) | ternary('messagingv2', 'noop') }}
 transport_url = {{ neutron_oslomsg_notify_transport }}://{% for host in neutron_oslomsg_notify_servers.split(',') %}{{ neutron_oslomsg_notify_userid }}:{{ neutron_oslomsg_notify_password }}@{{ host }}:{{ neutron_oslomsg_notify_port }}{% if not loop.last %},{% else %}/{{ neutron_oslomsg_notify_vhost }}{% if neutron_oslomsg_notify_use_ssl | bool %}?ssl=1{% else %}?ssl=0{% endif %}{% endif %}{% endfor %}
 
 # Concurrency (locking mechanisms)
