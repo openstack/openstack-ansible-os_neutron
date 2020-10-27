@@ -139,9 +139,8 @@ neutron_db_plugin: "{{ neutron_conf_dir }}/{{ neutron_plugins[neutron_plugin_typ
 ### Telemetry integration
 ###
 
-# Please add 'metering' to the neutron_plugin_base list
-#TODO(odyssey4me): Remove the class path from this conditional in the Newton cycle
-neutron_metering: "{% if 'metering' in neutron_plugin_base or 'neutron.services.metering.metering_plugin.MeteringPlugin' in neutron_plugin_base %}True{% else %}False{% endif %}"
+# Add 'metering' to the neutron_plugin_base list when enabled
+neutron_metering: "{% if 'metering' in neutron_plugin_base %}True{% else %}False{% endif %}"
 
 ###
 ### Neutron Plugins
@@ -401,14 +400,7 @@ neutron_services:
     config_overrides: "{{ neutron_metering_agent_ini_overrides }}"
     config_type: "ini"
     init_config_overrides: "{{ neutron_metering_agent_init_overrides }}"
-    # Other agents will use neutron_plugins[neutron_plugin_type].driver_interface
-    # for the interface_driver, but that uses a stevedore alias. Metering agent
-    # hasn't been updated to use stevedore alises so that fails. To work around
-    # the problem until metering agent is updated, we should use the full
-    # module.class path to the interface driver.
-    # TODO(hughsaunders): switch back to stevedore when
-    # https://review.openstack.org/#/c/419881/ merges and is backported.
-    interface_driver: neutron.agent.linux.interface.BridgeInterfaceDriver
+    interface_driver: "{{ (neutron_plugin_type == 'ml2.lxb') | ternary('linuxbridge', 'openvswitch') }}"
     start_order: 3
   neutron-l3-agent:
     group: neutron_l3_agent
