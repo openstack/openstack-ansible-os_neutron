@@ -32,3 +32,12 @@ neutron_provider_networks:
   network_mappings: "vlan:br-provider"
 
 repo_build_upper_constraints_overrides: [neutron-lib>=1.17.0]
+
+neutron_neutron_conf_overrides:
+  DEFAULT:
+    global_physnet_mtu: 1558
+
+neutron_ml2_conf_ini_overrides:
+  ml2:
+    physical_network_mtus: vlan:1500
+    path_mtu: 1558
