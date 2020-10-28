@@ -423,12 +423,15 @@ neutron_dnsmasq_force_metadata: False
 # neutron_metadata_workers: 16
 neutron_metadata_backlog: 4096
 
+# The port used by neutron to access the nova metadata service.
+neutron_nova_metadata_port: "{{ nova_metadata_port | default(8775) }}"
+
 # The protocol used by neutron to access the nova metadata service.
-nova_metadata_protocol: http
+neutron_nova_metadata_protocol: "{{ nova_metadata_protocol | default('http') }}"
 
 # If the nova_metadata_protocol is using a self-signed cert, then
 # this flag should be set to a boolean True.
-nova_metadata_insecure: False
+neutron_nova_metadata_insecure: "{{ nova_metadata_insecure | default(False) }}"
 
 ###
 ### VPNaaS Configuration
