@@ -70,3 +70,9 @@ neutron_server
 
 [utility_all]
 infra1
+
+[haproxy_all:children]
+haproxy
+
+[haproxy]
+localhost

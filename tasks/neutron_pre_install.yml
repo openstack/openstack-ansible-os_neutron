@@ -113,6 +113,16 @@
     - ansible_pkg_mgr == 'zypper'
     - ovs_nsh_support | bool
 
+- name: Add dependency repos for Neutron
+  package:
+    name: "{{ neutron_repos }}"
+    state: "{{ neutron_package_state }}"
+  retries: 5
+  delay: 2
+  when:
+    - ansible_pkg_mgr in ['yum', 'dnf']
+    - neutron_needs_openvswitch | bool
+
 - name: Create ovs tempfiles directory
   block:
     - name: Create ovs tmpfiles file

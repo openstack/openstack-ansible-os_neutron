@@ -41,3 +41,55 @@ neutron_ml2_conf_ini_overrides:
   ml2:
     physical_network_mtus: vlan:1500
     path_mtu: 1558
+
+haproxy_ssl: false
+external_lb_vip_address: 10.1.0.1
+internal_lb_vip_address: 10.1.0.1
+
+test_neutron_server_host: "{{ external_lb_vip_address }}"
+
+haproxy_default_services:
+  - service:
+      haproxy_service_name: neutron_server
+      haproxy_backend_nodes: "{{ groups['neutron_server'] | default([]) }}"
+      haproxy_port: 9696
+      haproxy_ssl: "{{ haproxy_ssl }}"
+      haproxy_balance_type: http
+      haproxy_backend_options:
+        - "httpchk GET /"
+  - service:
+      haproxy_service_name: neutron_ovn_northd_northbound
+      haproxy_backend_nodes: "{{ (groups['neutron_ovn_northd'] | default([]))[:1] }}" # list expected
+      haproxy_backup_nodes: "{{ (groups['neutron_ovn_northd'] | default([]))[1:] }}"
+      haproxy_port: 6641
+      haproxy_bind: "{{ [internal_lb_vip_address] }}"
+      haproxy_balance_type: tcp
+      haproxy_timeout_client: 90m
+      haproxy_timeout_server: 90m
+      haproxy_backend_options:
+        - tcpka
+      haproxy_service_enabled: "{{ (neutron_plugin_type == 'ml2.ovn') and (groups['neutron_ovn_northd'] is defined and groups['neutron_ovn_northd'] | length > 0) }}"
+  - service:
+      haproxy_service_name: neutron_ovn_northd_southbound
+      haproxy_backend_nodes: "{{ (groups['neutron_ovn_northd'] | default([]))[:1] }}"
+      haproxy_backup_nodes: "{{ (groups['neutron_ovn_northd'] | default([]))[1:] }}"
+      haproxy_port: 6642
+      haproxy_bind: "{{ [internal_lb_vip_address] }}"
+      haproxy_balance_type: tcp
+      haproxy_timeout_client: 90m
+      haproxy_timeout_server: 90m
+      haproxy_backend_options:
+        - tcpka
+      haproxy_service_enabled: "{{ (neutron_plugin_type == 'ml2.ovn') and (groups['neutron_ovn_northd'] is defined and groups['neutron_ovn_northd'] | length > 0) }}"
+  - service:
+      haproxy_service_name: neutron_ovn_ovsdb_server
+      haproxy_backend_nodes: "{{ (groups['neutron_ovn_northd'] | default([]))[:1] }}"
+      haproxy_backup_nodes: "{{ (groups['neutron_ovn_northd'] | default([]))[1:] }}"
+      haproxy_port: 6640
+      haproxy_bind: "{{ [internal_lb_vip_address] }}"
+      haproxy_balance_type: tcp
+      haproxy_timeout_client: 90m
+      haproxy_timeout_server: 90m
+      haproxy_backend_options:
+        - tcpka
+      haproxy_service_enabled: "{{ (neutron_plugin_type == 'ml2.ovn') and (groups['neutron_ovn_northd'] is defined and groups['neutron_ovn_northd'] | length > 0) }}"
