@@ -31,6 +31,9 @@ neutron_ovs_dpdk_required_packages:
 
 dpdk_service_name: dpdk
 
+vhost_socket_directory_group: "libvirt"
+vhost_socket_directory_owner: "libvirt-qemu"
+
 ## APT Cache options
 cache_timeout: 600
 

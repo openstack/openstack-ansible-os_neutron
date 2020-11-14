@@ -19,6 +19,11 @@ neutron_repos:
 neutron_ovs_distro_packages:
   - openvswitch
 
+dpdk_service_name: openvswitch
+
+vhost_socket_directory_group: hugetlbfs
+vhost_socket_directory_owner: qemu
+
 neutron_ovs_service_name: openvswitch
 
 neutron_ovn_northd_service_name: ovn-northd

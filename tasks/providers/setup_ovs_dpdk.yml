@@ -88,7 +88,7 @@
   file:
     path: /var/lib/vhost_socket
     state: directory
-    owner: libvirt-qemu
+    owner: "{{ vhost_socket_directory_owner }}"
     group: "{{ vhost_socket_directory_group }}"
     mode: "0755"
   when:
