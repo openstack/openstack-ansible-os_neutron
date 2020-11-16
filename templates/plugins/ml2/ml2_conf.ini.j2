@@ -57,8 +57,5 @@ ovn_metadata_enabled = True
 
 # Security groups
 [securitygroup]
-{% if neutron_plugin_type == 'ml2.ovs' %}
-firewall_driver = iptables_hybrid
-{% endif %}
 enable_security_group = True
 enable_ipset = True
