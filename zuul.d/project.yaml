@@ -24,9 +24,9 @@
     check:
       jobs:
         - openstack-ansible-ovs-ubuntu-bionic
+        - openstack-ansible-ovs-centos-8
         - openstack-ansible-ovn-ubuntu-bionic
-        - openstack-ansible-ovn-centos-7:
-            voting: false
+        - openstack-ansible-ovn-centos-8
         - openstack-ansible-deploy-aio_metal_calico-ubuntu-bionic:
             voting: false
         - openstack-ansible-opendaylight-ubuntu-bionic
@@ -39,6 +39,7 @@
     gate:
       jobs:
         - openstack-ansible-ovs-ubuntu-bionic
+        - openstack-ansible-ovs-centos-8
         - openstack-ansible-ovn-ubuntu-bionic
         - openstack-ansible-deploy-aio_metal_calico-ubuntu-bionic:
             voting: false

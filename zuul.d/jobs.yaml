@@ -20,14 +20,20 @@
       tox_env: ovs
 
 - job:
+    name: openstack-ansible-ovs-centos-8
+    parent: openstack-ansible-functional-centos-8
+    vars:
+      tox_env: ovs
+
+- job:
     name: openstack-ansible-ovn-ubuntu-bionic
     parent: openstack-ansible-functional-ubuntu-bionic
     vars:
       tox_env: ovn
 
 - job:
-    name: openstack-ansible-ovn-centos-7
-    parent: openstack-ansible-functional-centos-7
+    name: openstack-ansible-ovn-centos-8
+    parent: openstack-ansible-functional-centos-8
     vars:
       tox_env: ovn
 
