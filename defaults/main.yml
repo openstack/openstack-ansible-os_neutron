@@ -65,8 +65,8 @@ networking_sfc_git_repo: https://opendev.org/openstack/networking-sfc
 networking_sfc_git_install_branch: master
 networking_bgpvpn_git_repo: https://opendev.org/openstack/networking-bgpvpn
 networking_bgpvpn_git_install_branch: master
-openstack_ceilometer_git_repo: https://opendev.org/openstack/ceilometer
-openstack_ceilometer_git_install_branch: master
+ceilometer_git_repo: https://opendev.org/openstack/ceilometer
+ceilometer_git_install_branch: master
 networking_generic_switch_git_repo: https://opendev.org/openstack/networking-generic-switch
 networking_generic_switch_git_install_branch: master
 networking_nsx_git_repo: https://opendev.org/x/vmware-nsx
@@ -83,7 +83,7 @@ neutron_git_constraints:
   - "git+{{ networking_odl_git_repo }}@{{ networking_odl_git_install_branch }}#egg=networking-odl"
   - "git+{{ networking_sfc_git_repo }}@{{ networking_sfc_git_install_branch }}#egg=networking-sfc"
   - "git+{{ networking_bgpvpn_git_repo }}@{{ networking_bgpvpn_git_install_branch }}#egg=networking-bgpvpn"
-  - "git+{{ openstack_ceilometer_git_repo }}@{{ openstack_ceilometer_git_install_branch }}#egg=ceilometer"
+  - "git+{{ ceilometer_git_repo }}@{{ ceilometer_git_install_branch }}#egg=ceilometer"
   - "git+{{ networking_generic_switch_git_repo }}@{{ networking_generic_switch_git_install_branch }}#egg=networking-generic-switch"
   - "git+{{ networking_nsx_git_repo }}@{{ networking_nsx_git_install_branch }}#egg=vmware-nsx"
   - "git+{{ networking_nsxlib_git_repo }}@{{ networking_nsxlib_git_install_branch }}#egg=vmware-nsxlib"
