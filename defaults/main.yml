@@ -272,7 +272,7 @@ neutron_rpc_thread_pool_size: 64
 neutron_rpc_conn_pool_size: 30
 neutron_rpc_response_timeout: 60
 neutron_rpc_workers_max: 16
-neutron_rpc_workers: "{{ [[ansible_processor_vcpus|default(2) // 2, 1] | max, neutron_rpc_workers_max] | min }}"
+neutron_rpc_workers: "{{ [[(ansible_processor_vcpus//ansible_processor_threads_per_core)|default(1), 1] | max * 2, neutron_rpc_workers_max] | min }}"
 
 ###
 ### Identity (Keystone) integration
