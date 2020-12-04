@@ -100,6 +100,12 @@ EXAMPLES = """
 #     group_binds:
 #       - neutron_linuxbridge_agent
 # - network:
+#     host_bind_override: "bond1"
+#     type: "vlan"
+#     net_name: "physnet1"
+#     group_binds:
+#       - neutron_linuxbridge_agent
+# - network:
 #     container_bridge: "br-provider"
 #     container_type: "veth"
 #     container_interface: "eth11"
@@ -221,11 +227,17 @@ class ProviderNetworksParsing(object):
                 ):
                     if "vlan" not in self.network_types:
                         self.network_types.append('vlan')
-                    for vlan_range in net['network']['range'].split(','):
-                        self.network_vlan_ranges.append(
-                            '%s:%s' % (
-                                net['network']['net_name'], vlan_range.strip()
+                    if "range" in net['network']:
+                        for vlan_range in net['network']['range'].split(','):
+                            self.network_vlan_ranges.append(
+                                '%s:%s' % (
+                                    net['network']['net_name'],
+                                    vlan_range.strip()
+                                )
                             )
+                    else:
+                        self.network_vlan_ranges.append(
+                            net['network']['net_name']
                         )
             elif net['network']['type'] == "vxlan":
                 if "vxlan" not in self.network_types:
