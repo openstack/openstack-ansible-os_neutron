@@ -167,7 +167,7 @@ Configure Open vSwitch hardware offloading
 
 .. code-block:: console
 
-  # for vf in `ls -ld /sys/class/net/ens4f0/device/virt* | cut -f 11 -d ' ' | cut -b 4-`
+  # for vf in `grep PCI_SLOT_NAME /sys/class/net/ens4f0/device/virtfn*/uevent | cut -d'=' -f2`
     do
       echo $vf > /sys/bus/pci/drivers/mlx5_core/unbind
     done
@@ -189,7 +189,7 @@ Configure Open vSwitch hardware offloading
 
 .. code-block:: console
 
-  # for vf in `ls -ld /sys/class/net/ens4f0/device/virt* | cut -f 11 -d ' ' | cut -b 4-`
+  # for vf in `grep PCI_SLOT_NAME /sys/class/net/ens4f0/device/virtfn*/uevent | cut -d'=' -f2`
     do
       echo $vf > /sys/bus/pci/drivers/mlx5_core/bind
     done
