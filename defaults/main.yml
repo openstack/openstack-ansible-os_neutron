@@ -36,10 +36,10 @@ neutron_service_setup_host_python_interpreter: "{{ openstack_service_setup_host_
 
 # Set the package install state for distribution
 # Options are 'present' and 'latest'
-neutron_package_state: "latest"
+neutron_package_state: "{{ package_state | default('latest') }}"
 
 # Set installation method.
-neutron_install_method: "source"
+neutron_install_method: "{{ service_install_method | default('source') }}"
 neutron_venv_python_executable: "{{ openstack_venv_python_executable | default('python2') }}"
 
 ###
@@ -229,7 +229,7 @@ neutron_db_pool_size: 120
 neutron_db_pool_timeout: 30
 neutron_galera_use_ssl: "{{ galera_use_ssl | default(False) }}"
 neutron_galera_ssl_ca_cert: "{{ galera_ssl_ca_cert | default('/etc/ssl/certs/galera-ca.pem') }}"
-neutron_galera_port: 3306
+neutron_galera_port: "{{ galera_port | default('3306') }}"
 
 ###
 ### Oslo Messaging
@@ -298,22 +298,22 @@ neutron_service_adminuri: "{{ neutron_service_adminuri_proto }}://{{ internal_lb
 neutron_service_adminurl: "{{ neutron_service_adminuri }}"
 neutron_service_internaluri: "{{ neutron_service_internaluri_proto }}://{{ internal_lb_vip_address }}:{{ neutron_service_port }}"
 neutron_service_internalurl: "{{ neutron_service_internaluri }}"
-neutron_service_region: RegionOne
+neutron_service_region: "{{ service_region | default('RegionOne') }}"
 neutron_keystone_auth_plugin: "{{ neutron_keystone_auth_type }}"
 neutron_keystone_auth_type: password
-neutron_service_in_ldap: false
+neutron_service_in_ldap: "{{ service_ldap_backend_enabled | default(False) }}"
 
 ###
 ### Telemetry integration
 ###
 
-neutron_ceilometer_enabled: False
+neutron_ceilometer_enabled: "{{ (groups['ceilometer_all'] is defined) and (groups['ceilometer_all'] | length > 0) }}"
 
 ###
 ### Designate integration
 ###
 
-neutron_designate_enabled: False
+neutron_designate_enabled: "{{ (groups['designate_all'] is defined) and (groups['designate_all'] | length > 0) }}"
 neutron_allow_reverse_dns_lookup: True
 neutron_ipv4_ptr_zone_prefix_size: 24
 neutron_ipv6_ptr_zone_prefix_size: 116
