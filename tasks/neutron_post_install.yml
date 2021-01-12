@@ -67,8 +67,12 @@
   copy:
     content: "{{ neutron_policy_overrides | to_nice_json }}"
     dest: "{{ neutron_conf_dir }}/policy.json"
+  notify:
+    - Restart neutron services
   when:
     - neutron_policy_overrides != {}
+  tags:
+    - neutron-policy-overrides
 
 - name: Place api-paste.ini to the correct path in RedHat
   file:
