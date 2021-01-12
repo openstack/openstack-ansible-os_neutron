@@ -46,12 +46,23 @@
   delay: 2
   with_items: "{{ neutron_remove_distro_packages }}"
 
+# NOTE(jrosser)
+# ceilometer appears in u-c as is used by networking-odl stats plugin.
+# the new pip resolver will fail to install ceilometer if two contradictory
+# constraints are given which will always happen with a source install
+# and wheels built on the repo server. We must filter ceilometer out of u-c.
+- name: Retrieve the constraints URL
+  uri:
+    url: "{{ neutron_upper_constraints_url }}"
+    return_content: yes
+  register: _u_c_contents
+
 - name: Install the python venv
   import_role:
     name: "python_venv_build"
   vars:
     venv_python_executable: "{{ neutron_venv_python_executable }}"
-    venv_build_constraints: "{{ neutron_git_constraints }}"
+    venv_build_constraints: "{{ _u_c_contents.content.split('\n') | reject('match', '[ceilometer=*]') | list }}"
     venv_build_distro_package_list: "{{ neutron_devel_distro_packages }}"
     venv_install_destination_path: "{{ neutron_bin | dirname }}"
     venv_install_distro_package_list: "{{ neutron_package_list }}"
