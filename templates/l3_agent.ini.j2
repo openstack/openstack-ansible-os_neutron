@@ -23,8 +23,6 @@ cleanup_on_shutdown = {{ neutron_l3_cleanup_on_shutdown }}
 # Metadata
 enable_metadata_proxy = True
 
-keepalived_use_no_track = {{ neutron_keepalived_no_track }}
-
 # L3 plugins
 {% set l3_agent_plugins = [] %}
 
