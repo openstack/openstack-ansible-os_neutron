@@ -161,7 +161,7 @@ neutron_plugins:
     plugin_core: ml2
     plugin_ini: plugins/ml2/ml2_conf.ini
   ml2.ovs:
-    driver_firewall: iptables_hybrid
+    driver_firewall: "{{ neutron_firewall_driver | default('iptables_hybrid') }}"
     driver_interface: openvswitch
     drivers_type: "{{ neutron_ml2_drivers_type }}"
     l2_population: "{{ neutron_l2_population }}"
@@ -171,7 +171,7 @@ neutron_plugins:
     plugin_core: ml2
     plugin_ini: plugins/ml2/ml2_conf.ini
   ml2.ovs.dvr:
-    driver_firewall: iptables_hybrid
+    driver_firewall: "{{ neutron_firewall_driver | default('iptables_hybrid') }}"
     driver_interface: openvswitch
     drivers_type: "{{ neutron_ml2_drivers_type }}"
     l2_population: "{{ neutron_l2_population }}"
