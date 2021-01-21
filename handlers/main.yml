@@ -49,6 +49,27 @@
     - "Restart neutron services"
     - "venv changed"
 
+# NOTE
+# When restarting neutron-l3-agent, a non-default systemd KillMode of 'process' is used
+# to prevent Keepalived from exiting and causing a data-plane outage. As a result of this
+# some neutron processes remain running. In the case of an upgrade, these remaining
+# processes will be running code from the previous version. This step ensures these
+# orphaned processes are cleaned up correctly.
+- name: Run neutron-l3-agent process cleanup
+  shell: |
+    for ns_pid in $(cat /sys/fs/cgroup/pids/neutron.slice/neutron-l3-agent.service/cgroup.procs); do
+      echo $(readlink -f "/proc/$ns_pid/exe") | grep -qv "keepalived"
+      if [ $? -eq 0 ]; then
+        if kill -9 "$ns_pid"; then
+          logger -s "old neutron-l3-agent pid found and has been cleaned up on: \"$ns_pid\""
+        fi
+      fi
+    done
+  when: "'neutron-l3-agent' in (filtered_neutron_services | map(attribute='service_key') | list)"
+  listen:
+    - "Restart neutron services"
+    - "venv changed"
+
 - name: Perform a DB contract
   command: "{{ neutron_bin }}/neutron-db-manage upgrade --contract"
   become: yes
