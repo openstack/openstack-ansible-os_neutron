@@ -59,7 +59,7 @@
   shell: |
     for ns_pid in $(cat /sys/fs/cgroup/pids/neutron.slice/neutron-l3-agent.service/cgroup.procs); do
       echo $(readlink -f "/proc/$ns_pid/exe") | grep -qv "keepalived"
-      if [ $? -eq 0 ]; then
+      if [ $? -eq 0 ] || [ "{{ neutron_l3_cleanup_on_shutdown | bool }}" = "True" ]; then
         if kill -9 "$ns_pid"; then
           logger -s "old neutron-l3-agent pid found and has been cleaned up on: \"$ns_pid\""
         fi

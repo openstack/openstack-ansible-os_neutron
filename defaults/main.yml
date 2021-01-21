@@ -401,6 +401,8 @@ neutron_keepalived_no_track: "{{ _neutron_keepalived_no_track | default(True) }}
 neutron_ha_vrrp_auth_type: PASS
 neutron_l3_ha_net_cidr: 169.254.192.0/18
 
+neutron_l3_cleanup_on_shutdown: False
+
 ###
 ### DHCP Agent Plugin Configuration
 ###
