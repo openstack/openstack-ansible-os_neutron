@@ -415,7 +415,7 @@ neutron_services:
     execstarts: "{{ neutron_bin }}/neutron-l3-agent --config-file {{ neutron_conf_dir }}/neutron.conf --config-file {{ neutron_conf_dir }}/l3_agent.ini"
     config_overrides: "{{ neutron_l3_agent_ini_overrides }}"
     config_type: "ini"
-    init_config_overrides: "{{ neutron_l3_agent_init_overrides }}"
+    init_config_overrides: "{{ _neutron_l3_agent_init_defaults | combine(neutron_l3_agent_init_overrides) }}"
     start_order: 3
   neutron-bgp-dragent:
     group: neutron_bgp_dragent
@@ -507,6 +507,15 @@ neutron_services:
     config_type: "ini"
     init_config_overrides: "{{ neutron_ovn_metadata_agent_init_overrides }}"
     start_order: 3
+
+###
+### Overrides for services where required
+###
+
+# Ensure that keepalived processes are not stopped on exit
+_neutron_l3_agent_init_defaults:
+  Service:
+    KillMode: process
 
 ###
 ### Internals: Drivers mappings
