@@ -20,7 +20,7 @@
       - openstack-ansible-deploy-aio_metal-jobs
       - openstack-ansible-deploy-aio_distro_metal-jobs
       - publish-openstack-docs-pti
-      - release-notes-jobs-python3
+      - build-release-notes-jobs-python3
     check:
       jobs:
         - openstack-ansible-deploy-aio_metal_calico-ubuntu-bionic
