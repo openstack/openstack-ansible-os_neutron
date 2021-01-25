@@ -333,7 +333,7 @@ neutron_notifications_designate: notifications_designate
 #   - vpnaas
 #   - metering
 #   - qos
-#   - dns
+#   - dns/subnet_dns_publish_fixed_ip either one or the other, not both
 #   - port_forwarding
 neutron_plugin_base:
   - router
