@@ -188,12 +188,12 @@ password = {{ neutron_service_password }}
 region_name = {{ keystone_service_region }}
 
 memcached_servers = {{ neutron_memcached_servers }}
-
 token_cache_time = 300
-
 # Prevent cache poisoning if sharing a memcached server
 memcache_security_strategy = ENCRYPT
 memcache_secret_key = {{ memcached_encryption_key }}
+# Workaround for https://bugs.launchpad.net/keystonemiddleware/+bug/1883659
+memcache_use_advanced_pool = True
 
 # Database
 [database]
