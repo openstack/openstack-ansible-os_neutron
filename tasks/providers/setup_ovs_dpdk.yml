@@ -18,7 +18,7 @@
     name: ovs-vswitchd
     path: /usr/lib/openvswitch-switch-dpdk/ovs-vswitchd-dpdk
   when:
-    - ansible_pkg_mgr in ['apt']
+    - ansible_facts['pkg_mgr'] in ['apt']
     - neutron_services['neutron-openvswitch-agent']['group'] in group_names
     - '"nova_compute" in group_names'
 

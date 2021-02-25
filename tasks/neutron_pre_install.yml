@@ -102,7 +102,7 @@
   retries: 5
   delay: 2
   when:
-    - ansible_pkg_mgr == 'dnf'
+    - ansible_facts['pkg_mgr'] == 'dnf'
     - neutron_needs_openvswitch | bool
 
 - name: Create ovs tempfiles directory

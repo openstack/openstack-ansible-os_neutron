@@ -28,7 +28,7 @@ debug: False
 # for the service setup. The host must already have
 # clouds.yaml properly configured.
 neutron_service_setup_host: "{{ openstack_service_setup_host | default('localhost') }}"
-neutron_service_setup_host_python_interpreter: "{{ openstack_service_setup_host_python_interpreter | default((neutron_service_setup_host == 'localhost') | ternary(ansible_playbook_python, ansible_python['executable'])) }}"
+neutron_service_setup_host_python_interpreter: "{{ openstack_service_setup_host_python_interpreter | default((neutron_service_setup_host == 'localhost') | ternary(ansible_playbook_python, ansible_facts['python']['executable'])) }}"
 
 ###
 ### Packages Options
@@ -96,7 +96,7 @@ neutron_fatal_deprecations: False
 
 ## Cap the maximun number of threads / workers when a user value is unspecified.
 neutron_api_threads_max: 16
-neutron_api_threads: "{{ [[ansible_processor_vcpus|default(2) // 2, 1] | max, neutron_api_threads_max] | min }}"
+neutron_api_threads: "{{ [[ansible_facts['processor_vcpus']|default(2) // 2, 1] | max, neutron_api_threads_max] | min }}"
 
 neutron_agent_down_time: 120
 neutron_agent_polling_interval: 5
@@ -209,7 +209,7 @@ neutron_quota_firewall_rule: 100
 ###
 
 neutron_db_setup_host: "{{ openstack_db_setup_host | default('localhost') }}"
-neutron_db_setup_python_interpreter: "{{ openstack_db_setup_python_interpreter | default((neutron_db_setup_host == 'localhost') | ternary(ansible_playbook_python, ansible_python['executable'])) }}"
+neutron_db_setup_python_interpreter: "{{ openstack_db_setup_python_interpreter | default((neutron_db_setup_host == 'localhost') | ternary(ansible_playbook_python, ansible_facts['python']['executable'])) }}"
 neutron_galera_address: "{{ galera_address | default('127.0.0.1') }}"
 neutron_galera_user: neutron
 neutron_galera_database: neutron
@@ -261,7 +261,7 @@ neutron_rpc_thread_pool_size: 64
 neutron_rpc_conn_pool_size: 30
 neutron_rpc_response_timeout: 60
 neutron_rpc_workers_max: 16
-neutron_rpc_workers: "{{ [[(ansible_processor_vcpus//ansible_processor_threads_per_core)|default(1), 1] | max * 2, neutron_rpc_workers_max] | min }}"
+neutron_rpc_workers: "{{ [[(ansible_facts['processor_vcpus']//ansible_facts['processor_threads_per_core'])|default(1), 1] | max * 2, neutron_rpc_workers_max] | min }}"
 
 ###
 ### Identity (Keystone) integration

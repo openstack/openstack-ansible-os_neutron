@@ -253,7 +253,7 @@ opendaylight_extra_features: |-
   {%- endif -%}
   {{ features }}
 
-opendaylight_install_method: "{{ (ansible_os_family=='Debian') | ternary('deb_repo', 'rpm_repo') }}"
+opendaylight_install_method: "{{ (ansible_facts['os_family']=='Debian') | ternary('deb_repo', 'rpm_repo') }}"
 
 ovs_manager_list: |-
   {% set ovs_managers_odls = [] %}

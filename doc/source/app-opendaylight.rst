@@ -43,7 +43,7 @@ Set the following user variables in your
 
   ### Use OpenDaylight SDN Controller
   neutron_plugin_type: "ml2.opendaylight"
-  odl_ip: "{{ hostvars[groups['opendaylight'][0]]['ansible_default_ipv4']['address'] }}"
+  odl_ip: "{{ hostvars[groups['opendaylight'][0]]['ansible_facts']['default_ipv4']['address'] }}"
   neutron_opendaylight_conf_ini_overrides:
     ml2_odl:
       url: "http://{{ odl_ip }}:8180/controller/nb/v2/neutron"
