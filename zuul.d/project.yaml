@@ -23,24 +23,23 @@
       - release-notes-jobs-python3
     check:
       jobs:
-        - openstack-ansible-ovs-ubuntu-bionic
-        - openstack-ansible-ovs-centos-8
-        - openstack-ansible-ovn-ubuntu-bionic
-        - openstack-ansible-ovn-centos-8
         - openstack-ansible-deploy-aio_metal_calico-ubuntu-bionic
-        - openstack-ansible-opendaylight-ubuntu-bionic
-        - openstack-ansible-ovs-nsh-ubuntu-bionic
-        - openstack-ansible-odl-sfc-ubuntu-bionic
-        - openstack-ansible-ovs-sfc-ubuntu-bionic:
-            voting: false
-        - openstack-ansible-opendaylight-bgpvpn-ubuntu-bionic:
-            voting: false
+        - openstack-ansible-deploy-aio_metal_ovs-ubuntu-bionic
+        - openstack-ansible-deploy-aio_metal_ovn-ubuntu-bionic2
+        - openstack-ansible-deploy-aio_ovs_lxc-ubuntu-focal
+        - openstack-ansible-deploy-aio_metal_ovs-ubuntu-focal
+        - openstack-ansible-deploy-aio_ovs_lxc-centos-8
+        - openstack-ansible-deploy-aio_metal_ovs-centos-8
+        - openstack-ansible-deploy-aio_ovn_lxc-ubuntu-focal2
+        - openstack-ansible-deploy-aio_metal_ovn-ubuntu-focal2
     gate:
       jobs:
-        - openstack-ansible-ovs-ubuntu-bionic
-        - openstack-ansible-ovs-centos-8
-        - openstack-ansible-ovn-ubuntu-bionic
         - openstack-ansible-deploy-aio_metal_calico-ubuntu-bionic
-        - openstack-ansible-opendaylight-ubuntu-bionic
-        - openstack-ansible-ovs-nsh-ubuntu-bionic
-        - openstack-ansible-odl-sfc-ubuntu-bionic
+        - openstack-ansible-deploy-aio_metal_ovs-ubuntu-bionic
+        - openstack-ansible-deploy-aio_metal_ovn-ubuntu-bionic2
+        - openstack-ansible-deploy-aio_ovs_lxc-ubuntu-focal
+        - openstack-ansible-deploy-aio_metal_ovs-ubuntu-focal
+        - openstack-ansible-deploy-aio_ovs_lxc-centos-8
+        - openstack-ansible-deploy-aio_metal_ovs-centos-8
+        - openstack-ansible-deploy-aio_ovn_lxc-ubuntu-focal2
+        - openstack-ansible-deploy-aio_metal_ovn-ubuntu-focal2

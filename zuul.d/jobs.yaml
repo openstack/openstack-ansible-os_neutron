@@ -13,60 +13,49 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# Ubuntu Focal
 - job:
-    name: openstack-ansible-ovs-ubuntu-bionic
-    parent: openstack-ansible-functional-ubuntu-bionic
-    vars:
-      tox_env: ovs
+    name: openstack-ansible-deploy-aio_ovn_lxc-ubuntu-focal2
+    parent: openstack-ansible-deploy-aio
+    nodeset: ubuntu-focal
 
 - job:
-    name: openstack-ansible-ovs-centos-8
-    parent: openstack-ansible-functional-centos-8
-    vars:
-      tox_env: ovs
+    name: openstack-ansible-deploy-aio_metal_ovn-ubuntu-focal2
+    parent: openstack-ansible-deploy-aio
+    nodeset: ubuntu-focal
 
 - job:
-    name: openstack-ansible-ovn-ubuntu-bionic
-    parent: openstack-ansible-functional-ubuntu-bionic
-    vars:
-      tox_env: ovn
+    name: openstack-ansible-deploy-aio_ovs_lxc-ubuntu-focal
+    parent: openstack-ansible-deploy-aio
+    nodeset: ubuntu-focal
 
 - job:
-    name: openstack-ansible-ovn-centos-8
-    parent: openstack-ansible-functional-centos-8
-    vars:
-      tox_env: ovn
+    name: openstack-ansible-deploy-aio_metal_ovs-ubuntu-focal
+    parent: openstack-ansible-deploy-aio
+    nodeset: ubuntu-focal
 
+# Ubuntu Bionic
 - job:
     name: openstack-ansible-deploy-aio_metal_calico-ubuntu-bionic
     parent: openstack-ansible-deploy-aio_metal-ubuntu-bionic
 
 - job:
-    name: openstack-ansible-opendaylight-ubuntu-bionic
-    parent: openstack-ansible-functional-ubuntu-bionic
-    vars:
-      tox_env: opendaylight
+    name: openstack-ansible-deploy-aio_metal_ovs-ubuntu-bionic
+    parent: openstack-ansible-deploy-aio
+    nodeset: ubuntu-bionic
 
 - job:
-    name: openstack-ansible-ovs-nsh-ubuntu-bionic
-    parent: openstack-ansible-functional-ubuntu-bionic
-    vars:
-      tox_env: ovs-nsh
+    name: openstack-ansible-deploy-aio_metal_ovn-ubuntu-bionic2
+    parent: openstack-ansible-deploy-aio
+    nodeset: ubuntu-bionic
+
+# CentOS 8
+- job:
+    name: openstack-ansible-deploy-aio_ovs_lxc-centos-8
+    parent: openstack-ansible-deploy-aio
+    nodeset: centos-8
 
 - job:
-    name: openstack-ansible-odl-sfc-ubuntu-bionic
-    parent: openstack-ansible-functional-ubuntu-bionic
-    vars:
-      tox_env: odl-sfc
-
-- job:
-    name: openstack-ansible-ovs-sfc-ubuntu-bionic
-    parent: openstack-ansible-functional-ubuntu-bionic
-    vars:
-      tox_env: ovs-sfc
-
-- job:
-    name: openstack-ansible-opendaylight-bgpvpn-ubuntu-bionic
-    parent: openstack-ansible-functional-ubuntu-bionic
-    vars:
-      tox_env: opendaylight-bgpvpn
+    name: openstack-ansible-deploy-aio_metal_ovs-centos-8
+    parent: openstack-ansible-deploy-aio
+    nodeset: centos-8
