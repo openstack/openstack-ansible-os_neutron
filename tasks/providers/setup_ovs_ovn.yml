@@ -26,12 +26,12 @@
     - neutron_services['neutron-ovn-northd']['group'] in group_names
 
 - name: Configure OVN Northbound Listener
-  command: "ovn-nbctl set-connection ptcp:6641:0.0.0.0 -- set connection . inactivity_probe=60000"
+  command: "ovn-nbctl set-connection ptcp:6641:{{ openstack_service_bind_address }} -- set connection . inactivity_probe=60000"
   when:
     - neutron_services['neutron-ovn-northd']['group'] in group_names
 
 - name: Configure OVN Southbound Listener
-  command: "ovn-sbctl set-connection ptcp:6642:0.0.0.0 -- set connection . inactivity_probe=60000"
+  command: "ovn-sbctl set-connection ptcp:6642:{{ openstack_service_bind_address }} -- set connection . inactivity_probe=60000"
   when:
     - neutron_services['neutron-ovn-northd']['group'] in group_names
 
