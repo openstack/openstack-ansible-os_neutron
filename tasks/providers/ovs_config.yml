@@ -24,7 +24,7 @@
   when:
     - neutron_services['neutron-openvswitch-agent']['group'] in group_names
     - neutron_plugin_type in ['ml2.ovs', 'ml2.ovs.dvr']
-    - neutron_provider_networks.network_mappings is defined
+    - neutron_provider_networks.network_mappings is defined and (neutron_provider_networks.network_mappings|length > 0)
     - not ovs_dpdk_support
 
 - name: Add ports to Network Provider Bridges
