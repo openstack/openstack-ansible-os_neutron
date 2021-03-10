@@ -107,7 +107,6 @@
     - neutron_os_type is defined
     - neutron_os_type == 'powervm'
     - neutron_plugin_type == 'ml2.ovs'
-    - "{{ ansible_distribution_version is version('16.04','>') }}"
   tags:
     - neutron-config
 

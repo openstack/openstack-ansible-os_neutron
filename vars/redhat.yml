@@ -60,8 +60,8 @@ neutron_service_distro_packages:
   - openstack-neutron-macvtap-agent
   - openstack-neutron-metering-agent
   - openstack-neutron-l2gw-agent
-  - "{{ ansible_distribution_major_version is version('8', '<') | ternary('python-memcached', 'python3-memcached') }}"
-  - "{{ ansible_distribution_major_version is version('8', '<') | ternary('systemd-python', 'python3-systemd') }}"
+  - python3-memcached
+  - python3-systemd
 
 neutron_optional_ovs_distro_packages:
   - openstack-neutron-openvswitch
@@ -91,4 +91,4 @@ neutron_oslomsg_amqp1_distro_packages:
   - cyrus-sasl-plain
   - cyrus-sasl-md5
 
-_neutron_keepalived_no_track: "{{ (ansible_distribution_major_version is version('8', '>=')) }}"
+_neutron_keepalived_no_track: True

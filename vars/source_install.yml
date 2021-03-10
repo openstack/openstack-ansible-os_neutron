@@ -25,9 +25,9 @@
 neutron_package_list: |-
   {% set packages = neutron_distro_packages %}
   {% if neutron_needs_openvswitch | bool %}
-  {% if (ovs_nsh_support and ansible_pkg_mgr in ['apt', 'zypper']) %}
+  {% if (ovs_nsh_support and ansible_pkg_mgr == 'apt') %}
   {% set _ = packages.extend(neutron_ovs_nsh_required_packages) %}
-  {% elif (ovs_dpdk_support and ansible_pkg_mgr in ['apt', 'zypper']) %}
+  {% elif (ovs_dpdk_support and ansible_pkg_mgr == 'apt') %}
   {% set _ = packages.extend(neutron_ovs_dpdk_required_packages) %}
   {% else %}
   {% set _ = packages.extend(neutron_ovs_distro_packages) %}

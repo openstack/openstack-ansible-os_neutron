@@ -29,7 +29,7 @@
   package:
     name: "{{ neutron_package_list }}"
     state: "{{ neutron_package_state }}"
-    update_cache: "{{ (ansible_pkg_mgr in ['apt', 'zypper']) | ternary('yes', omit) }}"
+    update_cache: "{{ (ansible_pkg_mgr == 'apt') | ternary('yes', omit) }}"
     cache_valid_time: "{{ (ansible_pkg_mgr == 'apt') | ternary(cache_timeout, omit) }}"
   register: install_packages
   until: install_packages is success
@@ -115,9 +115,9 @@
       {%-   endif -%}
       {%- endfor -%}
       {{ apparmor_hosts | unique }}
-  when: ansible_pkg_mgr in ['apt', 'zypper']
+  when: ansible_pkg_mgr == 'apt'
 
 - import_tasks: neutron_apparmor.yml
   when:
-    - ansible_pkg_mgr in ['apt', 'zypper']
+    - ansible_pkg_mgr == 'apt'
     - inventory_hostname in neutron_apparmor_hosts
