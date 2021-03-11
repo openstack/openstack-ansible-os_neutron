@@ -13,14 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-- name: Include apt_package_pinning role
-  include_role:
-    name: apt_package_pinning
-  vars:
-    apt_pinned_packages: "{{ ovs_nsh_support | ternary(ovs_nsh_apt_pinned_packages, omit) }}"
-  when:
-    - ansible_pkg_mgr == 'apt'
-
 - name: Include etcd role
   include_role:
     name: etcd
