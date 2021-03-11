@@ -92,23 +92,7 @@
   tags:
     - always
 
-- name: Set neutron target platform type
-  set_fact:
-    neutron_os_type: "powervm"
-  when:
-    - cpuinfo_contents.stdout.find('pSeries') != -1
-    - ansible_architecture == 'ppc64le'
-  tags:
-    - always
-
 - import_tasks: dependent_neutron_roles.yml
-- import_tasks: neutron_ml2_ovs_powervm.yml
-  when:
-    - neutron_os_type is defined
-    - neutron_os_type == 'powervm'
-    - neutron_plugin_type == 'ml2.ovs'
-  tags:
-    - neutron-config
 
 - import_tasks: neutron_pre_install.yml
   tags:
