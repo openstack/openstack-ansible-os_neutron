@@ -32,7 +32,7 @@ calico_felix_bin: /usr/local/bin/calico-felix
 ###
 
 neutron_pip_packages:
-  - neutron
+  - "git+{{ neutron_git_repo }}@{{ neutron_git_install_branch }}#egg=neutron"
   - osprofiler
   - PyMySQL
   - pymemcache
@@ -46,23 +46,23 @@ neutron_optional_oslomsg_amqp1_pip_packages:
   - oslo.messaging[amqp1]
 
 neutron_optional_bgp_pip_packages:
-  - neutron_dynamic_routing
+  - "git+{{ neutron_dynamic_routing_git_repo }}@{{ neutron_dynamic_routing_git_install_branch }}#egg=neutron-dynamic-routing"
 
 neutron_optional_calico_pip_packages:
-  - networking-calico
+  - "git+{{ networking_calico_git_repo }}@{{ networking_calico_git_install_branch }}#egg=networking-calico"
   - python-etcd
   - etcd3gw
 
 neutron_optional_vpnaas_pip_packages:
-  - neutron_vpnaas
+  - "git+{{ neutron_vpnaas_git_repo }}@{{ neutron_vpnaas_git_install_branch }}#egg=neutron-vpnaas"
 
 neutron_optional_opendaylight_pip_packages:
-  - networking-odl
-  - ceilometer
-  - networking-bgpvpn
+  - "git+{{ networking_odl_git_repo }}@{{ networking_odl_git_install_branch }}#egg=networking-odl"
+  - "git+{{ ceilometer_git_repo }}@{{ ceilometer_git_install_branch }}#egg=ceilometer"
+  - "git+{{ networking_bgpvpn_git_repo }}@{{ networking_bgpvpn_git_install_branch }}#egg=networking-bgpvpn"
 
 neutron_optional_sfc_pip_packages:
-  - networking-sfc
+  - "git+{{ networking_sfc_git_repo }}@{{ networking_sfc_git_install_branch }}#egg=networking-sfc"
 
 neutron_proprietary_nuage_pip_packages:
   - nuage-openstack-neutron
@@ -70,11 +70,11 @@ neutron_proprietary_nuage_pip_packages:
   - nuagenetlib
 
 neutron_optional_ngs_pip_packages:
-  - networking-generic-switch
+  - "git+{{ networking_generic_switch_git_repo }}@{{ networking_generic_switch_git_install_branch }}#egg=networking-generic-switch"
 
 neutron_optional_nsx_pip_packages:
-  - vmware-nsx
-  - vmware-nsxlib
+  - "git+{{ networking_nsx_git_repo }}@{{ networking_nsx_git_install_branch }}#egg=vmware-nsx"
+  - "git+{{ networking_nsxlib_git_repo }}@{{ networking_nsxlib_git_install_branch }}#egg=vmware-nsxlib"
 
 neutron_venv_packages: >-
   {%- set pkg_list = neutron_pip_packages | union(neutron_user_pip_packages) %}
