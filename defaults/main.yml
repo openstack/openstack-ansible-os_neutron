@@ -40,7 +40,7 @@ neutron_package_state: "{{ package_state | default('latest') }}"
 
 # Set installation method.
 neutron_install_method: "{{ service_install_method | default('source') }}"
-neutron_venv_python_executable: "{{ openstack_venv_python_executable | default('python2') }}"
+neutron_venv_python_executable: "{{ openstack_venv_python_executable | default('python3') }}"
 
 ###
 ### Python code details
