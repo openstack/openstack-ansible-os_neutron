@@ -97,7 +97,6 @@ Copy the nova environment overrides to
         - kvm-compute_containers
         - lxd-compute_containers
         - qemu-compute_containers
-        - powervm-compute_containers
       contains:
         - neutron_ovn_controller
         - nova_compute
