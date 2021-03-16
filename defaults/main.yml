@@ -446,12 +446,6 @@ neutron_ovn_l3_scheduler: leastloaded
 neutron_ovn_ip: "{{ internal_lb_vip_address }}"
 neutron_ovsdb_manager: ptcp:6640:127.0.0.1
 
-# Install Openvswitch without NSH support
-ovs_nsh_support: False
-
-# Set higher priority to mardim PPA when ovs_nsh_support is True
-ovs_nsh_apt_pinned_packages: [{ package: "*", release: "LP-PPA-mardim-mardim-ppa"}]
-
 ###
 ### DPDK Configuration
 ###

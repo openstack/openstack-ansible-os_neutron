@@ -25,11 +25,6 @@ neutron_ovn_controller_service_name: ovn-host
 
 neutron_ovs_socket_path: "/var/run/openvswitch"
 
-neutron_ovs_nsh_required_packages:
-  - openvswitch-common
-  - openvswitch-switch
-  - python-openvswitch
-
 neutron_ovs_dpdk_required_packages:
   - openvswitch-common
   - openvswitch-switch-dpdk
