@@ -63,16 +63,27 @@
   notify:
     - Restart neutron services
 
-- name: Implement policy.json if there are overrides configured
-  copy:
-    content: "{{ neutron_policy_overrides | to_nice_json }}"
-    dest: "{{ neutron_conf_dir }}/policy.json"
-  notify:
-    - Restart neutron services
+- name: Implement policy.yaml if there are overrides configured
+  config_template:
+    content: "{{ neutron_policy_overrides }}"
+    dest: "{{ neutron_conf_dir }}/policy.yaml"
+    owner: "root"
+    group: "{{ neutron_system_group_name }}"
+    mode: "0640"
+    config_type: yaml
   when:
-    - neutron_policy_overrides != {}
+    - neutron_policy_overrides | length > 0
   tags:
     - neutron-policy-overrides
+
+- name: Remove legacy policy.yaml file
+  file:
+    path: "/etc/neutron/policy.yaml"
+    state: absent
+  when:
+    - neutron_policy_overrides | length == 0
+  tags:
+    - neutron-policy-override
 
 - name: Place api-paste.ini to the correct path in RedHat
   file:
