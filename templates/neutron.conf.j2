@@ -2,7 +2,7 @@
 {% set neutron_plugin_loaded_base = [] %}
 
 {% for plugin in neutron_plugin_base %}
-  {% if plugin not in ['dns', 'dns_domain_ports'] %}
+  {% if plugin not in ['dns', 'dns_domain_ports', 'subnet_dns_publish_fixed_ip'] %}
       {% set _ = neutron_plugin_loaded_base.append(plugin) %}
   {% endif %}
 {% endfor %}
