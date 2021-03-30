@@ -62,7 +62,7 @@
     name: "python_venv_build"
   vars:
     venv_python_executable: "{{ neutron_venv_python_executable }}"
-    venv_build_constraints: "{{ _u_c_contents.content.split('\n') | reject('match', '[ceilometer=*]') | list }}"
+    venv_build_constraints: "{{ _u_c_contents.content.split('\n') | reject('match', '^ceilometer=') | list }}"
     venv_build_distro_package_list: "{{ neutron_devel_distro_packages }}"
     venv_install_destination_path: "{{ neutron_bin | dirname }}"
     venv_install_distro_package_list: "{{ neutron_package_list }}"
