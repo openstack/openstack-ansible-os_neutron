@@ -90,5 +90,3 @@ neutron_oslomsg_amqp1_distro_packages:
   - cyrus-sasl-lib
   - cyrus-sasl-plain
   - cyrus-sasl-md5
-
-_neutron_keepalived_no_track: True
