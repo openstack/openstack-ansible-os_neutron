@@ -222,7 +222,7 @@ flag is configured to True in the neutron server configuration.
 Create a group var file for neutron server
 ``/etc/openstack_deploy/group_vars/neutron_server.yml``. It has to include:
 
-.. code-block:: console
+.. code-block:: yaml
 
   # DVR/Distributed L3 routing support
   neutron_neutron_conf_overrides:
