@@ -214,6 +214,21 @@ in ``openstack_user_config.yml``.
     network_mappings: "public:br-publicnet,private:br-privatenet"
     network_interface_mappings: "br-publicnet:bond1,br-privatenet:bond2"
 
+(Optional) DVR or Distributed L3 routing
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+DVR will be used for floating IPs if the ovn / enable_distributed_floating_ip
+flag is configured to True in the neutron server configuration.
+
+Create a group var file for neutron server
+``/etc/openstack_deploy/group_vars/neutron_server.yml``. It has to include:
+
+.. code-block:: console
+
+  # DVR/Distributed L3 routing support
+  neutron_neutron_conf_overrides:
+    ovn:
+      enable_distributed_floating_ip: True
+
 Open Virtual Network (OVN) commands
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
