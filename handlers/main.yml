@@ -82,6 +82,14 @@
     - "Restart neutron services"
     - "venv changed"
 
+# NOTE (noonedeadpunk): Remove this task after Xena release
+- name: Remove obsoleted policy.json
+  file:
+    path: "/etc/neutron/policy.json"
+    state: absent
+  listen:
+    - "Restart neutron services"
+
 - name: Start services
   service:
     name: "{{ item.service_name }}"
