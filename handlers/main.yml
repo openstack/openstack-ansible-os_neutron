@@ -104,3 +104,14 @@
   listen:
     - "Restart neutron services"
     - "venv changed"
+
+- name: start ovn-central service
+  service:
+    name: ovn-central
+    state: started
+
+# (NOTE) Restarting twice to cleanup some pid.
+- name: restart ovn-central service
+  service:
+    name: ovn-central
+    state: restarted
