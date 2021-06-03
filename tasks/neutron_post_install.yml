@@ -78,7 +78,7 @@
 
 - name: Remove legacy policy.yaml file
   file:
-    path: "/etc/neutron/policy.yaml"
+    path: "{{ neutron_conf_dir }}/policy.yaml"
     state: absent
   when:
     - neutron_policy_overrides | length == 0
