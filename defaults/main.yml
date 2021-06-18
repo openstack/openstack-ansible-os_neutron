@@ -439,6 +439,7 @@ calico_felix_sha256: ae0bed304702097cee0ad5d9b4abb07b263deeb46ac21f2bcb0118d5bf4
 calico_felix_validate_certs: yes
 
 # OVN Defaults
+neutron_ovn_primary_cluster_node: "{{ groups[neutron_services['neutron-ovn-northd']['group']] | first }}"
 neutron_ovn_northd_service_name: ovn-northd
 neutron_ovn_controller_service_name: ovn-controller
 neutron_ovn_l3_scheduler: leastloaded

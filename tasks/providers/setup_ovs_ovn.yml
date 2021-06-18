@@ -20,21 +20,6 @@
     - (neutron_services['neutron-ovn-northd']['group'] in group_names) or
       (neutron_services['neutron-ovn-controller']['group'] in group_names)
 
-- name: Create ovsdb-server Listener
-  command: "ovs-vsctl set-manager ptcp:6640"
-  when:
-    - neutron_services['neutron-ovn-northd']['group'] in group_names
-
-- name: Configure OVN Northbound Listener
-  command: "ovn-nbctl set-connection ptcp:6641:{{ openstack_service_bind_address }} -- set connection . inactivity_probe=60000"
-  when:
-    - neutron_services['neutron-ovn-northd']['group'] in group_names
-
-- name: Configure OVN Southbound Listener
-  command: "ovn-sbctl set-connection ptcp:6642:{{ openstack_service_bind_address }} -- set connection . inactivity_probe=60000"
-  when:
-    - neutron_services['neutron-ovn-northd']['group'] in group_names
-
 # (NOTE) This makes all computes eligible to be gateway nodes
 - name: Set CMS Options for Gateway Scheduling
   command: "ovs-vsctl set open . external-ids:ovn-cms-options=enable-chassis-as-gw"
@@ -99,3 +84,6 @@
     - neutron_provider_networks.network_mappings is defined
     - neutron_services['neutron-ovn-controller']['group'] in group_names
 
+- include_tasks: ovn_cluster_setup.yml
+  when:
+    - neutron_services['neutron-ovn-northd']['group'] in group_names
