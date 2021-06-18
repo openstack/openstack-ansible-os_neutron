@@ -70,6 +70,30 @@
     - "Restart neutron services"
     - "venv changed"
 
+- name: Symlink neutron config directory
+  file:
+    # NOTE(cloudnull): The "src" path is relative. This ensures all files remain
+    #                  within the host/container confines when connecting to
+    #                  them using the connection plugin or the root filesystem.
+    src: "{{ neutron_conf_version_dir | regex_replace('^/', '../') }}"
+    dest: "{{ neutron_conf_dir }}"
+    state: link
+    force: true
+  when: neutron_install_method == 'source'
+  listen:
+    - "venv changed"
+
+- name: Drop sudoers file
+  template:
+    src: "sudoers.j2"
+    dest: "/etc/sudoers.d/{{ neutron_system_user_name }}_sudoers"
+    mode: "0440"
+    owner: "root"
+    group: "root"
+  listen:
+    - "Restart neutron services"
+    - "venv changed"
+
 - name: Perform a DB contract
   command: "{{ neutron_bin }}/neutron-db-manage upgrade --contract"
   become: yes

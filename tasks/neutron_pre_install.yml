@@ -53,29 +53,18 @@
 - name: Create neutron dir
   file:
     path: "{{ item.path | default(omit) }}"
-    src: "{{ item.src | default(omit) }}"
-    dest: "{{ item.dest | default(omit) }}"
     state: "{{ item.state | default('directory') }}"
     owner: "{{ item.owner | default(neutron_system_user_name) }}"
     group: "{{ item.group | default(neutron_system_group_name) }}"
     mode: "{{ item.mode | default(omit) }}"
-    force: "{{ item.force | default(omit) }}"
   when:
     - (item.condition | default(true)) | bool
   with_items:
     - path: "/openstack"
       owner: "root"
       group: "root"
-    - path: "{{ (neutron_install_method == 'distro') | ternary(neutron_conf_dir, (neutron_bin | dirname) + '/etc/neutron') }}"
+    - path: "{{ neutron_conf_version_dir }}"
       mode: "0755"
-    # NOTE(cloudnull): The "src" path is relative. This ensures all files remain
-    #                  within the host/container confines when connecting to
-    #                  them using the connection plugin or the root filesystem.
-    - dest: "{{ neutron_conf_dir }}"
-      src: "{{ neutron_bin | dirname | regex_replace('^/', '../') }}/etc/neutron"
-      state: link
-      force: true
-      condition: "{{ neutron_install_method == 'source' }}"
     - path: "/etc/sudoers.d"
       mode: "0750"
       owner: "root"
@@ -86,14 +75,6 @@
     - path: "{{ neutron_system_home_folder }}"
       mode: "0755"
     - path: "{{ neutron_system_home_folder }}/ha_confs"
-
-- name: Drop sudoers file
-  template:
-    src: "sudoers.j2"
-    dest: "/etc/sudoers.d/{{ neutron_system_user_name }}_sudoers"
-    mode: "0440"
-    owner: "root"
-    group: "root"
 
 - name: Add dependency repos for Neutron
   package:

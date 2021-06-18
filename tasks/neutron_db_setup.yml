@@ -14,7 +14,7 @@
 # limitations under the License.
 
 - name: Perform a DB expand
-  command: "{{ neutron_bin }}/neutron-db-manage upgrade --expand"
+  command: "{{ neutron_bin }}/neutron-db-manage --config-file {{ neutron_conf_version_dir }}/neutron.conf upgrade --expand"
   become: yes
   become_user: "{{ neutron_system_user_name }}"
   when:
@@ -29,7 +29,7 @@
     value: "False"
 
 - name: Check for available offline migrations
-  command: "{{ neutron_bin }}/neutron-db-manage has_offline_migrations"
+  command: "{{ neutron_bin }}/neutron-db-manage --config-file {{ neutron_conf_version_dir }}/neutron.conf has_offline_migrations"
   environment:
     LANGUAGE: en_US.UTF-8
   become: yes

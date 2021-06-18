@@ -122,6 +122,7 @@ neutron_venv_packages: >-
 ###
 
 neutron_conf_dir: /etc/neutron
+neutron_conf_version_dir: "{{ (neutron_install_method == 'distro') | ternary(neutron_conf_dir, (neutron_bin | dirname) + '/etc/neutron') }}"
 neutron_lock_path: "/var/lock/neutron"
 neutron_system_user_name: neutron
 neutron_system_group_name: neutron
@@ -348,7 +349,7 @@ neutron_services:
     group: neutron_dhcp_agent
     service_name: neutron-dhcp-agent
     service_en: "{{ neutron_dhcp | bool }}"
-    service_conf_path: "{{ neutron_conf_dir }}"
+    service_conf_path: "{{ neutron_conf_version_dir }}"
     service_conf: dhcp_agent.ini
     service_rootwrap: rootwrap.d/dhcp.filters
     execstarts: "{{ neutron_bin }}/neutron-dhcp-agent --config-file {{ neutron_conf_dir }}/neutron.conf --config-file {{ neutron_conf_dir }}/dhcp_agent.ini"
@@ -360,7 +361,7 @@ neutron_services:
     group: neutron_openvswitch_agent
     service_name: neutron-openvswitch-agent
     service_en: "{{ neutron_plugin_type in ['ml2.ovs', 'ml2.ovs.dvr'] }}"
-    service_conf_path: "{{ neutron_conf_dir }}"
+    service_conf_path: "{{ neutron_conf_version_dir }}"
     service_conf: plugins/ml2/openvswitch_agent.ini
     service_rootwrap: rootwrap.d/openvswitch-plugin.filters
     execstarts: "{{ neutron_bin }}/neutron-openvswitch-agent --config-file {{ neutron_conf_dir }}/neutron.conf --config-file {{ neutron_conf_dir }}/plugins/ml2/ml2_conf.ini --config-file {{ neutron_conf_dir }}/plugins/ml2/openvswitch_agent.ini"
@@ -372,7 +373,7 @@ neutron_services:
     group: neutron_linuxbridge_agent
     service_name: neutron-linuxbridge-agent
     service_en: "{{ neutron_plugin_type == 'ml2.lxb' }}"
-    service_conf_path: "{{ neutron_conf_dir }}"
+    service_conf_path: "{{ neutron_conf_version_dir }}"
     service_conf: plugins/ml2/linuxbridge_agent.ini
     service_rootwrap: rootwrap.d/linuxbridge-plugin.filters
     execstarts: "{{ neutron_bin }}/neutron-linuxbridge-agent --config-file {{ neutron_conf_dir }}/neutron.conf --config-file {{ neutron_conf_dir }}/plugins/ml2/ml2_conf.ini --config-file {{ neutron_conf_dir }}/plugins/ml2/linuxbridge_agent.ini"
@@ -384,7 +385,7 @@ neutron_services:
     group: neutron_metadata_agent
     service_name: neutron-metadata-agent
     service_en: "{{ neutron_metadata | bool }}"
-    service_conf_path: "{{ neutron_conf_dir }}"
+    service_conf_path: "{{ neutron_conf_version_dir }}"
     service_conf: metadata_agent.ini
     execstarts: "{{ neutron_bin }}/neutron-metadata-agent --config-file {{ neutron_conf_dir }}/neutron.conf --config-file {{ neutron_conf_dir }}/metadata_agent.ini"
     config_overrides: "{{ neutron_metadata_agent_ini_overrides }}"
@@ -395,7 +396,7 @@ neutron_services:
     group: neutron_metering_agent
     service_name: neutron-metering-agent
     service_en: "{{ neutron_metering | bool }}"
-    service_conf_path: "{{ neutron_conf_dir }}"
+    service_conf_path: "{{ neutron_conf_version_dir }}"
     service_conf: metering_agent.ini
     execstarts: "{{ neutron_bin }}/neutron-metering-agent --config-file {{ neutron_conf_dir }}/neutron.conf --config-file {{ neutron_conf_dir }}/metering_agent.ini"
     config_overrides: "{{ neutron_metering_agent_ini_overrides }}"
@@ -407,7 +408,7 @@ neutron_services:
     group: neutron_l3_agent
     service_name: neutron-l3-agent
     service_en: "{{ neutron_l3 | bool }}"
-    service_conf_path: "{{ neutron_conf_dir }}"
+    service_conf_path: "{{ neutron_conf_version_dir }}"
     service_conf: l3_agent.ini
     service_rootwrap: rootwrap.d/l3.filters
     environment:
@@ -421,7 +422,7 @@ neutron_services:
     group: neutron_bgp_dragent
     service_name: neutron-bgp-dragent
     service_en: "{{ neutron_bgp | bool }}"
-    service_conf_path: "{{ neutron_conf_dir }}"
+    service_conf_path: "{{ neutron_conf_version_dir }}"
     service_conf: bgp_dragent.ini
     execstarts: "{{ neutron_bin }}/neutron-bgp-dragent --config-file {{ neutron_conf_dir }}/neutron.conf --config-file {{ neutron_conf_dir }}/bgp_dragent.ini"
     config_overrides: "{{ neutron_bgp_dragent_ini_overrides }}"
@@ -436,7 +437,7 @@ neutron_services:
     group: neutron_l3_agent
     service_name: neutron-vpn-agent
     service_en: false
-    service_conf_path: "{{ neutron_conf_dir }}"
+    service_conf_path: "{{ neutron_conf_version_dir }}"
     service_conf: vpnaas_agent.ini
     service_rootwrap: rootwrap.d/vpnaas.filters
     execstarts: "{{ neutron_bin }}/neutron-vpn-agent --config-file {{ neutron_conf_dir }}/neutron.conf --config-file {{ neutron_conf_dir }}/vpnaas_agent.ini"
@@ -480,7 +481,7 @@ neutron_services:
     group: neutron_sriov_nic_agent
     service_name: neutron-sriov-nic-agent
     service_en: "{{ 'ml2.sriov' in neutron_plugin_types }}"
-    service_conf_path: "{{ neutron_conf_dir }}"
+    service_conf_path: "{{ neutron_conf_version_dir }}"
     service_conf: plugins/ml2/sriov_nic_agent.ini
     execstarts: "{{ neutron_bin }}/neutron-sriov-nic-agent --config-file {{ neutron_conf_dir }}/neutron.conf --config-file {{ neutron_conf_dir }}/plugins/ml2/ml2_conf.ini --config-file {{ neutron_conf_dir }}/plugins/ml2/sriov_nic_agent.ini"
     config_overrides: "{{ neutron_sriov_nic_agent_ini_overrides }}"
@@ -499,7 +500,7 @@ neutron_services:
     systemd_group_name: root
     service_name: neutron-ovn-metadata-agent
     service_en: "{{ neutron_plugin_type == 'ml2.ovn' }}"
-    service_conf_path: "{{ neutron_conf_dir }}"
+    service_conf_path: "{{ neutron_conf_version_dir }}"
     service_conf: neutron_ovn_metadata_agent.ini
     service_rootwrap: rootwrap.d/ovn-plugin.filters
     execstarts: "{{ neutron_bin }}/neutron-ovn-metadata-agent --config-file {{ neutron_conf_dir }}/neutron.conf --config-file {{ neutron_conf_dir }}/plugins/ml2/ml2_conf.ini --config-file {{ neutron_conf_dir }}/neutron_ovn_metadata_agent.ini"
@@ -543,11 +544,11 @@ neutron_role_project_group: neutron_all
 
 neutron_core_files:
   - tmp_f: "/tmp/api-paste.ini.original"
-    target_f: "{{ neutron_conf_dir }}/api-paste.ini"
+    target_f: "{{ neutron_conf_version_dir }}/api-paste.ini"
     config_overrides: "{{ _neutron_api_paste_ini_overrides | combine(neutron_api_paste_ini_overrides, recursive=True) }}"
     config_type: "ini"
   - tmp_f: "/tmp/rootwrap.conf.original"
-    target_f: "{{ neutron_conf_dir }}/rootwrap.conf"
+    target_f: "{{ neutron_conf_version_dir }}/rootwrap.conf"
     config_overrides: "{{ _neutron_rootwrap_conf_overrides | combine(neutron_rootwrap_conf_overrides, recursive=True) }}"
     config_type: "ini"
     owner: "root"
