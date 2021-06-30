@@ -51,6 +51,10 @@
 # the new pip resolver will fail to install ceilometer if two contradictory
 # constraints are given which will always happen with a source install
 # and wheels built on the repo server. We must filter ceilometer out of u-c.
+#
+# NOTE(jrosser)
+# neutron itself also appears in u-c (!) as the split between neutron and
+# neutron-lib appears incomplete.
 - name: Retrieve the constraints URL
   uri:
     url: "{{ neutron_upper_constraints_url }}"
@@ -62,7 +66,7 @@
     name: "python_venv_build"
   vars:
     venv_python_executable: "{{ neutron_venv_python_executable }}"
-    venv_build_constraints: "{{ _u_c_contents.content.split('\n') | reject('match', '^ceilometer=') | list }}"
+    venv_build_constraints: "{{ _u_c_contents.content.split('\n') | reject('match', '^(ceilometer|neutron)=') | list }}"
     venv_build_distro_package_list: "{{ neutron_devel_distro_packages }}"
     venv_install_destination_path: "{{ neutron_bin | dirname }}"
     venv_install_distro_package_list: "{{ neutron_package_list }}"
