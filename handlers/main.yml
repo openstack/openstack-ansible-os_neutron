@@ -129,13 +129,13 @@
     - "Restart neutron services"
     - "venv changed"
 
-- name: start ovn-central service
+- name: start ovn service
   service:
-    name: ovn-central
+    name: "{{ neutron_ovn_northd_service_name }}"
     state: started
 
 # (NOTE) Restarting twice to cleanup some pid.
-- name: restart ovn-central service
+- name: restart ovn service
   service:
-    name: ovn-central
+    name: "{{ neutron_ovn_northd_service_name }}"
     state: restarted

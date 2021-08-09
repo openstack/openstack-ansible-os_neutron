@@ -1,7 +1,7 @@
 # {{ ansible_managed }}
 
 # OVN cluster parameters
-OVN_CTL_OPTS=" \
+{{ neutron_ovn_northd_opts }}=" \
   --db-nb-create-insecure-remote=yes \
   --db-sb-create-insecure-remote=yes \
   --db-nb-addr={{ ansible_host }} \

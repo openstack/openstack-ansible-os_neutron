@@ -31,11 +31,8 @@
   block:
     - name: Stop ovn services
       service:
-        name: "{{ item }}"
+        name: "{{ neutron_ovn_northd_service_name }}"
         state: stopped
-      with_items:
-        - ovn-northd
-        - ovn-central
 
     - name: Clean up ovn db directory
       file:
@@ -64,23 +61,23 @@
 # This play only run first time to build cluster using primary node.
 - name: Setup ovn cluster using primary node.
   template:
-    src: ovn-central.j2
-    dest: "/etc/default/ovn-central"
+    src: ovn-northd-opts.j2
+    dest: "{{ neutron_ovn_northd_opts_file }}"
   when:
     - "inventory_hostname == neutron_ovn_primary_cluster_node"
     - _check_cluster_db.rc != 0
     - not leader_node
   notify:
-    - start ovn-central service
-    - restart ovn-central service
+    - start ovn service
+    - restart ovn service
 
 # This play will add nodes in existing cluster using leader_node var.
 - name: Join new nodes to ovn cluster using leader node
   template:
-    src: ovn-central.j2
-    dest: "/etc/default/ovn-central"
+    src: ovn-northd-opts.j2
+    dest: "{{ neutron_ovn_northd_opts_file }}"
   when:
     - _check_cluster_db.rc != 0
   notify:
-    - start ovn-central service
-    - restart ovn-central service
+    - start ovn service
+    - restart ovn service
