@@ -15,7 +15,7 @@
 # limitations under the License.
 
 - name: Set openvswitch hostname
-  command: "ovs-vsctl set open_vswitch . external-ids:hostname='{{ ansible_facts['hostname'] }}'"
+  command: "ovs-vsctl set open_vswitch . external-ids:hostname='{{ ansible_facts['nodename'] }}'"
   when:
     - (neutron_services['neutron-ovn-northd']['group'] in group_names) or
       (neutron_services['neutron-ovn-controller']['group'] in group_names)
