@@ -443,7 +443,8 @@ neutron_ovn_primary_cluster_node: "{{ groups[neutron_services['neutron-ovn-north
 neutron_ovn_northd_service_name: ovn-northd
 neutron_ovn_controller_service_name: ovn-controller
 neutron_ovn_l3_scheduler: leastloaded
-neutron_ovn_ip: "{{ internal_lb_vip_address }}"
+neutron_ovn_nb_connection: "tcp:{{ groups['neutron_ovn_northd'] | map('extract', hostvars, ['ansible_host']) | join(':6641,tcp:') }}:6641"
+neutron_ovn_sb_connection: "tcp:{{ groups['neutron_ovn_northd'] | map('extract', hostvars, ['ansible_host']) | join(':6642,tcp:') }}:6642"
 neutron_ovsdb_manager: ptcp:6640:127.0.0.1
 
 ###

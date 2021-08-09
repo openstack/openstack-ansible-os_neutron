@@ -48,8 +48,8 @@ max_header_size = 38
 
 [ovn]
 ovn_native_dhcp = True
-ovn_nb_connection = tcp:{{ neutron_ovn_ip }}:6641
-ovn_sb_connection = tcp:{{ neutron_ovn_ip }}:6642
+ovn_nb_connection = {{ neutron_ovn_nb_connection }}
+ovn_sb_connection = {{ neutron_ovn_sb_connection }}
 ovn_l3_scheduler = {{ neutron_ovn_l3_scheduler }}
 ovn_metadata_enabled = True
 

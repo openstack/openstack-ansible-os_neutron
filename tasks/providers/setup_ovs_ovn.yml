@@ -27,7 +27,7 @@
     - neutron_services['neutron-ovn-controller']['group'] in group_names
 
 - name: Configure OVN Southbound Connection
-  command: "ovs-vsctl set open . external-ids:ovn-remote=tcp:{{ neutron_ovn_ip }}:6642"
+  command: "ovs-vsctl set open . external-ids:ovn-remote={{ neutron_ovn_sb_connection }}"
   when:
     - neutron_services['neutron-ovn-controller']['group'] in group_names
 
