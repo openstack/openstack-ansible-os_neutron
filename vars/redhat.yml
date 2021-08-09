@@ -32,6 +32,10 @@ neutron_ovn_controller_service_name: ovn-controller
 
 neutron_ovs_socket_path: "/var/run/openvswitch"
 
+neutron_ovn_northd_opts: "OVN_NORTHD_OPTS"
+
+neutron_ovn_northd_opts_file: "/etc/sysconfig/ovn-northd"
+
 neutron_distro_packages:
   - conntrack-tools
   - dnsmasq
