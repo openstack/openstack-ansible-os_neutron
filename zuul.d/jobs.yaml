@@ -41,11 +41,21 @@
 
 # CentOS 8
 - job:
-    name: openstack-ansible-deploy-aio_ovs_lxc-centos-8
+    name: openstack-ansible-deploy-aio_ovs_lxc-centos-8-stream
     parent: openstack-ansible-deploy-aio
-    nodeset: centos-8
+    nodeset: centos-8-stream
 
 - job:
-    name: openstack-ansible-deploy-aio_metal_ovs-centos-8
+    name: openstack-ansible-deploy-aio_metal_ovs-centos-8-stream
     parent: openstack-ansible-deploy-aio
-    nodeset: centos-8
+    nodeset: centos-8-stream
+
+- job:
+    name: openstack-ansible-deploy-aio_ovn_lxc-centos-8-stream
+    parent: openstack-ansible-deploy-aio
+    nodeset: centos-8-stream
+
+- job:
+    name: openstack-ansible-deploy-aio_ovn_metal-centos-8-stream
+    parent: openstack-ansible-deploy-aio
+    nodeset: centos-8-stream
