@@ -23,7 +23,8 @@
       - build-release-notes-jobs-python3
     check:
       jobs:
-        - openstack-ansible-deploy-aio_metal_calico-ubuntu-focal
+        - openstack-ansible-deploy-aio_metal_calico-ubuntu-focal:
+            voting: false
         - openstack-ansible-deploy-aio_ovs_lxc-ubuntu-focal
         - openstack-ansible-deploy-aio_metal_ovs-ubuntu-focal
         - openstack-ansible-deploy-aio_ovs_lxc-centos-8-stream
@@ -38,7 +39,6 @@
              voting: false
     gate:
       jobs:
-        - openstack-ansible-deploy-aio_metal_calico-ubuntu-focal
         - openstack-ansible-deploy-aio_ovs_lxc-ubuntu-focal
         - openstack-ansible-deploy-aio_metal_ovs-ubuntu-focal
         - openstack-ansible-deploy-aio_ovs_lxc-centos-8-stream
