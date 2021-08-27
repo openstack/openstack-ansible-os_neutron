@@ -83,6 +83,7 @@ hosts group containing all network nodes:
         - network_containers
       contains:
         - neutron_ovn_northd
+        - neutron_sriov_nic_agent
 
 Copy the nova environment overrides to
 ``/etc/openstack_deploy/env.d/nova.yml`` to implement the
@@ -100,6 +101,7 @@ Copy the nova environment overrides to
       contains:
         - neutron_ovn_controller
         - nova_compute
+        - neutron_sriov_nic_agent
       properties:
         is_metal: true
 
