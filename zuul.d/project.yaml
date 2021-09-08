@@ -28,14 +28,10 @@
         - openstack-ansible-deploy-aio_metal_ovs-ubuntu-focal
         - openstack-ansible-deploy-aio_ovs_lxc-centos-8-stream
         - openstack-ansible-deploy-aio_metal_ovs-centos-8-stream
-        - openstack-ansible-deploy-aio_ovn_lxc-centos-8-stream:
-            voting: false
-        - openstack-ansible-deploy-aio_ovn_metal-centos-8-stream:
-            voting: false
-        - openstack-ansible-deploy-aio_ovn_lxc-ubuntu-focal2:
-            voting: false
-        - openstack-ansible-deploy-aio_metal_ovn-ubuntu-focal2:
-             voting: false
+        - openstack-ansible-deploy-aio_ovn_lxc-centos-8-stream
+        - openstack-ansible-deploy-aio_ovn_metal-centos-8-stream
+        - openstack-ansible-deploy-aio_ovn_lxc-ubuntu-focal2
+        - openstack-ansible-deploy-aio_metal_ovn-ubuntu-focal2
     gate:
       jobs:
         - openstack-ansible-deploy-aio_metal_calico-ubuntu-focal
@@ -43,11 +39,7 @@
         - openstack-ansible-deploy-aio_metal_ovs-ubuntu-focal
         - openstack-ansible-deploy-aio_ovs_lxc-centos-8-stream
         - openstack-ansible-deploy-aio_metal_ovs-centos-8-stream
-        - openstack-ansible-deploy-aio_ovn_lxc-centos-8-stream:
-            voting: false
-        - openstack-ansible-deploy-aio_ovn_metal-centos-8-stream:
-            voting: false
-        - openstack-ansible-deploy-aio_ovn_lxc-ubuntu-focal2:
-            voting: false
-        - openstack-ansible-deploy-aio_metal_ovn-ubuntu-focal2:
-             voting: false
+        - openstack-ansible-deploy-aio_ovn_lxc-centos-8-stream
+        - openstack-ansible-deploy-aio_ovn_metal-centos-8-stream
+        - openstack-ansible-deploy-aio_ovn_lxc-ubuntu-focal2
+        - openstack-ansible-deploy-aio_metal_ovn-ubuntu-focal2
