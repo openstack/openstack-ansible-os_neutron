@@ -197,7 +197,7 @@ memcache_use_advanced_pool = True
 
 # Database
 [database]
-connection = mysql+pymysql://{{ neutron_galera_user }}:{{ neutron_container_mysql_password }}@{{ neutron_galera_address }}/{{ neutron_galera_database }}?charset=utf8{% if neutron_galera_use_ssl | bool %}&ssl_ca={{ neutron_galera_ssl_ca_cert }}{% endif %}
+connection = mysql+pymysql://{{ neutron_galera_user }}:{{ neutron_container_mysql_password }}@{{ neutron_galera_address }}/{{ neutron_galera_database }}?charset=utf8{% if neutron_galera_use_ssl | bool %}&ssl_verify_cert=true{% if neutron_galera_ssl_ca_cert | length > 0 %}&ssl_ca={{ neutron_galera_ssl_ca_cert }}{% endif %}{% endif %}
 
 max_overflow = {{ neutron_db_max_overflow }}
 max_pool_size = {{ neutron_db_pool_size }}

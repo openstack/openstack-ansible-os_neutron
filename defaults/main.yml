@@ -217,7 +217,7 @@ neutron_db_max_overflow: 20
 neutron_db_pool_size: 120
 neutron_db_pool_timeout: 30
 neutron_galera_use_ssl: "{{ galera_use_ssl | default(False) }}"
-neutron_galera_ssl_ca_cert: "{{ galera_ssl_ca_cert | default('/etc/ssl/certs/galera-ca.pem') }}"
+neutron_galera_ssl_ca_cert: "{{ galera_ssl_ca_cert | default('') }}"
 neutron_galera_port: "{{ galera_port | default('3306') }}"
 
 ###
