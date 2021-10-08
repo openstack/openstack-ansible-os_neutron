@@ -207,6 +207,7 @@ neutron_plugins:
     l3_agent_mode: "legacy"
   ml2.ovn:
     drivers_type: "{{ neutron_ml2_drivers_type }}"
+    driver_interface: openvswitch
     mechanisms: "ovn"
     plugin_conf_ini_overrides: "{{ neutron_ml2_conf_ini_overrides }}"
     plugin_core: ml2
