@@ -27,7 +27,7 @@ We recommend that you read the following documents before proceeding:
 * Open vSwitch with DPDK datapath:
   `<https://docs.openstack.org/neutron/latest/admin/config-ovs-dpdk.html>`_
 * Getting the best performance from DPDK:
-  `<https://doc.dpdk.org/guides-16.04/linux_gsg/nic_perf_intel_platform.html>`_
+  `<https://doc.dpdk.org/guides/linux_gsg/nic_perf_intel_platform.html>`_
 * OpenStack documentation on hugepages:
   `<https://docs.openstack.org/nova/latest/admin/huge-pages.html>`_
 
@@ -156,11 +156,13 @@ The remaining cores can be reserved for virtual machine instances.
 
 In this example, the breakdown would resemble the following:
 
+```
 | Reserved Cores         | Purpose               | node0     | node1 |
 | ---------------------- | --------------------- | --------- | ----- |
 | 0,8,16,24              | Host Operating System | 0,16      | 8,24  |
 | 1,9,17,25              | DPDK PMDs             | 1,17      | 9,25  |
 | 2-7,18-23              | Virtual Machines      | 2-7,18-23 | N/A   |
+```
 
 The variables are overrides used to define this configuration are discussed
 in the following sections.
@@ -280,9 +282,11 @@ to a hexidecimal mask and defined using the ``ovs_dpdk_lcore_mask`` override.
 To convert to a hex mask you must first establish the binary mask of chosen
 cores using the following table:
 
+```
 | 31 | 30 | . | 24 | 23 | . | 17 | 16 | 15 | . | 9  | 8  | 7  | . | 1  | 0  |
 | -- | -- | - | -- | -- | - | -- | -- | -- | - | -- | -- | -- | - | -- | -- |
 | 0  | 0  | . | 1  | 0  | . | 0  | 1  | 0  | . | 0  | 1  | 0  | . | 0  | 1  |
+```
 
 The ellipses represent cores not shown. The binary mask for cores 0,8,16,24
 can be determined in the following way:
@@ -302,9 +306,11 @@ file or ``openstack_user_config.yml``:
 The mask for cores 1,9,17,25 reserved for DPDK PMDs can be determined in
 a similar fashion. The table would resemble the following:
 
+```
 | 31 | 30 | . | 25 | 24 | . | 17 | 16 | 15 | . | 9  | 8  | 7  | . | 1  | 0  |
 | -- | -- | - | -- | -- | - | -- | -- | -- | - | -- | -- | -- | - | -- | -- |
 | 0  | 0  | . | 1  | 0  | . | 1  | 0  | 0  | . | 1  | 0  | 0  | . | 1  | 0  |
+```
 
 The ellipses represent cores not shown. The binary mask for cores 1,9,17,254
 can be determined in the following way:
@@ -401,6 +407,12 @@ Specify provider network definitions in your
 ``/etc/openstack_deploy/openstack_user_config.yml`` that define one or more
 Neutron provider bridges and related configuration:
 
+.. note::
+
+  Bridges specified here will be created automatically. If *network_interface*
+  is defined, the interface will be placed into the bridge automatically
+  as a *DPDK-accelerated* interface.
+
 .. code-block:: yaml
 
   - network:
@@ -409,13 +421,55 @@ Neutron provider bridges and related configuration:
       type: "vlan"
       range: "101:200,301:400"
       net_name: "physnet1"
+      network_interface: "eno49"
       group_binds:
         - neutron_openvswitch_agent
 
-.. note::
+A *DPDK-accelerated* **bond** interface can be created by specifying a list
+of member interfaces using `network_bond_interfaces`. The bond port will
+be created automatically and added to the respective bridge in OVS:
 
-  A single DPDK interface can be connected to an OVS provider bridge, and
-  must be done using the ``ovs-vsctl`` command as a post-installation step.
+.. code-block:: yaml
+
+  - network:
+      container_bridge: "br-provider"
+      container_type: "veth"
+      type: "vlan"
+      range: "101:200,301:400"
+      net_name: "physnet1"
+      network_bond_interfaces:
+        - "0000:04:00.0"
+        - "0000:04:00.1"
+      group_binds:
+        - neutron_openvswitch_agent
+
+Additional OVS bond parameters can be specified using the following keys:
+
+* bond_mode (Default: active-backup)
+* lacp (Default: off)
+* bond_downdelay (Default: 100)
+* bond_updelay (Default: 100)
+
+.. code-block:: yaml
+
+  - network:
+      container_bridge: "br-provider"
+      container_type: "veth"
+      type: "vlan"
+      range: "101:200,301:400"
+      net_name: "physnet1"
+      network_bond_interfaces:
+        - "0000:04:00.0"
+        - "0000:04:00.1"
+      bond_mode: balance-tcp
+      lacp: active
+      bond_downdelay: 200
+      bond_updelay: 200
+      group_binds:
+        - neutron_openvswitch_agent
+
+For more information on possible values, visit:
+`<https://docs.ansible.com/ansible/latest/collections/openvswitch/openvswitch/openvswitch_bond_module.html>`_
 
 Set the following user variables in your
 ``/etc/openstack_deploy/user_variables.yml`` to enable the Open vSwitch driver
@@ -430,7 +484,9 @@ and DPDK support:
   ovs_dpdk_support: True
 
   # Add these overrides or set on per-host basis in openstack_user_config.yml
-  ovs_dpdk_pci_addresses: "0000:03:00.0"
+  ovs_dpdk_pci_addresses:
+    - "0000:04:00.0"
+    - "0000:04:00.1"
   ovs_dpdk_lcore_mask: 1010101
   ovs_dpdk_pmd_cpu_mask: 2020202
   ovs_dpdk_socket_mem: "1024,1024"
@@ -442,20 +498,29 @@ and DPDK support:
 Post-installation
 ~~~~~~~~~~~~~~~~~
 
-Once the playbooks have been run and OVS/DPDK has been configured, it will be
+Once the playbooks have been run and OVS/DPDK has been configured, it may be
 necessary to add a physical interface to the provider bridge before networking
-can be fully established.
+can be fully established *if* `network_interface` or `network_bond_interfaces`
+have not been defined.
 
 On compute nodes, the following command can be used to attach a NIC port
-``0000:03:00.0`` to the provider bridge ``br-provider``:
+``0000:04:00.0`` to the provider bridge ``br-provider``:
 
 .. code-block:: console
 
-  ovs-vsctl add-port br-provider 0000:03:00.0 -- set Interface 0000:03:00.0 type=dpdk options:dpdk-devargs=0000:03:00.0
+  ovs-vsctl add-port br-provider 0000:04:00.0 -- set interface 0000:04:00.0 type=dpdk options:dpdk-devargs=0000:04:00.0
 
-The command can be adjusted according to your configuration.
+Additionally, it may be necessary to make post-installation adjustments to
+interface queues or other parameters to avoid errors within Open vSwitch:
+
+.. code-block:: console
+
+  ovs-vsctl set interface 0000:04:00.0 options:n_txq=5
+  ovs-vsctl set interface 0000:04:00.0 options:n_rxq=5
+
+The command(s) can be adjusted according to your configuration.
 
 .. warning::
 
-  Adding multiple ports to the bridge may result in bridging loops unless
-  bonding is configured. DPDK bonding is outside the scope of this guide.
+  Adding multiple ports to a bridge may result in bridging loops unless
+  bonding is configured.

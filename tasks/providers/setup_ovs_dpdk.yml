@@ -28,6 +28,7 @@
     dest: "/etc/dpdk/interfaces"
     owner: "root"
     group: "root"
+    mode: "0640"
   when:
     - neutron_services['neutron-openvswitch-agent']['group'] in group_names
     - '"nova_compute" in group_names'
@@ -38,6 +39,7 @@
     dest: "/etc/dpdk/dpdk.conf"
     owner: "root"
     group: "root"
+    mode: "0640"
   when:
     - neutron_services['neutron-openvswitch-agent']['group'] in group_names
     - '"nova_compute" in group_names'
@@ -111,7 +113,7 @@
     - neutron_plugin_type in ['ml2.ovs', 'ml2.ovs.dvr']
     - neutron_provider_networks.network_mappings is defined
 
-# (todo) Loop thru ints or build a bond with ints. TBD.
+# Adds a single host interface to an OVS bridge
 - name: Add ports to Network Provider Bridges
   openvswitch_port:
     bridge: "{{ interface_mapping.split(':')[0] }}"
@@ -125,3 +127,23 @@
     - neutron_services['neutron-openvswitch-agent']['group'] in group_names
     - neutron_plugin_type in ['ml2.ovs', 'ml2.ovs.dvr']
     - neutron_provider_networks.network_interface_mappings is defined and (neutron_provider_networks.network_interface_mappings|length > 0)
+
+# Adds a DPDK-accelerated bond interface to an OVS bridge
+- name: Add Bonds to Network Provider Bridges
+  openvswitch.openvswitch.openvswitch_bond:
+    bridge: "{{ bond_interfaces_mapping.bridge }}"
+    port: "{{ bond_interfaces_mapping.bridge }}-dpdkbond"
+    interfaces: "{{ bond_interfaces_mapping.interfaces }}"
+    bond_mode: "{{ bond_interfaces_mapping.bond_mode | default('active-backup') }}"
+    lacp: "{{ bond_interfaces_mapping.lacp | default('off') }}"
+    bond_updelay: "{{ bond_interfaces_mapping.bond_updelay | default(100) }}"
+    bond_downdelay: "{{ bond_interfaces_mapping.bond_downdelay | default(100) }}"
+    set: "{% for interface in bond_interfaces_mapping.interfaces %}interface {{ interface }} type=dpdk options:dpdk-devargs='{{ interface }}'{% if not loop.last %},{% endif %}{% endfor %}"
+    state: present
+  with_items: "{{ neutron_provider_networks.network_bond_interfaces_mappings }}"
+  loop_control:
+    loop_var: bond_interfaces_mapping
+  when:
+    - neutron_services['neutron-openvswitch-agent']['group'] in group_names
+    - neutron_plugin_type in ['ml2.ovs', 'ml2.ovs.dvr']
+    - neutron_provider_networks.network_bond_interfaces_mappings is defined and (neutron_provider_networks.network_bond_interfaces_mappings|length > 0)
