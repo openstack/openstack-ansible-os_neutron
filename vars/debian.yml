@@ -32,6 +32,7 @@ neutron_ovn_northd_opts_file: "/etc/default/ovn-central"
 neutron_ovs_dpdk_required_packages:
   - openvswitch-common
   - openvswitch-switch-dpdk
+  - libdpdk-dev
 
 dpdk_service_name: dpdk
 
