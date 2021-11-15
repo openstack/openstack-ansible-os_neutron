@@ -366,7 +366,7 @@ neutron_vxlan_ttl: 32
 neutron_sriov_excluded_devices: ""
 
 # neutron_local_ip is used for the VXLAN local tunnel endpoint
-neutron_local_ip: 127.0.0.1
+neutron_local_ip: "{{ tunnel_address | default('127.0.0.1') }}"
 
 ## Set this variable to configure the provider networks that will be available
 ## When setting up networking in things like the ml2_conf.ini file. Normally
