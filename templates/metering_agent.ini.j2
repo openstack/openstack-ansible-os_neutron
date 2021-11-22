@@ -6,15 +6,7 @@ debug = {{ debug }}
 
 # Drivers
 driver = {{ neutron_driver_metering }}
-
-# Other agents will use neutron_plugins[neutron_plugin_type].driver_interface
-# for the interface_driver, but that uses a stevedore alias. Metering agent
-# hasn't been updated to use stevedore alises so that fails. To work around
-# the problem until metering agent is updated, we should use the full
-# module.class path to the interface driver.
-# TODO(hughsaunders): switch back to stevedore when
-# https://review.openstack.org/#/c/419881/ merges and is backported.
-interface_driver = {{ neutron_services['neutron-metering-agent'].interface_driver }}
+interface_driver = {{ neutron_plugins[neutron_plugin_type].driver_interface }}
 
 # Intervals
 measure_interval = 30

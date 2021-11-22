@@ -417,7 +417,6 @@ neutron_services:
     config_overrides: "{{ neutron_metering_agent_ini_overrides }}"
     config_type: "ini"
     init_config_overrides: "{{ neutron_metering_agent_init_overrides }}"
-    interface_driver: "{{ (neutron_plugin_type == 'ml2.lxb') | ternary('linuxbridge', 'openvswitch') }}"
     start_order: 3
   neutron-l3-agent:
     group: neutron_l3_agent
