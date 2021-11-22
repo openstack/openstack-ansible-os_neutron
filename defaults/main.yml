@@ -67,6 +67,8 @@ networking_bgpvpn_git_repo: https://opendev.org/openstack/networking-bgpvpn
 networking_bgpvpn_git_install_branch: master
 ceilometer_git_repo: https://opendev.org/openstack/ceilometer
 ceilometer_git_install_branch: master
+networking_baremetal_git_repo: https://opendev.org/openstack/networking-baremetal
+networking_baremetal_git_install_branch: master
 networking_generic_switch_git_repo: https://opendev.org/openstack/networking-generic-switch
 networking_generic_switch_git_install_branch: master
 networking_nsx_git_repo: https://opendev.org/x/vmware-nsx
@@ -145,6 +147,8 @@ neutron_calico_felix_ini_overrides: {}
 neutron_calico_felix_init_overrides: {}
 neutron_dhcp_agent_ini_overrides: {}
 neutron_dhcp_agent_init_overrides: {}
+neutron_ironic_neutron_agent_ini_overrides: {}
+neutron_ironic_neutron_agent_init_overrides: {}
 neutron_l3_agent_ini_overrides: {}
 neutron_l3_agent_init_overrides: {}
 neutron_linuxbridge_agent_ini_overrides: {}
