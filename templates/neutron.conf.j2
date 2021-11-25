@@ -228,9 +228,6 @@ rpc_conn_pool_size = {{ neutron_rpc_conn_pool_size }}
 {% if neutron_ceilometer_enabled %}
 {%   set _ = notification_topics.append('notifications') %}
 {% endif %}
-{% if neutron_designate_enabled %}
-{%   set _ = notification_topics.append(neutron_notifications_designate) %}
-{% endif %}
 topics = {{ notification_topics | join(',') }}
 driver = {{ (notification_topics | length > 0) | ternary('messagingv2', 'noop') }}
 transport_url = {{ neutron_oslomsg_notify_transport }}://{% for host in neutron_oslomsg_notify_servers.split(',') %}{{ neutron_oslomsg_notify_userid }}:{{ neutron_oslomsg_notify_password }}@{{ host }}:{{ neutron_oslomsg_notify_port }}{% if not loop.last %},{% else %}/{{ neutron_oslomsg_notify_vhost }}{% if neutron_oslomsg_notify_use_ssl | bool %}?ssl=1&ssl_version={{ neutron_oslomsg_notify_ssl_version }}&ssl_ca_file={{ neutron_oslomsg_notify_ssl_ca_file }}{% else %}?ssl=0{% endif %}{% endif %}{% endfor %}
