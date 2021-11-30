@@ -43,7 +43,7 @@
     - Restart neutron services
 
 - name: Copy common neutron config
-  config_template:
+  openstack.config_template.config_template:
     src: "{{ item.src }}"
     dest: "{{ item.dest }}"
     owner: "root"
@@ -64,7 +64,7 @@
     - Restart neutron services
 
 - name: Implement policy.yaml if there are overrides configured
-  config_template:
+  openstack.config_template.config_template:
     content: "{{ neutron_policy_overrides }}"
     dest: "{{ neutron_conf_version_dir }}/policy.yaml"
     owner: "root"
@@ -118,7 +118,7 @@
   run_once: true
 
 - name: Copy common neutron config
-  config_template:
+  openstack.config_template.config_template:
     src: "{{ item.tmp_f }}"
     dest: "{{ item.target_f }}"
     owner: "{{ item.owner | default('root') }}"
@@ -148,7 +148,7 @@
     recurse: true
 
 - name: Copy neutron ml2 plugin config
-  config_template:
+  openstack.config_template.config_template:
     src: "{{ ('plugin_conf_bare' not in neutron_plugins[item]) | ternary(neutron_plugins[item].plugin_ini ~ '.j2', omit) }}"
     dest: "{{ neutron_conf_version_dir }}/{{ neutron_plugins[item].plugin_ini }}"
     owner: "root"
@@ -171,7 +171,7 @@
     - neutron_services['neutron-dhcp-agent']['group'] in group_names
 
 - name: Generate neutron agent only Config
-  config_template:
+  openstack.config_template.config_template:
     src: "{{ item.service_conf }}.j2"
     dest: "{{ item.service_conf_path }}/{{ item.service_conf }}"
     owner: "root"
