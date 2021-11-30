@@ -237,7 +237,7 @@ transport_url = {{ neutron_oslomsg_notify_transport }}://{% for host in neutron_
 
 # Concurrency (locking mechanisms)
 [oslo_concurrency]
-lock_path = {{ neutron_lock_path }}
+lock_path = {{ neutron_lock_dir }}/{{ neutron_system_slice_name }}
 
 {% if neutron_services['neutron-server']['group'] in group_names and 'sfc' in neutron_plugin_base %}
 # ODL-SFC

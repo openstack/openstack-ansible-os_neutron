@@ -131,8 +131,8 @@
     systemd_user_name: "{{ neutron_system_user_name }}"
     systemd_group_name: "{{ neutron_system_group_name }}"
     systemd_tempd_prefix: openstack
-    systemd_slice_name: neutron
-    systemd_lock_path: /var/lock/neutron
+    systemd_slice_name: "{{ neutron_system_slice_name }}"
+    systemd_lock_dir: "{{ neutron_lock_dir }}"
     systemd_CPUAccounting: true
     systemd_BlockIOAccounting: true
     systemd_MemoryAccounting: true

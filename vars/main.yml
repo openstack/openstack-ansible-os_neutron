@@ -131,12 +131,13 @@ neutron_venv_packages: >-
 
 neutron_conf_dir: /etc/neutron
 neutron_conf_version_dir: "{{ (neutron_install_method == 'distro') | ternary(neutron_conf_dir, (neutron_bin | dirname) + '/etc/neutron') }}"
-neutron_lock_path: "/var/lock/neutron"
+neutron_lock_dir: "{{ openstack_lock_dir | default('/run/lock') }}"
 neutron_system_user_name: neutron
 neutron_system_group_name: neutron
 neutron_system_comment: neutron system user
 neutron_system_shell: /bin/false
 neutron_system_home_folder: "/var/lib/{{ neutron_system_user_name }}"
+neutron_system_slice_name: neutron
 
 ###
 ### DB (Galera) integration
