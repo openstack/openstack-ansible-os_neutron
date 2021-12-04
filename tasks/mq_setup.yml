@@ -39,6 +39,7 @@
         pattern: "{{ item.pattern }}"
         priority: "{{ item.priority | default(0) }}"
         tags: "{{ item.tags }}"
+        state: "{{ item.state | default(omit) }}"
         vhost: "{{ _oslomsg_rpc_vhost }}"
       loop: "{{ _oslomsg_rpc_policies | default([]) + oslomsg_rpc_policies }}"
 
@@ -77,6 +78,7 @@
         pattern: "{{ item.pattern }}"
         priority: "{{ item.priority | default(0) }}"
         tags: "{{ item.tags }}"
+        state: "{{ item.state | default(omit) }}"
         vhost: "{{ _oslomsg_notify_vhost }}"
       loop: "{{ _oslomsg_notify_policies | default([]) + oslomsg_notify_policies }}"
       when:
