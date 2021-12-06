@@ -315,9 +315,6 @@ neutron_allow_reverse_dns_lookup: True
 neutron_ipv4_ptr_zone_prefix_size: 24
 neutron_ipv6_ptr_zone_prefix_size: 116
 
-# Notifications topic for designate
-neutron_notifications_designate: notifications_designate
-
 ###
 ### Plugins Loading
 ###
@@ -330,7 +327,7 @@ neutron_notifications_designate: notifications_designate
 #   - vpnaas
 #   - metering
 #   - qos
-#   - dns/subnet_dns_publish_fixed_ip either one or the other, not both
+#   - dns/dns_domain_ports/subnet_dns_publish_fixed_ip either one or the other, not both
 #   - port_forwarding
 neutron_plugin_base:
   - router
