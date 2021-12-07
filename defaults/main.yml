@@ -435,8 +435,8 @@ neutron_vpnaas_service_provider: "{{ _neutron_vpnaas_service_provider }}"
 
 # Calico Felix agent upstream settings
 calico_felix_url: "https://github.com/projectcalico/felix/releases/download/{{ calico_felix_version }}/calico-felix-amd64"
-calico_felix_version: v3.7.0
-calico_felix_sha256: ae0bed304702097cee0ad5d9b4abb07b263deeb46ac21f2bcb0118d5bf439f46
+calico_felix_version: v3.21.2
+calico_felix_sha256: 076936b985379fb8221db9b9a798714f6f97429a630da9c46da89bfcb0f84d81
 calico_felix_validate_certs: yes
 
 # OVN Defaults
