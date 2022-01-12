@@ -32,7 +32,12 @@
   tags:
     - always
 
-- import_tasks: db_setup.yml
+- include_role:
+    name: openstack.osa.db_setup
+    apply:
+      tags:
+        - common-db
+        - neutron-config
   when:
     - "_neutron_is_first_play_host"
   vars:
@@ -46,10 +51,14 @@
           - username: "{{ neutron_galera_user }}"
             password: "{{ neutron_container_mysql_password }}"
   tags:
-    - common-db
-    - neutron-config
+    - always
 
-- import_tasks: mq_setup.yml
+- include_role:
+    name: openstack.osa.mq_setup
+    apply:
+      tags:
+        - common-mq
+        - neutron-config
   when:
     - "_neutron_is_first_play_host"
   vars:
@@ -64,8 +73,7 @@
     _oslomsg_notify_vhost: "{{ neutron_oslomsg_notify_vhost }}"
     _oslomsg_notify_transport: "{{ neutron_oslomsg_notify_transport }}"
   tags:
-    - common-mq
-    - neutron-config
+    - always
 
 - name: Get CPU info content and store as var
   command: cat /proc/cpuinfo
@@ -162,7 +170,12 @@
   tags:
     - neutron-config
 
-- import_tasks: service_setup.yml
+- include_role:
+    name: openstack.osa.service_setup
+    apply:
+      tags:
+        - common-service
+        - neutron-config
   vars:
     _service_adminuri_insecure: "{{ keystone_service_adminuri_insecure }}"
     _service_in_ldap: "{{ neutron_service_in_ldap }}"
@@ -191,7 +204,7 @@
   when:
     - "_neutron_is_first_play_host"
   tags:
-    - neutron-config
+    - always
 
 - name: Flush handlers
   meta: flush_handlers
