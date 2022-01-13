@@ -89,7 +89,7 @@
     - always
 
 - name: Create the neutron provider networks fact
-  provider_networks:
+  openstack.osa.provider_networks:
     provider_networks: "{{ provider_networks }}"
     bind_prefix: "{{ provider_network_bind_prefix | default('') }}"
     is_metal: "{{ is_metal }}"
