@@ -444,22 +444,6 @@ neutron_services:
     config_type: "ini"
     init_config_overrides: "{{ neutron_bgp_dragent_init_overrides }}"
     start_order: 3
-  # TODO(mnaser): neutron-vpnaas-agent binary was dropped in Queens
-  #               and replaced by a plugin to neutron-l3-agent.  We missed
-  #               this in Queens, so let's remove this in T to disable
-  #               the service.
-  neutron-vpnaas-agent:
-    group: neutron_l3_agent
-    service_name: neutron-vpn-agent
-    service_en: false
-    service_conf_path: "{{ neutron_conf_version_dir }}"
-    service_conf: vpnaas_agent.ini
-    service_rootwrap: rootwrap.d/vpnaas.filters
-    execstarts: "{{ neutron_bin }}/neutron-vpn-agent --config-file {{ neutron_conf_dir }}/neutron.conf --config-file {{ neutron_conf_dir }}/vpnaas_agent.ini"
-    config_overrides: "{{ neutron_vpnaas_agent_ini_overrides }}"
-    config_type: "ini"
-    init_config_overrides: "{{ neutron_vpn_agent_init_overrides }}"
-    start_order: 3
   neutron-server:
     group: neutron_server
     service_name: neutron-server
