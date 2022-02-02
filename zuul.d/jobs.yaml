@@ -49,13 +49,3 @@
     parent: openstack-ansible-deploy-aio
     nodeset: ubuntu-bionic
 
-# CentOS 8
-- job:
-    name: openstack-ansible-deploy-aio_ovs_lxc-centos-8
-    parent: openstack-ansible-deploy-aio
-    nodeset: centos-8
-
-- job:
-    name: openstack-ansible-deploy-aio_metal_ovs-centos-8
-    parent: openstack-ansible-deploy-aio
-    nodeset: centos-8
