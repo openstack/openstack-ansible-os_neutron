@@ -218,8 +218,7 @@ neutron_galera_address: "{{ galera_address | default('127.0.0.1') }}"
 neutron_galera_user: neutron
 neutron_galera_database: neutron
 neutron_db_max_overflow: "{{ openstack_db_max_overflow | default('50') }}"
-# TODO(damiandabrowski): Remove neutron_db_pool_size in Yoga release
-neutron_db_max_pool_size: "{{ openstack_db_max_pool_size | default(neutron_db_pool_size) | default('5') }}"
+neutron_db_max_pool_size: "{{ openstack_db_max_pool_size | default('5') }}"
 neutron_db_pool_timeout: "{{ openstack_db_pool_timeout | default('30') }}"
 neutron_db_connection_recycle_time: "{{ openstack_db_connection_recycle_time | default('600') }}"
 neutron_galera_use_ssl: "{{ galera_use_ssl | default(False) }}"
