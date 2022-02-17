@@ -397,6 +397,9 @@ neutron_l3_ha_net_cidr: 169.254.192.0/18
 
 neutron_l3_cleanup_on_shutdown: False
 
+# Specify the maximum number of L3 agents per tenant network. Defaults to the total number of agents deployed
+# neutron_l3_agents_max: 2
+
 ###
 ### DHCP Agent Plugin Configuration
 ###
@@ -409,6 +412,9 @@ neutron_dnsmasq_lease_max: 16777216
 
 # Specify if dnsmasq should send a route to metadata server through DHCP 121 message to VM
 neutron_dnsmasq_force_metadata: False
+
+# Specify the maximum number of DHCP agents per tenant network. Defaults to the total number of agents deployed
+# neutron_dhcp_agents_max: 2
 
 ###
 ### Metadata Agent Plugin Configuration
