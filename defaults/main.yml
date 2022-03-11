@@ -229,6 +229,10 @@ neutron_galera_port: "{{ galera_port | default('3306') }}"
 ### Oslo Messaging
 ###
 
+# RabbitMQ
+
+neutron_oslomsg_heartbeat_in_pthread: "{{ oslomsg_heartbeat_in_pthread | default(False) }}"
+
 # RPC
 
 neutron_oslomsg_rpc_host_group: "{{ oslomsg_rpc_host_group | default('rabbitmq_all') }}"
