@@ -15,14 +15,14 @@ implementing. This document outlines how to set it up in your environment.
 .. note::
 
   ASAP :sup:`2` is a proprietary feature provided with certain Mellanox NICs,
-  including the ConnectX-4 Lx and ConnectX-5. Future support is not
+  including the ConnectX-5 and ConnectX-6. Future support is not
   guaranteed. This feature is considered *EXPERIMENTAL* and should not
   be used for production workloads. There is no guarantee of upgradability
   or backwards compatibility.
 
 .. note::
 
-  Hardware offloading is not compatible with the ``openvswitch`` firewall
+  Hardware offloading is not yet compatible with the ``openvswitch`` firewall
   driver. To ensure flows are offloaded, port security must be disabled.
   Information on disabling port security is discussed later in this document.
 
@@ -43,6 +43,8 @@ The following resources may also be helpful:
 * `<https://docs.openstack.org/neutron/latest/admin/config-ovs-offload.html>`_
 
 * `<https://www.mellanox.com/related-docs/prod_software/ASAP2_Hardware_Offloading_for_vSwitches_User_Manual_v4.4.pdf>`_
+
+* `<https://docs.nvidia.com/networking/pages/viewpage.action?pageId=61869597>`_
 
 Prerequisites
 ~~~~~~~~~~~~~
@@ -232,11 +234,13 @@ a virtual machine instance using an image with the proper network drivers.
 
 The following images are known to contain working drivers:
 
-* `Fedora 24 <http://www.mellanox.com/repository/solutions/openstack/images/fedora_24_ofed_4.0-2.0.0.1.qcow2>`_
-
 * `Ubuntu 18.04 LTS (Bionic) <https://cloud-images.ubuntu.com/bionic/current/bionic-server-cloudimg-amd64.img>`_
 
-* `Centos 7 (1901) <https://cloud.centos.org/centos/7/images/CentOS-7-x86_64-GenericCloud-1901.qcow2>`_
+* `Ubuntu 20.04 LTS (Focal) <https://cloud-images.ubuntu.com/focal/current/focal-server-cloudimg-amd64.img>`_
+
+* `Centos 8 Stream <https://cloud.centos.org/centos/8-stream/>`_
+
+* `Centos 9 Stream <https://cloud.centos.org/centos/9-stream/>`_
 
 Before creating an instance, a Neutron port must be created that has the
 following characteristics:
@@ -310,8 +314,8 @@ flow will be visible in the packet capture.
 
 The following command can be used to dump flows in the kernel datapath:
 
-:code:`# ovs-dpctl dump-flows type=ovs`
+:code:`# ovs-appctl dpctl/dump-flows type=ovs`
 
 The following command can be used to dump flows that are offloaded:
 
-:code:`# ovs-dpctl dump-flows type=offloaded`
+:code:`# ovs-appctl dpctl/dump-flows type=offloaded`
