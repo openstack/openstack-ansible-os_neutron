@@ -58,6 +58,7 @@
 - name: Setup Network Provider Bridges
   openvswitch_bridge:
     bridge: "{{ bridge_mapping.split(':')[1] }}"
+    fail_mode: standalone
     state: present
   with_items: "{{ neutron_provider_networks.network_mappings.split(',') }}"
   loop_control:
