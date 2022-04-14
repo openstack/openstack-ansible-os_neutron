@@ -136,6 +136,7 @@
     state: absent
   changed_when: false
   delegate_to: localhost
+  check_mode: false
   with_items: "{{ neutron_core_files }}"
 
 # NOTE(cloudnull): This will ensure strong permissions on all rootwrap files.

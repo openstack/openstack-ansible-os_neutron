@@ -96,6 +96,8 @@
     group_names: "{{ group_names }}"
   register: pndata
   when: neutron_provider_networks is not defined
+  check_mode: false
+  changed_when: false
   tags:
     - always
 

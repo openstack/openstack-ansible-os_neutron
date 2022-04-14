@@ -60,6 +60,7 @@
     url: "{{ neutron_upper_constraints_url }}"
     return_content: yes
   register: _u_c_contents
+  check_mode: false
 
 - name: Install the python venv
   import_role:
