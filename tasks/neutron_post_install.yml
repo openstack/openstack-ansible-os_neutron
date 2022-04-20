@@ -85,16 +85,6 @@
   tags:
     - neutron-policy-override
 
-- name: Place api-paste.ini to the correct path in RedHat
-  file:
-    src: "/usr/share/neutron/api-paste.ini"
-    dest: "{{ neutron_conf_version_dir }}/api-paste.ini"
-    owner: "root"
-    group: "{{ neutron_system_group_name }}"
-    mode: "0640"
-    state: link
-  when: neutron_install_method == 'distro' and ansible_facts['os_family'] == 'RedHat'
-
 - name: Create symlink to neutron-keepalived-state-change
   file:
     src: "{{ neutron_bin }}/neutron-keepalived-state-change"
