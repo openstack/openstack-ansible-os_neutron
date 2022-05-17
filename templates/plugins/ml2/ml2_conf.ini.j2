@@ -5,7 +5,7 @@
 type_drivers = {{ neutron_plugins[neutron_plugin_type].drivers_type }}
 tenant_network_types = {{ neutron_provider_networks.network_types if neutron_provider_networks.network_types != '' else 'local' }}
 mechanism_drivers = {{ neutron_ml2_mechanism_drivers }}
-extension_drivers = port_security{% if 'qos' in neutron_plugin_base %},qos{% endif %}{% if 'dns' in neutron_plugin_base %},dns{% endif %}{% if 'dns_domain_ports' in neutron_plugin_base %},dns_domain_ports{% endif %}{% if 'subnet_dns_publish_fixed_ip' in neutron_plugin_base %},subnet_dns_publish_fixed_ip{% endif %}
+extension_drivers = port_security{% if 'qos' in neutron_plugin_base %},qos{% endif %}{% if 'dns' in neutron_plugin_base %},dns{% endif %}{% if 'dns_domain_ports' in neutron_plugin_base %},dns_domain_ports{% endif %}{% if 'subnet_dns_publish_fixed_ip' in neutron_plugin_base %},subnet_dns_publish_fixed_ip{% endif %}{% if 'dns_domain_keywords' in neutron_plugin_base %},dns_domain_keywords{% endif %}
 
 {% if neutron_provider_networks.network_mappings is defined and (neutron_plugin_type == 'ml2.opendaylight' and ('odl-router_v2' in neutron_plugin_base or 'odl-router' in neutron_plugin_base)) %}
 bridge_mappings = {{ neutron_provider_networks.network_mappings }}
