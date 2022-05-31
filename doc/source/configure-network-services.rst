@@ -117,8 +117,8 @@ Follow the steps below to deploy FWaaS v2:
        # openstack-ansible os-neutron-install.yml
 
 
-Virtual private network service (optional)
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Virtual private network service - VPNaaS (optional)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The following procedure describes how to modify the
 ``/etc/openstack_deploy/user_variables.yml`` file to enable VPNaaS.
@@ -179,6 +179,37 @@ The VPNaaS default configuration options are changed through the
 dict.
 
 .. _conf override: https://docs.openstack.org/openstack-ansible/latest/admin/openstack-operations.html
+
+You can also define customized configuration files for VPN service with the variable
+``neutron_vpnaas_custom_config``:
+
+.. code-block:: yaml
+
+   neutron_vpnaas_custom_config:
+      - src: "/etc/openstack_deploy/strongswan/strongswan.conf.template"
+        dest: "{{ neutron_conf_dir }}/strongswan.conf.template"
+        condition: "{{ ansible_facts['os_family'] | lower == 'debian' }}"
+      - src: "/etc/openstack_deploy/strongswan/strongswan.d"
+        dest: "/etc/strongswan.d"
+        condition: "{{ ansible_facts['os_family'] | lower == 'debian' }}"
+      - src: "/etc/openstack_deploy/{{ neutron_vpnaas_distro_packages }}/ipsec.conf.template"
+        dest: "{{ neutron_conf_dir }}/ipsec.conf.template"
+      - src: "/etc/openstack_deploy/{{ neutron_vpnaas_distro_packages }}/ipsec.secret.template"
+        dest: "{{ neutron_conf_dir }}/ipsec.secret.template"
+
+With that ``neutron_l3_agent_ini_overrides`` should be also defined in 'user_variables.yml'
+to tell ``l3_agent`` use the new config file:
+
+.. code-block:: yaml
+
+   neutron_l3_agent_ini_overrides:
+         ipsec:
+            enable_detailed_logging: True
+         strongswan:
+            strongswan_config_template : "{{ neutron_conf_dir }}/strongswan.conf.template"
+         openswan:
+            ipsec_config_template:  "{{ neutron_conf_dir }}/ipsec.conf.template"
+
 
 BGP Dynamic Routing service (optional)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

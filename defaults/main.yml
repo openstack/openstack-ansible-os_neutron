@@ -455,6 +455,14 @@ neutron_nova_metadata_insecure: "{{ nova_metadata_insecure | default(False) }}"
 neutron_driver_vpnaas: "{{ _neutron_driver_vpnaas }}"
 neutron_vpnaas_service_provider: "{{ _neutron_vpnaas_service_provider }}"
 
+#Set this variable to use custom config file for strongswan/openswan
+# neutron_vpnaas_custom_config:
+#   - src: "/etc/openstack_deploy/strongswan/strongswan.conf.template"
+#     dest: "{{ neutron_conf_dir }}/strongswan.conf.template"
+#     condition: "{{ ansible_facts['os_family'] | lower == 'debian' }}"
+
+neutron_vpnaas_custom_config: []
+
 # Calico Felix agent upstream settings
 calico_felix_url: "https://github.com/projectcalico/felix/releases/download/{{ calico_felix_version }}/calico-felix-amd64"
 calico_felix_version: v3.21.2
