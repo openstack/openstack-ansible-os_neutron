@@ -188,6 +188,10 @@ username = {{ neutron_service_user_name }}
 password = {{ neutron_service_password }}
 region_name = {{ keystone_service_region }}
 
+service_token_roles_required = {{ neutron_service_token_roles_required | bool }}
+service_token_roles = {{ neutron_service_token_roles | join(',') }}
+service_type = {{ neutron_service_type }}
+
 memcached_servers = {{ neutron_memcached_servers }}
 token_cache_time = 300
 # Prevent cache poisoning if sharing a memcached server

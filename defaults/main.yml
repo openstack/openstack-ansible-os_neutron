@@ -289,7 +289,12 @@ neutron_rpc_workers: "{{ [[(ansible_facts['processor_vcpus']//ansible_facts['pro
 neutron_service_project_name: service
 neutron_service_project_domain_id: default
 neutron_service_user_domain_id: default
-neutron_service_role_name: admin
+neutron_service_role_names:
+  - admin
+  - service
+neutron_service_token_roles:
+  - service
+neutron_service_token_roles_required: "{{ openstack_service_token_roles_required | default(True) }}"
 neutron_service_user_name: neutron
 neutron_service_name: neutron
 neutron_service_type: network

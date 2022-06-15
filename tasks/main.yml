@@ -203,7 +203,7 @@
     _service_users:
       - name: "{{ neutron_service_user_name }}"
         password: "{{ neutron_service_password }}"
-        role: "{{ neutron_service_role_name }}"
+        role: "{{ neutron_service_role_names }}"
     _service_endpoints:
       - service: "{{ neutron_service_name }}"
         interface: "public"
