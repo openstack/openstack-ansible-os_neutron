@@ -26,7 +26,6 @@ dns_domain = {{ neutron_dns_domain }}
 {% if neutron_services['neutron-server']['group'] in group_names %}
 
 # General, only applies to neutron server host group
-allow_overlapping_ips = True
 vlan_transparent = False
 
 # Plugins
