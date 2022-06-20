@@ -195,6 +195,19 @@
   when:
     - "'bgpvpn' in neutron_plugin_base"
 
+- name: Copy vpnaas custom config files
+  copy:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    owner: "root"
+    group: "{{ neutron_system_group_name }}"
+    mode: "0640"
+  loop: "{{ neutron_vpnaas_custom_config }}"
+  when:
+    - neutron_vpnaas_custom_config | length > 0
+    - neutron_services['neutron-l3-agent']['group'] in group_name
+    - item.condition | default(True)
+
 - name: Stop haproxy service on debian derivatives with standalone network nodes
   service:
     name: haproxy
