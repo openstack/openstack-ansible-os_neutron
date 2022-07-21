@@ -31,9 +31,8 @@
   when:
     - neutron_services['neutron-ovn-controller']['group'] in group_names
 
-# (todo) Dynamic encap type
 - name: Configure Supported OVN Overlay Protocols
-  command: "ovs-vsctl set open . external-ids:ovn-encap-type=geneve,vxlan"
+  command: "ovs-vsctl set open . external-ids:ovn-encap-type={{ neutron_provider_networks.network_types.split(',') | intersect(['geneve', 'vxlan', 'stt']) | join(',') }}"
   when:
     - neutron_services['neutron-ovn-controller']['group'] in group_names
 
