@@ -40,15 +40,6 @@
   when:
     - neutron_services['neutron-ovn-controller']['group'] in group_names
 
-- name: Ensure Open vSwitch service is started and enabled
-  systemd:
-    name: "{{ neutron_ovs_service_name }}"
-    state: started
-    enabled: yes
-  when:
-    - neutron_services['neutron-ovn-northd']['group'] in group_names
-      or neutron_services['neutron-ovn-controller']['group'] in group_names
-
 - name: Ensure ovn-northd service is started and enabled
   systemd:
     name: "{{ neutron_ovn_northd_service_name }}"

@@ -106,11 +106,12 @@
         ('need_db_expand' not in ansible_local['openstack_ansible']['neutron']) or
         ('need_db_contract' not in ansible_local['openstack_ansible']['neutron'])
 
-- name: Ensure Open vSwitch service is started and enabled
+- name: Ensure Open vSwitch service state is set according to node group
   service:
     name: "{{ neutron_ovs_service_name }}"
-    state: started
-    enabled: yes
+    state: "{{ _neutron_ovs_disabled | ternary('stopped', 'started') }}"
+    enabled: "{{ _neutron_ovs_disabled | ternary(false, true) }}"
+    masked: "{{ _neutron_ovs_disabled | ternary(true, omit) }}"
   when: neutron_needs_openvswitch | bool
 
 # NOTE(hwoarang) contains may share the same physical host so we only

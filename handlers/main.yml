@@ -76,7 +76,9 @@
     state: restarted
   listen:
     - "Restart provider services"
-  when: neutron_needs_openvswitch | bool
+  when:
+    - neutron_needs_openvswitch | bool
+    - not _neutron_ovs_disabled
 
 - name: Symlink neutron config directory
   file:

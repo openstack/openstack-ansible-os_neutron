@@ -265,6 +265,8 @@ _neutron_non_tunnel_types:
   - vlan
   - local
 
+_neutron_ovs_disabled: "{{ (neutron_services['neutron-ovn-northd']['group'] in group_names) and (neutron_services['neutron-ovn-controller']['group'] not in group_names) }}"
+
 # Tunnel network types used by the OVS agent
 neutron_tunnel_types: "{{ neutron_ml2_drivers_type.split(',') | difference(_neutron_non_tunnel_types) | join(',') }}"
 
