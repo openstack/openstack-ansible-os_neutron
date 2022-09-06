@@ -65,4 +65,4 @@
   when:
     - neutron_services['neutron-ovn-controller']['group'] in group_names
 
-- include: setup_ovs_ovn.yml
+- ansible.builtin.include_tasks: setup_ovs_ovn.yml
