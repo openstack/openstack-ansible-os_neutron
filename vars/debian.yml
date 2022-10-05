@@ -71,7 +71,7 @@ neutron_ovn_northd_distro_packages:
   - ovn-central
 
 neutron_devel_distro_packages:
-  - git-core
+  - git
   - libsystemd-dev
   - python3-httplib2
 
