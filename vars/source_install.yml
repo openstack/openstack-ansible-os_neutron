@@ -25,7 +25,7 @@
 neutron_package_list: |-
   {% set packages = neutron_distro_packages %}
   {% if neutron_needs_openvswitch | bool %}
-  {% if (ovs_dpdk_support and ansible_pkg_mgr == 'apt') %}
+  {% if (ovs_dpdk_support and ansible_facts['pkg_mgr'] == 'apt') %}
   {% set _ = packages.extend(neutron_ovs_dpdk_required_packages) %}
   {% else %}
   {% set _ = packages.extend(neutron_ovs_distro_packages) %}

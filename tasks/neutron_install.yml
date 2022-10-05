@@ -131,7 +131,7 @@
       {%-   endif -%}
       {%- endfor -%}
       {{ apparmor_hosts | unique }}
-  when: ansible_pkg_mgr == 'apt'
+  when: ansible_facts['pkg_mgr'] == 'apt'
 
 - import_tasks: neutron_apparmor.yml
   when:
