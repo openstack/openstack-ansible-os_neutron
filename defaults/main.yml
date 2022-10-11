@@ -178,8 +178,6 @@ neutron_server_init_overrides: {}
 neutron_rpc_server_init_overrides: {}
 neutron_sriov_nic_agent_ini_overrides: {}
 neutron_sriov_nic_agent_init_overrides: {}
-neutron_vpn_agent_init_overrides: {}
-neutron_vpnaas_agent_ini_overrides: {}
 neutron_ovn_metadata_agent_ini_overrides: {}
 neutron_ovn_metadata_agent_init_overrides: {}
 
