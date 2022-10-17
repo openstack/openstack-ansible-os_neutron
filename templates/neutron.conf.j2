@@ -212,6 +212,9 @@ connection_recycle_time = {{ neutron_db_connection_recycle_time }}
 {% if neutron_vpnaas | bool %}
 service_provider = {{ neutron_vpnaas_service_provider }}
 {% endif %}
+{% if neutron_fwaas_v2 | bool %}
+service_provider = {{ neutron_fwaasv2_service_provider }}
+{% endif %}
 
 {% endif %}
 

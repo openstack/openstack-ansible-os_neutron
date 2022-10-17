@@ -53,6 +53,9 @@ neutron_optional_calico_pip_packages:
   - python-etcd
   - etcd3gw
 
+neutron_optional_fwaas_pip_packages:
+  - "git+{{ neutron_fwaas_git_repo }}@{{ neutron_fwaas_git_install_branch }}#egg=neutron-fwaas"
+
 neutron_optional_vpnaas_pip_packages:
   - "git+{{ neutron_vpnaas_git_repo }}@{{ neutron_vpnaas_git_install_branch }}#egg=neutron-vpnaas"
 
@@ -83,6 +86,9 @@ neutron_venv_packages: >-
   {%- set pkg_list = neutron_pip_packages | union(neutron_user_pip_packages) %}
   {%- if neutron_bgp | bool %}
   {%-   set _ = pkg_list.extend(neutron_optional_bgp_pip_packages) %}
+  {%- endif %}
+  {%- if neutron_fwaas_v2 | bool %}
+  {%- set _ = pkg_list.extend(neutron_optional_fwaas_pip_packages) %}
   {%- endif %}
   {%- if neutron_vpnaas | bool %}
   {%-   set _ = pkg_list.extend(neutron_optional_vpnaas_pip_packages) %}
@@ -302,6 +308,7 @@ neutron_metadata: "{% if neutron_plugin_type.split('.')[0] == 'ml2' %}True{% els
 ###
 ### FWaaS Plugin Configuration
 ###
+neutron_fwaas_v2: "{{ ('firewall_v2' in neutron_plugin_base) | ternary('True', 'False') }}"
 
 ###
 ### VPNaaS Plugin Configuration

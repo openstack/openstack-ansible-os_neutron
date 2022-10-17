@@ -53,6 +53,8 @@ neutron_pip_package_state: "latest"
 # Source git repo/branch settings
 neutron_git_repo: https://opendev.org/openstack/neutron
 neutron_git_install_branch: master
+neutron_fwaas_git_repo: https://opendev.org/openstack/neutron-fwaas
+neutron_fwaas_git_install_branch: master
 neutron_vpnaas_git_repo: https://opendev.org/openstack/neutron-vpnaas
 neutron_vpnaas_git_install_branch: master
 neutron_dynamic_routing_git_repo: https://opendev.org/openstack/neutron-dynamic-routing
@@ -338,7 +340,7 @@ neutron_ipv6_ptr_zone_prefix_size: 116
 # Other plugins can be added to the system by simply extending the list `neutron_plugin_base`.
 # neutron_plugin_base:
 #   - router
-#   - firewall/firewall_v2 either one or the other, not both
+#   - firewall_v2
 #   - neutron_dynamic_routing.services.bgp.bgp_plugin.BgpPlugin
 #   - vpnaas
 #   - metering
@@ -445,6 +447,13 @@ neutron_nova_metadata_protocol: "{{ nova_metadata_protocol | default('http') }}"
 # If the nova_metadata_protocol is using a self-signed cert, then
 # this flag should be set to a boolean True.
 neutron_nova_metadata_insecure: "{{ nova_metadata_insecure | default(False) }}"
+
+###
+### FWaaS Configuration
+###
+
+neutron_driver_fwaasv2: iptables_v2
+neutron_fwaasv2_service_provider: FIREWALL_V2:fwaas_db:neutron_fwaas.services.firewall.service_drivers.agents.agents.FirewallAgentDriver:default
 
 ###
 ### VPNaaS Configuration
