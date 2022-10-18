@@ -70,6 +70,14 @@
     - "Restart neutron services"
     - "venv changed"
 
+- name: Restart openvswitch
+  service:
+    name: "{{ neutron_ovs_service_name }}"
+    state: restarted
+  listen:
+    - "Restart provider services"
+  when: neutron_needs_openvswitch | bool
+
 - name: Symlink neutron config directory
   file:
     # NOTE(cloudnull): The "src" path is relative. This ensures all files remain
