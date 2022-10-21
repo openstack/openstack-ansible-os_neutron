@@ -2,8 +2,8 @@
 
 # OVN cluster parameters
 {{ neutron_ovn_northd_opts }}=" \
-  --db-nb-create-insecure-remote=yes \
-  --db-sb-create-insecure-remote=yes \
+  --db-nb-create-insecure-remote={{ (neutron_ovn_ssl) | ternary('no','yes') }} \
+  --db-sb-create-insecure-remote={{ (neutron_ovn_ssl) | ternary('no','yes') }} \
   --db-nb-addr={{ ansible_host }} \
   --db-sb-addr={{ ansible_host }} \
   --db-nb-cluster-local-addr={{ ansible_host }} \
@@ -12,6 +12,21 @@
   --db-nb-cluster-remote-addr={% for item in leader_node %}{{ item }} {% endfor %} \
   --db-sb-cluster-remote-addr={% for item in leader_node %}{{ item }} {% endfor %} \
   {% endif %}
-  --ovn-northd-nb-db=tcp:{{ groups['neutron_ovn_northd'] | map('extract', hostvars, ['ansible_host']) | join(':6641,tcp:') }}:6641 \
-  --ovn-northd-sb-db=tcp:{{ groups['neutron_ovn_northd'] | map('extract', hostvars, ['ansible_host']) | join(':6642,tcp:') }}:6642 \
+  --ovn-northd-nb-db={{ neutron_ovn_nb_connection }} \
+  --ovn-northd-sb-db={{ neutron_ovn_sb_connection }} \
+  {% if neutron_ovn_ssl %}
+  --db-nb-cluster-remote-proto=ssl \
+  --db-sb-cluster-remote-proto=ssl \
+  --db-nb-cluster-local-proto=ssl \
+  --db-sb-cluster-local-proto=ssl \
+  --ovn-northd-ssl-key={{ [neutron_ovn_conf_dir, neutron_ovn_ssl_key] | join('/') }} \
+  --ovn-northd-ssl-cert={{ [neutron_ovn_conf_dir, neutron_ovn_ssl_cert] | join('/') }} \
+  --ovn-northd-ssl-ca-cert={{ [neutron_ovn_conf_dir, neutron_ovn_ssl_ca_cert] | join('/') }} \
+  --ovn-nb-db-ssl-key={{ [neutron_ovn_conf_dir, neutron_ovn_ssl_key] | join('/') }} \
+  --ovn-nb-db-ssl-cert={{ [neutron_ovn_conf_dir, neutron_ovn_ssl_cert] | join('/') }} \
+  --ovn-nb-db-ssl-ca-cert={{ [neutron_ovn_conf_dir, neutron_ovn_ssl_ca_cert] | join('/') }} \
+  --ovn-sb-db-ssl-key={{ [neutron_ovn_conf_dir, neutron_ovn_ssl_key] | join('/') }} \
+  --ovn-sb-db-ssl-cert={{ [neutron_ovn_conf_dir, neutron_ovn_ssl_cert] | join('/') }} \
+  --ovn-sb-db-ssl-ca-cert={{ [neutron_ovn_conf_dir, neutron_ovn_ssl_ca_cert] | join('/') }} \
+  {% endif %}
 "

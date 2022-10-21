@@ -477,13 +477,86 @@ calico_felix_sha256: 076936b985379fb8221db9b9a798714f6f97429a630da9c46da89bfcb0f
 calico_felix_validate_certs: yes
 
 # OVN Defaults
+neutron_ovn_ssl: True
+ovn_proto: "{{ (neutron_ovn_ssl) | ternary('ssl','tcp') }}"
 neutron_ovn_primary_cluster_node: "{{ groups[neutron_services['neutron-ovn-northd']['group']] | first }}"
 neutron_ovn_northd_service_name: ovn-northd
 neutron_ovn_controller_service_name: ovn-controller
 neutron_ovn_l3_scheduler: leastloaded
-neutron_ovn_nb_connection: "tcp:{{ groups['neutron_ovn_northd'] | map('extract', hostvars, ['ansible_host']) | join(':6641,tcp:') }}:6641"
-neutron_ovn_sb_connection: "tcp:{{ groups['neutron_ovn_northd'] | map('extract', hostvars, ['ansible_host']) | join(':6642,tcp:') }}:6642"
+neutron_ovn_nb_connection: "{{ ovn_proto }}:{{ groups['neutron_ovn_northd'] | map('extract', hostvars, ['ansible_host']) | join(':6641,'+ ovn_proto + ':') }}:6641"
+neutron_ovn_sb_connection: "{{ ovn_proto }}:{{ groups['neutron_ovn_northd'] | map('extract', hostvars, ['ansible_host']) | join(':6642,' + ovn_proto + ':') }}:6642"
 neutron_ovsdb_manager: ptcp:6640:127.0.0.1
+
+# Storage location for SSL certificate authority
+neutron_ovn_pki_dir: "{{ openstack_pki_dir }}"
+# Delegated host for operating the certificate authority
+neutron_ovn_pki_setup_host: "{{ openstack_pki_setup_host | default('localhost') }}"
+# The local address used for the neutron_ovn node
+neutron_ovn_node_address: "{{ management_address | default('127.0.0.1') }}"
+# neutron OVN server certificate
+neutron_ovn_pki_keys_path: "{{ neutron_ovn_pki_dir ~ '/certs/private/' }}"
+neutron_ovn_pki_certs_path: "{{ neutron_ovn_pki_dir ~ '/certs/certs/' }}"
+neutron_ovn_pki_intermediate_cert_name: "{{ openstack_pki_service_intermediate_cert_name }}"
+neutron_ovn_pki_intermediate_chain_path: "{{ neutron_ovn_pki_dir ~ '/roots/' ~ neutron_ovn_pki_intermediate_cert_name ~ '/certs/' ~ neutron_ovn_pki_intermediate_cert_name ~ '-chain.crt' }}"
+neutron_ovn_pki_regen_cert: ""
+neutron_ovn_pki_certificates:
+  - name: "neutron_ovn_{{ ansible_facts['hostname'] }}"
+    provider: ownca
+    cn: "{{ ansible_facts['hostname'] }}"
+    san: "{{ 'DNS:' ~ ansible_facts['hostname'] ~ ',IP:' ~ neutron_ovn_node_address }}"
+    signed_by: "{{ neutron_ovn_pki_intermediate_cert_name }}"
+
+# OVN destination files for SSL certificates
+neutron_ovn_ssl_cert: "neutron_ovn.pem"
+neutron_ovn_ssl_key: "neutron_ovn.key"
+neutron_ovn_ssl_ca_cert: "neutron_ovn-ca.pem"
+neutron_ovn_conf_dir: "/etc/openvswitch"
+# Installation details for SSL certificates
+neutron_ovn_pki_install_certificates:
+  - src: "{{ neutron_ovn_user_ssl_cert | default(neutron_ovn_pki_certs_path ~ 'neutron_ovn_' ~ ansible_facts['hostname'] ~ '-chain.crt') }}"
+
+    dest: "{{ [neutron_ovn_conf_dir, neutron_ovn_ssl_cert] | join('/') }}"
+    owner: "{{ neutron_ovn_system_user_name }}"
+    group: "{{ neutron_ovn_system_user_name }}"
+    mode: "0644"
+    condition: "{{ (neutron_ovn_ssl and neutron_needs_openvswitch and neutron_plugin_type == 'ml2.ovn') }}"
+  - src: "{{ neutron_ovn_user_ssl_key | default(neutron_ovn_pki_keys_path ~ 'neutron_ovn_' ~ ansible_facts['hostname'] ~ '.key.pem') }}"
+    dest: "{{ [neutron_ovn_conf_dir, neutron_ovn_ssl_key] | join('/') }}"
+    owner: "{{ neutron_ovn_system_user_name }}"
+    group: "{{ neutron_ovn_system_user_name }}"
+    mode: "0600"
+    condition: "{{ (neutron_ovn_ssl and neutron_needs_openvswitch) }}"
+  - src: "{{ neutron_ovn_user_ssl_ca_cert | default(neutron_ovn_pki_intermediate_chain_path) }}"
+    dest: "{{ [neutron_ovn_conf_dir, neutron_ovn_ssl_ca_cert] | join('/')  }}"
+    owner: "{{ (neutron_services['neutron-server']['group'] in group_names) | ternary( neutron_service_user_name, neutron_ovn_system_user_name) }}"
+    group: "{{ (neutron_services['neutron-server']['group'] in group_names) | ternary( neutron_service_user_name, neutron_ovn_system_user_name) }}"
+    mode: "0644"
+    condition: "{{ (neutron_ovn_ssl and neutron_needs_openvswitch and neutron_plugin_type == 'ml2.ovn') }}"
+  - src: "{{ neutron_ovn_user_ssl_cert | default(neutron_ovn_pki_certs_path ~ 'neutron_ovn_' ~ ansible_facts['hostname'] ~ '-chain.crt') }}"
+    dest: "{{ [neutron_conf_version_dir, neutron_ovn_ssl_cert] | join('/') }}"
+    owner: "{{ neutron_service_user_name }}"
+    group: "{{ neutron_service_user_name }}"
+    mode: "0644"
+    condition: "{{ (neutron_ovn_ssl and neutron_plugin_type == 'ml2.ovn' and (filtered_neutron_services |length + uwsgi_neutron_services | length ) > 0) }}"
+  - src: "{{ neutron_ovn_user_ssl_key | default(neutron_ovn_pki_keys_path ~ 'neutron_ovn_' ~ ansible_facts['hostname'] ~ '.key.pem') }}"
+    dest: "{{ [neutron_conf_version_dir, neutron_ovn_ssl_key] | join('/') }}"
+    owner: "{{ neutron_service_user_name }}"
+    group: "{{ neutron_service_user_name }}"
+    mode: "0600"
+    condition: "{{ (neutron_ovn_ssl and neutron_plugin_type == 'ml2.ovn' and (filtered_neutron_services |length + uwsgi_neutron_services | length ) > 0) }}"
+  - src: "{{ neutron_ovn_user_ssl_ca_cert | default(neutron_ovn_pki_intermediate_chain_path) }}"
+    dest: "{{ [neutron_conf_version_dir, neutron_ovn_ssl_ca_cert] | join('/') }}"
+    owner: "{{ neutron_service_user_name }}"
+    group: "{{ neutron_service_user_name }}"
+    mode: "0644"
+    condition: "{{ (neutron_ovn_ssl and neutron_plugin_type == 'ml2.ovn' and (filtered_neutron_services |length + uwsgi_neutron_services | length ) > 0) }}"
+
+# Define user-provided SSL certificates in:
+# /etc/openstack_deploy/user_variables.yml
+#neutron_ovnnb_user_ssl_cert: <path to cert on ansible deployment host>
+#neutron_ovnnb_user_ssl_key: <path to cert on ansible deployment host>
+#neutron_ovnsb_user_ssl_cert: <path to cert on ansible deployment host>
+#neutron_ovnsb_user_ssl_key: <path to cert on ansible deployment host>
 
 ###
 ### DPDK Configuration

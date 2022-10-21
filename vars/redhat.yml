@@ -36,6 +36,12 @@ neutron_ovn_northd_opts: "OVN_NORTHD_OPTS"
 
 neutron_ovn_northd_opts_file: "/etc/sysconfig/ovn-northd"
 
+neutron_ovn_controller_opts: "OVN_CONTROLLER_OPTS"
+
+neutron_ovn_controller_opts_file: "/etc/sysconfig/ovn-controller"
+
+neutron_ovn_system_user_name: openvswitch
+
 neutron_distro_packages:
   - conntrack-tools
   - dnsmasq
