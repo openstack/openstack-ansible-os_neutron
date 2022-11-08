@@ -107,6 +107,12 @@ notify_nova_on_port_data_changes = True
 send_events_interval = 2
 
 # End of [DEFAULT] section
+
+{% if neutron_plugin_type == 'ml2.lxb' %}
+[experimental]
+linuxbridge = True
+{% endif %}
+
 {% if neutron_designate_enabled %}
 
 [designate]
