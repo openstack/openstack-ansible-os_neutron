@@ -35,8 +35,7 @@ neutron_pip_packages:
   - "git+{{ neutron_git_repo }}@{{ neutron_git_install_branch }}#egg=neutron"
   - osprofiler
   - PyMySQL
-  - pymemcache
-  - python-memcached
+  - oslo.cache[dogpile]
   - systemd-python
 
 # Specific pip packages provided by the user

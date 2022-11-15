@@ -76,6 +76,7 @@ neutron_devel_distro_packages:
   - python3-httplib2
 
 neutron_service_distro_packages:
+  - python3-binary-memcached
   - python3-memcache
   - python3-neutron
   - python3-systemd
