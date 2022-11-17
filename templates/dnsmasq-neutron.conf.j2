@@ -3,6 +3,9 @@
 {% for key, value in neutron_dhcp_config.items() %}
 {{ key }}={{ value }}
 {% endfor %}
+{% for option in neutron_dhcp_config_list %}
+{{ option }}
+{% endfor %}
 user={{ neutron_system_user_name }}
 {% if neutron_dnsmasq_noresolv %}
 no-resolv

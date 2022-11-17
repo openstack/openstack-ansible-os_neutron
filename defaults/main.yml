@@ -121,6 +121,11 @@ neutron_dns_domain: "{{ dhcp_domain | default('openstacklocal.') }}"
 #  dhcp-option-force: "26,1500"
 neutron_dhcp_config: {}
 
+# Dnsmasq has furthermore some options in its configuration that are not
+# key/value pairs but just options. A deployer can configure those with this
+# list:
+neutron_dhcp_config_list: []
+
 # Disable dnsmasq to resolve DNS via local resolv.conf.
 # When dnsmasq_dns_servers are not set,
 # and neutron_dnsmasq_noresolv is set to True, dnsmasq will reply with
