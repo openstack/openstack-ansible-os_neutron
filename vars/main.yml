@@ -24,9 +24,6 @@ neutron_needs_openvswitch: >-
   or (neutron_services['neutron-ovn-controller']['group'] in group_names and (neutron_plugin_type == 'ml2.ovn') | bool)
   or ((neutron_services['neutron-server']['group'] not in group_names) and neutron_plugin_type == 'ml2.opendaylight') }}
 
-# Set the Calico Felix agent executable destination path
-calico_felix_bin: /usr/local/bin/calico-felix
-
 ###
 ### Python code details
 ###
@@ -46,11 +43,6 @@ neutron_optional_oslomsg_amqp1_pip_packages:
 
 neutron_optional_bgp_pip_packages:
   - "git+{{ neutron_dynamic_routing_git_repo }}@{{ neutron_dynamic_routing_git_install_branch }}#egg=neutron-dynamic-routing"
-
-neutron_optional_calico_pip_packages:
-  - "git+{{ networking_calico_git_repo }}@{{ networking_calico_git_install_branch }}#egg=networking-calico"
-  - python-etcd
-  - etcd3gw
 
 neutron_optional_fwaas_pip_packages:
   - "git+{{ neutron_fwaas_git_repo }}@{{ neutron_fwaas_git_install_branch }}#egg=neutron-fwaas"
@@ -97,12 +89,6 @@ neutron_venv_packages: >-
   {%- endif %}
   {%- if neutron_oslomsg_amqp1_enabled | bool %}
   {%-   set _ = pkg_list.extend(neutron_optional_oslomsg_amqp1_pip_packages) %}
-  {%- endif %}
-  {%- if (neutron_plugin_type.split('.')[-1] == 'calico') and
-         ((neutron_services['neutron-server']['group'] in group_names) or
-          (neutron_services['calico-felix']['group'] in group_names) or
-          (neutron_services['calico-dhcp-agent']['group'] in group_names)) %}
-  {%-     set _ = pkg_list.extend(neutron_optional_calico_pip_packages) %}
   {%- endif %}
   {%- if (neutron_plugin_type.split('.')[-1] == 'nuage') and
          (neutron_services['neutron-server']['group'] in group_names) %}
@@ -193,12 +179,6 @@ neutron_plugins:
     mechanisms: "openvswitch"
     l3_agent_mode: "{% if 'network_hosts' in group_names %}dvr_snat{% else %}dvr{% endif %}"
     router_distributed: True
-    plugin_conf_ini_overrides: "{{ neutron_ml2_conf_ini_overrides }}"
-    plugin_core: ml2
-    plugin_ini: plugins/ml2/ml2_conf.ini
-  ml2.calico:
-    drivers_type: "flat, local"
-    mechanisms: "calico"
     plugin_conf_ini_overrides: "{{ neutron_ml2_conf_ini_overrides }}"
     plugin_core: ml2
     plugin_ini: plugins/ml2/ml2_conf.ini
@@ -493,31 +473,6 @@ neutron_services:
     init_config_overrides: "{{ neutron_rpc_server_init_overrides | combine(neutron_server_init_overrides) }}"
     start_order: 2
     execstarts: "{{ neutron_bin }}/neutron-rpc-server --config-file {{ neutron_conf_dir }}/neutron.conf --config-file {{ neutron_conf_dir }}/{{ neutron_plugins[neutron_plugin_type].plugin_ini }}{%- if ('ml2.genericswitch' in neutron_plugin_types) %} --config-file {{ neutron_conf_dir }}/{{ neutron_plugins['ml2.genericswitch'].plugin_ini }}{%- endif %}"
-  calico-felix:
-    group: neutron_calico_dhcp_agent
-    systemd_user_name: root
-    systemd_group_name: root
-    service_name: calico-felix
-    service_en: "{{ neutron_plugin_type == 'ml2.calico' }}"
-    service_conf_path: /etc/calico
-    service_conf: felix.cfg
-    execstarts: "{{ calico_felix_bin }} --config-file /etc/calico/felix.cfg"
-    config_overrides: "{{ neutron_calico_felix_ini_overrides }}"
-    config_type: "ini"
-    init_config_overrides: "{{ neutron_calico_felix_init_overrides }}"
-    start_order: 3
-  calico-dhcp-agent:
-    group: neutron_calico_dhcp_agent
-    systemd_user_name: root
-    systemd_group_name: root
-    service_name: calico-dhcp-agent
-    service_en: "{{ neutron_plugin_type == 'ml2.calico' }}"
-    service_rootwrap: rootwrap.d/dhcp.filters
-    execstarts: "{{ neutron_bin }}/calico-dhcp-agent --config-file {{ neutron_conf_dir }}/neutron.conf"
-    config_overrides: "{{ neutron_calico_dhcp_agent_ini_overrides }}"
-    config_type: "ini"
-    init_config_overrides: "{{ neutron_calico_dhcp_agent_init_overrides }}"
-    start_order: 3
   neutron-sriov-nic-agent:
     group: neutron_sriov_nic_agent
     service_name: neutron-sriov-nic-agent

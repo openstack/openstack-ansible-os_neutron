@@ -69,8 +69,6 @@ agents2
 server1
 server2
 
-[neutron_calico_dhcp_agent]
-
 [neutron_all:children]
 neutron_agent
 neutron_dhcp_agent
