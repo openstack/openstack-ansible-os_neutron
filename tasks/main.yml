@@ -123,6 +123,25 @@
   tags:
     - neutron-config
 
+# create the ssl certs before the installation of the services.
+- name: Create and install SSL certificates
+  include_role:
+    name: pki
+    tasks_from: main_certs.yml
+  vars:
+    pki_setup_host: "{{ neutron_ovn_pki_setup_host }}"
+    pki_dir: "{{ neutron_ovn_pki_dir }}"
+    pki_create_certificates: "{{ neutron_ovn_user_ssl_cert is not defined and neutron_ovn_user_ssl_key is not defined }}"
+    pki_regen_cert: "{{ neutron_ovn_pki_regen_cert }}"
+    pki_certificates: "{{ neutron_ovn_pki_certificates }}"
+    pki_install_certificates: "{{ neutron_ovn_pki_install_certificates }}"
+  when:
+    - neutron_ovn_ssl
+    - (neutron_services['neutron-ovn-controller']['group'] in group_names) or (neutron_services['neutron-ovn-northd']['group'] in group_names) or (neutron_services['neutron-server']['group'] in group_names)
+  tags:
+    - neutron_ovn-config
+    - pki
+
 # Include provider specific config(s)
 - include_tasks: "{{ item }}"
   with_first_found:

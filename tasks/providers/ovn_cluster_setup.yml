@@ -45,8 +45,10 @@
   args:
     executable: /bin/bash
   ignore_errors: true
-  delegate_to: "{{ item }}"
+  delegate_to: "{{ container }}"
   with_items: "{{ groups['neutron_ovn_northd'] }}"
+  loop_control:
+    loop_var: container
   run_once: true
   failed_when: false
   register: _find_leader
@@ -56,7 +58,7 @@
 # set leader_node variable
 - name: Set leader_node fact
   set_fact:
-    leader_node: "{{ (_find_leader.results | selectattr('stdout', 'search', 'leader')) | map(attribute='item') | list  }}"
+    leader_node: "{{ (_find_leader.results | selectattr('stdout', 'search', 'leader')) | map(attribute='container') | list  }}"
 
 # This play only run first time to build cluster using primary node.
 - name: Setup ovn cluster using primary node.
@@ -67,9 +69,33 @@
     - "inventory_hostname == neutron_ovn_primary_cluster_node"
     - _check_cluster_db.rc != 0
     - not leader_node
-  notify:
-    - start ovn service
-    - restart ovn service
+  register: ovn_northd_opts
+
+- name: Start ovn service
+  service:
+    name: "{{ neutron_ovn_northd_service_name }}"
+    state: started
+  when:
+    - "inventory_hostname == neutron_ovn_primary_cluster_node"
+    - _check_cluster_db.rc != 0
+    - not leader_node
+    - ovn_northd_opts.changed
+
+- name: set ssl for ovn-nb and ovn-sb
+  command: "{{ cmd }}"
+  with_items:
+    - "ovn-nbctl set-connection pssl:6641"
+    - "ovn-sbctl set-connection pssl:6642"
+  when:
+    - neutron_ovn_ssl
+    - "inventory_hostname == neutron_ovn_primary_cluster_node"
+    - _check_cluster_db.rc != 0
+    - not leader_node
+    - ovn_northd_opts.changed
+  loop_control:
+    loop_var: cmd
+  tags:
+    - neutron_ovn-config
 
 # This play will add nodes in existing cluster using leader_node var.
 - name: Join new nodes to ovn cluster using leader node

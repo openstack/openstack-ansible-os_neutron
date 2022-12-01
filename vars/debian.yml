@@ -29,6 +29,12 @@ neutron_ovn_northd_opts: "OVN_CTL_OPTS"
 
 neutron_ovn_northd_opts_file: "/etc/default/ovn-central"
 
+neutron_ovn_controller_opts: "OVN_CTL_OPTS"
+
+neutron_ovn_controller_opts_file: "/etc/default/ovn-host"
+
+neutron_ovn_system_user_name: root
+
 neutron_ovs_dpdk_required_packages:
   - openvswitch-common
   - openvswitch-switch-dpdk

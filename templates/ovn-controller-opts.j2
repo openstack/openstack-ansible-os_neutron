@@ -1,0 +1,9 @@
+# {{ ansible_managed }}
+
+# OVN controller parameters
+
+{{ neutron_ovn_controller_opts }}="--ovn-controller-ssl-key={{ [neutron_ovn_conf_dir, neutron_ovn_ssl_key] | join('/') }} \
+  --ovn-controller-ssl-cert={{ [neutron_ovn_conf_dir, neutron_ovn_ssl_cert] | join('/') }} \
+  --ovn-controller-ssl-ca-cert={{ [neutron_ovn_conf_dir, neutron_ovn_ssl_ca_cert] | join('/') }} \
+"
+
