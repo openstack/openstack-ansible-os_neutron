@@ -351,8 +351,7 @@ neutron_ipv6_ptr_zone_prefix_size: 116
 #   - dns/dns_domain_ports/subnet_dns_publish_fixed_ip either one or the other, not both
 #   - port_forwarding
 neutron_plugin_base:
-  - router
-  - metering
+  - ovn-router
 
 ###
 ### Memcache override
@@ -365,13 +364,13 @@ neutron_memcached_servers: "{{ memcached_servers }}"
 
 # The neutron core plugin (ML2) is defined with neutron_plugin_type,
 # you can not load multiple ML2 plugins as core.
-neutron_plugin_type: 'ml2.lxb'
+neutron_plugin_type: 'ml2.ovn'
 
 # Additional ML2 plugins can be loaded with neutron_plugin_types (as list)
 neutron_plugin_types: []
 
 # ml2 network type drivers to load
-neutron_ml2_drivers_type: "flat,vlan,vxlan,local"
+neutron_ml2_drivers_type: "geneve,vlan,flat"
 
 # Enable or disable L2 Population.
 # When using ovs dvr it must be enabled
