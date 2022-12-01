@@ -22,6 +22,7 @@ neutron_needs_openvswitch: >-
   {{ (neutron_services['neutron-openvswitch-agent']['group'] in group_names and neutron_services['neutron-openvswitch-agent'].service_en | bool)
   or (neutron_services['neutron-ovn-northd']['group'] in group_names and (neutron_plugin_type == 'ml2.ovn') | bool)
   or (neutron_services['neutron-ovn-controller']['group'] in group_names and (neutron_plugin_type == 'ml2.ovn') | bool)
+  or (neutron_services['neutron-server']['group'] in group_names and (neutron_plugin_type == 'ml2.ovn') | bool)
   or ((neutron_services['neutron-server']['group'] not in group_names) and neutron_plugin_type == 'ml2.opendaylight') }}
 
 # Set the Calico Felix agent executable destination path
@@ -264,7 +265,7 @@ _neutron_non_tunnel_types:
   - vlan
   - local
 
-_neutron_ovs_disabled: "{{ (neutron_services['neutron-ovn-northd']['group'] in group_names) and (neutron_services['neutron-ovn-controller']['group'] not in group_names) }}"
+_neutron_ovs_disabled: "{{ (neutron_services['neutron-ovn-northd']['group'] or neutron_services['neutron-server']['group'] in group_names) and (neutron_services['neutron-ovn-controller']['group'] not in group_names) and (neutron_plugin_type == 'ml2.ovn') }}"
 
 # Tunnel network types used by the OVS agent
 neutron_tunnel_types: "{{ neutron_ml2_drivers_type.split(',') | difference(_neutron_non_tunnel_types) | join(',') }}"
