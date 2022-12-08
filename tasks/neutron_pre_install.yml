@@ -49,6 +49,7 @@
           neutron_conf_dir_stat.stat.isdir
   when:
     - neutron_install_method == 'source'
+    - ((filtered_neutron_services|length) + (uwsgi_neutron_services|length)) > 0
 
 - name: Create neutron dir
   file:

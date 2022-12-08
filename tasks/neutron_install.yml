@@ -86,7 +86,9 @@
       - section: "neutron"
         option: "venv_tag"
         value: "{{ neutron_venv_tag }}"
-  when: neutron_install_method == 'source'
+  when:
+    - neutron_install_method == 'source'
+    - ((filtered_neutron_services|length) + (uwsgi_neutron_services|length)) > 0
 
 - name: Initialise the upgrade facts
   ini_file:

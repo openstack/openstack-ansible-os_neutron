@@ -92,7 +92,9 @@
     src: "{{ neutron_bin }}/neutron-keepalived-state-change"
     dest: "/usr/local/bin/neutron-keepalived-state-change"
     state: link
-  when: neutron_install_method == 'source'
+  when:
+    - neutron_install_method == 'source'
+    - ((filtered_neutron_services|length) + (uwsgi_neutron_services|length)) > 0
 
 - name: Preserve original configuration file(s)
   command: "cp {{ item.target_f }} {{ item.target_f }}.original"
