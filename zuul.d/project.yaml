@@ -17,8 +17,8 @@
     templates:
       - check-requirements
       - openstack-ansible-linters-jobs
-      #- openstack-ansible-deploy-aio_metal-jobs
-      #- openstack-ansible-deploy-aio_distro_metal-jobs
+      - openstack-ansible-deploy-aio_metal-jobs
+      - openstack-ansible-deploy-aio_distro_metal-jobs
       - publish-openstack-docs-pti
       - build-release-notes-jobs-python3
     check:
@@ -29,17 +29,17 @@
         - openstack-ansible-deploy-aio_metal_ovs-ubuntu-focal
         - openstack-ansible-deploy-aio_ovs_lxc-centos-9-stream
         - openstack-ansible-deploy-aio_metal_ovs-centos-9-stream
-        - openstack-ansible-deploy-aio_ovn_lxc-centos-9-stream
-        - openstack-ansible-deploy-aio_ovn_metal-centos-9-stream
-        - openstack-ansible-deploy-aio_ovn_lxc-ubuntu-focal
-        - openstack-ansible-deploy-aio_metal_ovn-ubuntu-focal
+        - openstack-ansible-deploy-aio_lxb_lxc-centos-9-stream
+        - openstack-ansible-deploy-aio_lxb_metal-centos-9-stream
+        - openstack-ansible-deploy-aio_lxb_lxc-ubuntu-focal
+        - openstack-ansible-deploy-aio_lxb_metal-ubuntu-focal
     gate:
       jobs:
         - openstack-ansible-deploy-aio_ovs_lxc-ubuntu-focal
         - openstack-ansible-deploy-aio_metal_ovs-ubuntu-focal
         - openstack-ansible-deploy-aio_ovs_lxc-centos-9-stream
         - openstack-ansible-deploy-aio_metal_ovs-centos-9-stream
-        - openstack-ansible-deploy-aio_ovn_lxc-centos-9-stream
-        - openstack-ansible-deploy-aio_ovn_metal-centos-9-stream
-        - openstack-ansible-deploy-aio_ovn_lxc-ubuntu-focal
-        - openstack-ansible-deploy-aio_metal_ovn-ubuntu-focal
+        - openstack-ansible-deploy-aio_lxb_lxc-centos-9-stream
+        - openstack-ansible-deploy-aio_lxb_metal-centos-9-stream
+        - openstack-ansible-deploy-aio_lxb_lxc-ubuntu-focal
+        - openstack-ansible-deploy-aio_lxb_metal-ubuntu-focal
