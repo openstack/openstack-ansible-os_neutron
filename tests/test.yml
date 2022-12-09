@@ -33,5 +33,3 @@
 
 # Install and execute tempest
 - import_playbook: common/test-install-tempest.yml
-
-- import_playbook: test-calico-functional.yml

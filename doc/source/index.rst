@@ -14,7 +14,6 @@ Neutron role for OpenStack-Ansible
    app-ovn.rst
    app-nuage.rst
    app-nsx.rst
-   app-calico.rst
    app-opendaylight.rst
    app-genericswitch.rst
 

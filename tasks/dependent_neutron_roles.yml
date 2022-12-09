@@ -13,20 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-- name: Include etcd role
-  include_role:
-    name: etcd
-  vars:
-    etcd_install_type: gateway
-  when:
-    - "neutron_plugin_type in ['ml2.calico']"
-    - "group_names | intersect([
-         neutron_services['calico-dhcp-agent']['group'],
-         neutron_services['calico-felix']['group'],
-         neutron_services['neutron-server']['group']
-       ]) | length > 0"
-    - "'etcd' not in group_names"
-
 - name: Include ODL role
   include_role:
     name: opendaylight

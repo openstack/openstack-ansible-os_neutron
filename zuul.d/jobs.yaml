@@ -34,11 +34,6 @@
     parent: openstack-ansible-deploy-aio
     nodeset: ubuntu-focal
 
-- job:
-    name: openstack-ansible-deploy-aio_metal_calico-ubuntu-focal
-    parent: openstack-ansible-deploy-aio_metal-ubuntu-focal
-    nodeset: ubuntu-focal
-
 # CentOS 9
 - job:
     name: openstack-ansible-deploy-aio_ovs_lxc-centos-9-stream
