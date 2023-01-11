@@ -80,12 +80,32 @@ OpenStack-Ansible supports the following common deployment scenarios:
 - Collapsed Compute/Gateway Nodes
 - Standalone Gateway Nodes
 
-In an OpenStack-Ansible deployment, members of the ``network_hosts`` group are
-considered members of the ``neutron_ovn_northd`` group and run OVN northd-related
-services, while members of the ``compute_hosts`` group are considered members of
-the ``neutron_ovn_controller`` group and run OVN controller-related services. It is
-up to the deployer to dictate which nodes are considered "OVN Gateway Chassis" nodes
-by using the ``network-gateway_hosts`` inventory group in ``openstack_user_config.yml``.
+In an OpenStack-Ansible deployment, infrastructure hosts are intended to run
+OVN northd-related services, while compute hosts are intended to run
+OVN controller-related services.
+
+In ``openstack_user_config.yml``, specify the hosts or aliases that will run the
+``ovn-northd`` service(s), like so:
+
+.. code-block:: yaml
+
+  network-northd_hosts:
+    infra01:
+      ip: 172.25.1.11
+    infra02:
+      ip: 172.25.1.12
+    infra03:
+      ip: 172.25.1.13
+
+Alternatively, an alias can be specified, like so:
+
+.. code-block:: yaml
+
+  network-northd_hosts: *infrastructure_hosts
+
+It is up to the deployer to dictate which nodes are considered
+"OVN Gateway Chassis" nodes by using the ``network-gateway_hosts``
+inventory group in ``openstack_user_config.yml``.
 
 In ``openstack_user_config.yml``, specify the hosts or aliases that will run the
 ``ovn-controller`` service and act as an OVN Gateway Chassis, like so:
