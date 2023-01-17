@@ -279,13 +279,13 @@ neutron_l3: "{% if 'router' in neutron_plugin_base or 'neutron.services.l3_route
 ### DHCP Agent Plugin Configuration
 ###
 
-neutron_dhcp: "{% if neutron_plugin_type.split('.')[0] == 'ml2' %}True{% else %}False{% endif %}"
+neutron_dhcp: "{% if (neutron_plugin_type.split('.')[0] == 'ml2') and  (neutron_plugin_type != 'ml2.ovn') %}True{% else %}False{% endif %}"
 
 ###
 ### Metadata Agent Plugin Configuration
 ###
 
-neutron_metadata: "{% if neutron_plugin_type.split('.')[0] == 'ml2' %}True{% else %}False{% endif %}"
+neutron_metadata: "{% if (neutron_plugin_type.split('.')[0] == 'ml2') and (neutron_plugin_type != 'ml2.ovn') %}True{% else %}False{% endif %}"
 
 ###
 ### FWaaS Plugin Configuration
