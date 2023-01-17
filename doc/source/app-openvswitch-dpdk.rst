@@ -479,6 +479,9 @@ and DPDK support:
 
   neutron_plugin_type: ml2.ovs
   neutron_ml2_drivers_type: "vlan"
+  neutron_plugin_base:
+    - router
+    - metering
 
   # Enable DPDK support
   ovs_dpdk_support: True

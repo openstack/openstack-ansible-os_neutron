@@ -25,52 +25,6 @@ Firewall service (optional)
 The following procedure describes how to modify the
 ``/etc/openstack_deploy/user_variables.yml`` file to enable FWaaS.
 
-Deploying FWaaS v1
-------------------
-
-.. note::
-
-  The FWaaS v1 API is deprecated upstream. While FWaaS v1.0 is still
-  maintained, new features will be implemented in FWaaS v2.0 API.
-
-#. Override the default list of neutron plugins to include
-   ``firewall``:
-
-   .. code-block:: yaml
-
-      neutron_plugin_base:
-        - firewall
-        - ...
-
-#. ``neutron_plugin_base`` is as follows:
-
-   .. code-block:: yaml
-
-      neutron_plugin_base:
-         - router
-         - firewall
-         - vpnaas
-         - metering
-         - qos
-
-#. Execute the neutron install playbook in order to update the configuration:
-
-   .. code-block:: shell-session
-
-       # cd /opt/openstack-ansible/playbooks
-       # openstack-ansible os-neutron-install.yml
-
-#. Execute the horizon install playbook to show the FWaaS panels:
-
-   .. code-block:: shell-session
-
-       # cd /opt/openstack-ansible/playbooks
-       # openstack-ansible os-horizon-install.yml
-
-The FWaaS default configuration options may be changed through the
-`conf override`_ mechanism using the ``neutron_neutron_conf_overrides``
-dict.
-
 Deploying FWaaS v2
 ------------------
 

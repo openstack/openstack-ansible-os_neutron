@@ -125,6 +125,9 @@ Set the following user variables in your
   neutron_plugin_type: ml2.ovs.dvr
 
   neutron_ml2_drivers_type: "flat,vlan,vxlan"
+  neutron_plugin_base:
+    - router
+    - metering
 
 The overrides are instructing Ansible to deploy the OVS mechanism driver and
 associated OVS and DVR components. This is done by setting ``neutron_plugin_type``

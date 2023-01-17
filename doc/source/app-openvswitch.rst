@@ -123,10 +123,6 @@ One ``br-<type>.cfg`` is required for each bridge. VLAN interfaces can be used
 to back the ``br-<type>`` bridges if there are limited physical adapters on the
 system.
 
-**Warning**: There is a bug in Ubuntu 16.04 LTS where the Open vSwitch service
-won't start properly when using systemd. The bug and workaround are discussed
-here: `<http://www.opencloudblog.com/?p=240>`_
-
 
 OpenStack-Ansible user variables
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -214,6 +210,9 @@ Set the following user variables in your
   neutron_plugin_type: ml2.ovs
 
   neutron_ml2_drivers_type: "flat,vlan,vxlan"
+  neutron_plugin_base:
+    - router
+    - metering
 
 The overrides are instructing Ansible to deploy the OVS mechanism driver and
 associated OVS components. This is done by setting ``neutron_plugin_type``
@@ -221,6 +220,9 @@ to ``ml2.ovs``.
 
 The ``neutron_ml2_drivers_type`` override provides support for all common type
 drivers supported by OVS.
+
+The ``neutron_plugin_base`` is used to defined list of plugins that will be
+enabled.
 
 If provider network overrides are needed on a global or per-host basis,
 the following format can be used in ``user_variables.yml`` or per-host
