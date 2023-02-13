@@ -25,6 +25,9 @@ dns_domain = {{ neutron_dns_domain }}
 
 {% if neutron_services['neutron-server']['group'] in group_names %}
 
+# Enable SSL on the API server
+use_ssl = {{ neutron_backend_ssl }}
+
 # General, only applies to neutron server host group
 vlan_transparent = False
 
@@ -257,4 +260,10 @@ drivers = {{ (neutron_plugin_type == 'ml2.opendaylight') | ternary('odl_v2', 'ov
 
 [flowclassifier]
 drivers = {{ (neutron_plugin_type == 'ml2.opendaylight') | ternary('odl_v2', 'ovs') }}
+{% endif %}
+
+{% if neutron_services['neutron-server']['group'] in group_names and neutron_backend_ssl | bool %}
+[ssl]
+cert_file = {{ neutron_ssl_cert }}
+key_file = {{ neutron_ssl_key }}
 {% endif %}
