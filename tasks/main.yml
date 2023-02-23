@@ -214,11 +214,15 @@
     - neutron-config
     - systemd-service
 
-- import_tasks: neutron_db_setup.yml
+- include_tasks: neutron_db_setup.yml
+  args:
+    apply:
+      tags:
+        - neutron-config
   when:
     - "_neutron_is_first_play_host"
   tags:
-    - neutron-config
+    - always
 
 - name: Import uwsgi role
   import_role:
