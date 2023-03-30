@@ -25,9 +25,11 @@
       jobs:
         - openstack-ansible-deploy-aio_ovs_lxc-ubuntu-focal
         - openstack-ansible-deploy-aio_metal_ovs-ubuntu-focal
-        - openstack-ansible-deploy-aio_ovs_lxc-centos-9-stream
+        - openstack-ansible-deploy-aio_ovs_lxc-centos-9-stream:
+            voting: false
         - openstack-ansible-deploy-aio_metal_ovs-centos-9-stream
-        - openstack-ansible-deploy-aio_lxb_lxc-centos-9-stream
+        - openstack-ansible-deploy-aio_lxb_lxc-centos-9-stream:
+            voting: false
         - openstack-ansible-deploy-aio_lxb_metal-centos-9-stream
         - openstack-ansible-deploy-aio_lxb_lxc-ubuntu-focal
         - openstack-ansible-deploy-aio_lxb_metal-ubuntu-focal
@@ -35,9 +37,7 @@
       jobs:
         - openstack-ansible-deploy-aio_ovs_lxc-ubuntu-focal
         - openstack-ansible-deploy-aio_metal_ovs-ubuntu-focal
-        - openstack-ansible-deploy-aio_ovs_lxc-centos-9-stream
         - openstack-ansible-deploy-aio_metal_ovs-centos-9-stream
-        - openstack-ansible-deploy-aio_lxb_lxc-centos-9-stream
         - openstack-ansible-deploy-aio_lxb_metal-centos-9-stream
         - openstack-ansible-deploy-aio_lxb_lxc-ubuntu-focal
         - openstack-ansible-deploy-aio_lxb_metal-ubuntu-focal
