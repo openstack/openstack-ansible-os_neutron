@@ -340,7 +340,13 @@ filtered_neutron_services: |-
           (('service_en' not in value) or
            ('service_en' in value and value['service_en'])) and
            not ('wsgi_app' in value and value['wsgi_app']) %}
-  {%     set _ = value.update({'service_key': key}) %}
+  {%     set _ = value.update(
+            {
+              'service_key': key,
+              'enabled': value['enabled'] | default(True),
+              'state': value['state'] | default('started'),
+            }
+          ) %}
   {%     set _ = services.append(value) %}
   {%   endif %}
   {% endfor %}
