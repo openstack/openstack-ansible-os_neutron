@@ -27,6 +27,7 @@
   listen:
     - "Restart neutron services"
     - "venv changed"
+    - "systemd service changed"
 
 # NOTE(cloudnull):
 # When installing or upgrading it is possible that an old metadata proxy process will not
@@ -130,6 +131,7 @@
   listen:
     - "Restart neutron services"
     - "venv changed"
+    - "systemd service changed"
 
 - name: start ovn service
   service:
