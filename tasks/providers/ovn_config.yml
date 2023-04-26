@@ -63,6 +63,20 @@
     - ansible_facts['pkg_mgr'] == 'dnf'
     - neutron_services['neutron-ovn-controller']['group'] in group_names
 
+# NOTE(noonedeadpunk): ovs 3.1.0 installed from UCA for Antelope now has a bug where
+#                      `ovs-vsctl add` acts exactly as `set` and resets hostname
+#                      so we mask service that executes that part to prevent failures
+#                      https://bugs.launchpad.net/cloud-archive/+bug/2017757
+- name: Mask setting OVS hostname service
+  service:
+    name: ovs-record-hostname
+    enabled: false
+    state: stopped
+  when:
+    - ansible_facts['pkg_mgr'] == 'apt'
+    - ansible_facts['distribution_version'] == '22.04'
+    - neutron_services['neutron-ovn-controller']['group'] in group_names
+
 - name: Ensure ovn-northd service is started and enabled
   systemd:
     name: "{{ neutron_ovn_northd_service_name }}"
