@@ -190,6 +190,9 @@ neutron_use_uwsgi: "{{ (neutron_plugin_type not in ['ml2.ovn']) }}"
 neutron_wsgi_processes_max: 16
 neutron_wsgi_processes: "{{ [[ansible_processor_vcpus|default(1), 1] | max * 2, neutron_wsgi_processes_max] | min }}"
 neutron_wsgi_threads: 1
+neutron_uwsgi_tls:
+  crt: "{{ neutron_ssl_cert }}"
+  key: "{{ neutron_ssl_key }}"
 
 ###
 ### Quotas
@@ -563,3 +566,51 @@ ovs_dpdk_pmd_cpu_mask: 2
 ovs_dpdk_socket_mem: "1024"
 ovs_dpdk_nr_1g_pages: 0
 ovs_dpdk_nr_2m_pages: 0
+
+###
+### Backend TLS
+###
+
+# Define if communication between haproxy and service backends should be
+# encrypted with TLS.
+neutron_backend_ssl: "{{ openstack_service_backend_ssl | default(False) }}"
+
+# Storage location for SSL certificate authority
+neutron_pki_dir: "{{ openstack_pki_dir | default('/etc/openstack_deploy/pki') }}"
+
+# Delegated host for operating the certificate authority
+neutron_pki_setup_host: "{{ openstack_pki_setup_host | default('localhost') }}"
+
+# neutron server certificate
+neutron_pki_keys_path: "{{ neutron_pki_dir ~ '/certs/private/' }}"
+neutron_pki_certs_path: "{{ neutron_pki_dir ~ '/certs/certs/' }}"
+neutron_pki_intermediate_cert_name: "{{ openstack_pki_service_intermediate_cert_name | default('ExampleCorpIntermediate') }}"
+neutron_pki_regen_cert: ''
+neutron_pki_san: "{{ openstack_pki_san | default('DNS:' ~ ansible_facts['hostname'] ~ ',IP:' ~ management_address) }}"
+neutron_pki_certificates:
+  - name: "neutron_{{ ansible_facts['hostname'] }}"
+    provider: ownca
+    cn: "{{ ansible_facts['hostname'] }}"
+    san: "{{ neutron_pki_san }}"
+    signed_by: "{{ neutron_pki_intermediate_cert_name }}"
+
+# neutron destination files for SSL certificates
+neutron_ssl_cert: "{{ neutron_conf_version_dir }}/neutron.pem"
+neutron_ssl_key: "{{ neutron_conf_version_dir }}/neutron.key"
+
+# Installation details for SSL certificates
+neutron_pki_install_certificates:
+  - src: "{{ neutron_user_ssl_cert | default(neutron_pki_certs_path ~ 'neutron_' ~ ansible_facts['hostname'] ~ '-chain.crt') }}"
+    dest: "{{ neutron_ssl_cert }}"
+    owner: "{{ neutron_system_user_name }}"
+    group: "{{ neutron_system_user_name }}"
+    mode: "0644"
+  - src: "{{ neutron_user_ssl_key | default(neutron_pki_keys_path ~ 'neutron_' ~ ansible_facts['hostname'] ~ '.key.pem') }}"
+    dest: "{{ neutron_ssl_key }}"
+    owner: "{{ neutron_system_user_name }}"
+    group: "{{ neutron_system_user_name }}"
+    mode: "0600"
+
+# Define user-provided SSL certificates
+#neutron_user_ssl_cert: <path to cert on ansible deployment host>
+#neutron_user_ssl_key: <path to cert on ansible deployment host>
