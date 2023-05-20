@@ -39,6 +39,7 @@
   notify:
     - "Restart neutron services"
     - "Restart provider services"
+    - "restart ovn service"
 
 - name: Remove known problem packages
   package:
