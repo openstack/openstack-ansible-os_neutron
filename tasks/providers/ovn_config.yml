@@ -14,32 +14,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-- name: Install ovn-northd packages
-  package:
-    name: "{{ neutron_ovn_northd_distro_packages }}"
-    state: "{{ neutron_package_state }}"
-    update_cache: "{{ (ansible_facts['pkg_mgr'] == 'apt') | ternary('yes', omit) }}"
-    cache_valid_time: "{{ (ansible_facts['pkg_mgr'] == 'apt') | ternary(cache_timeout, omit) }}"
-  register: install_packages
-  until: install_packages is success
-  retries: 5
-  delay: 2
-  when:
-    - neutron_services['neutron-ovn-northd']['group'] in group_names
-
-- name: Install ovn-controller packages
-  package:
-    name: "{{ neutron_ovn_controller_distro_packages }}"
-    state: "{{ neutron_package_state }}"
-    update_cache: "{{ (ansible_facts['pkg_mgr'] == 'apt') | ternary('yes', omit) }}"
-    cache_valid_time: "{{ (ansible_facts['pkg_mgr'] == 'apt') | ternary(cache_timeout, omit) }}"
-  register: install_packages
-  until: install_packages is success
-  retries: 5
-  delay: 2
-  when:
-    - neutron_services['neutron-ovn-controller']['group'] in group_names
-
 - name: Configure ovn-controller
   template:
     src: ovn-controller-opts.j2
