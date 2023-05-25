@@ -15,24 +15,24 @@
 
 # Ubuntu Focal
 - job:
-    name: openstack-ansible-deploy-aio_lxb_lxc-ubuntu-focal
+    name: openstack-ansible-deploy-aio_lxb_lxc-ubuntu-jammy
     parent: openstack-ansible-deploy-aio
-    nodeset: ubuntu-focal
+    nodeset: ubuntu-jammy
 
 - job:
-    name: openstack-ansible-deploy-aio_lxb_metal-ubuntu-focal
+    name: openstack-ansible-deploy-aio_lxb_metal-ubuntu-jammy
     parent: openstack-ansible-deploy-aio
-    nodeset: ubuntu-focal
+    nodeset: ubuntu-jammy
 
 - job:
-    name: openstack-ansible-deploy-aio_ovs_lxc-ubuntu-focal
+    name: openstack-ansible-deploy-aio_ovs_lxc-ubuntu-jammy
     parent: openstack-ansible-deploy-aio
-    nodeset: ubuntu-focal
+    nodeset: ubuntu-jammy
 
 - job:
-    name: openstack-ansible-deploy-aio_metal_ovs-ubuntu-focal
+    name: openstack-ansible-deploy-aio_metal_ovs-ubuntu-jammy
     parent: openstack-ansible-deploy-aio
-    nodeset: ubuntu-focal
+    nodeset: ubuntu-jammy
 
 # CentOS 9
 - job:
