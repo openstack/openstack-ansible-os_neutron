@@ -81,13 +81,12 @@
     - not leader_node
     - ovn_northd_opts.changed
 
-- name: set ssl for ovn-nb and ovn-sb
+- name: Configure connection settings for ovn-nb and ovn-sb
   command: "{{ cmd }}"
   with_items:
-    - "ovn-nbctl set-connection pssl:6641"
-    - "ovn-sbctl set-connection pssl:6642"
+    - "ovn-nbctl --inactivity-probe={{ neutron_ovn_nb_inactivity_probe }} set-connection p{{ ovn_proto }}:6641"
+    - "ovn-sbctl --inactivity-probe={{ neutron_ovn_sb_inactivity_probe }} set-connection p{{ ovn_proto }}:6642"
   when:
-    - neutron_ovn_ssl
     - "inventory_hostname == neutron_ovn_primary_cluster_node"
     - _check_cluster_db.rc != 0
     - not leader_node

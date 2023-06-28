@@ -481,6 +481,8 @@ neutron_ovn_l3_scheduler: leastloaded
 neutron_ovn_nb_connection: "{{ ovn_proto }}:{{ groups['neutron_ovn_northd'] | map('extract', hostvars, ['ansible_host']) | join(':6641,'+ ovn_proto + ':') }}:6641"
 neutron_ovn_sb_connection: "{{ ovn_proto }}:{{ groups['neutron_ovn_northd'] | map('extract', hostvars, ['ansible_host']) | join(':6642,' + ovn_proto + ':') }}:6642"
 neutron_ovsdb_manager: ptcp:6640:127.0.0.1
+neutron_ovn_sb_inactivity_probe: 60000
+neutron_ovn_nb_inactivity_probe: 60000
 
 # Storage location for SSL certificate authority
 neutron_ovn_pki_dir: "{{ openstack_pki_dir }}"
