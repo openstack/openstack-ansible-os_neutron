@@ -18,7 +18,7 @@ use_journal = True
 ## Rpc all
 executor_thread_pool_size = {{ neutron_rpc_thread_pool_size }}
 rpc_response_timeout = {{ neutron_rpc_response_timeout }}
-transport_url = {{ neutron_oslomsg_rpc_transport }}://{% for host in neutron_oslomsg_rpc_servers.split(',') %}{{ neutron_oslomsg_rpc_userid }}:{{ neutron_oslomsg_rpc_password }}@{{ host }}:{{ neutron_oslomsg_rpc_port }}{% if not loop.last %},{% else %}/{{ neutron_oslomsg_rpc_vhost }}{% if neutron_oslomsg_rpc_use_ssl | bool %}?ssl=1&ssl_version={{ neutron_oslomsg_rpc_ssl_version }}&ssl_ca_file={{ neutron_oslomsg_rpc_ssl_ca_file }}{% else %}?ssl=0{% endif %}{% endif %}{% endfor %}
+transport_url = {{ neutron_oslomsg_rpc_transport }}://{% for host in neutron_oslomsg_rpc_servers.split(',') %}{{ neutron_oslomsg_rpc_userid }}:{{ neutron_oslomsg_rpc_password }}@{{ host }}:{{ neutron_oslomsg_rpc_port }}{% if not loop.last %},{% else %}/{{ _neutron_oslomsg_rpc_vhost_conf }}{% if neutron_oslomsg_rpc_use_ssl | bool %}?ssl=1&ssl_version={{ neutron_oslomsg_rpc_ssl_version }}&ssl_ca_file={{ neutron_oslomsg_rpc_ssl_ca_file }}{% else %}?ssl=0{% endif %}{% endif %}{% endfor %}
 
 # Domain to use for building hostnames
 dns_domain = {{ neutron_dns_domain }}
@@ -238,6 +238,9 @@ root_helper_daemon = sudo {{ neutron_bin }}/neutron-rootwrap-daemon {{ neutron_c
 [oslo_messaging_rabbit]
 rpc_conn_pool_size = {{ neutron_rpc_conn_pool_size }}
 heartbeat_in_pthread = {{ neutron_oslomsg_heartbeat_in_pthread }}
+rabbit_quorum_queue = {{ neutron_oslomsg_rabbit_quorum_queues }}
+rabbit_quorum_delivery_limit = {{ neutron_oslomsg_rabbit_quorum_delivery_limit }}
+rabbit_quorum_max_memory_bytes = {{ neutron_oslomsg_rabbit_quorum_max_memory_bytes }}
 
 # Notifications
 [oslo_messaging_notifications]
@@ -247,7 +250,7 @@ heartbeat_in_pthread = {{ neutron_oslomsg_heartbeat_in_pthread }}
 {% endif %}
 topics = {{ notification_topics | join(',') }}
 driver = {{ (notification_topics | length > 0) | ternary('messagingv2', 'noop') }}
-transport_url = {{ neutron_oslomsg_notify_transport }}://{% for host in neutron_oslomsg_notify_servers.split(',') %}{{ neutron_oslomsg_notify_userid }}:{{ neutron_oslomsg_notify_password }}@{{ host }}:{{ neutron_oslomsg_notify_port }}{% if not loop.last %},{% else %}/{{ neutron_oslomsg_notify_vhost }}{% if neutron_oslomsg_notify_use_ssl | bool %}?ssl=1&ssl_version={{ neutron_oslomsg_notify_ssl_version }}&ssl_ca_file={{ neutron_oslomsg_notify_ssl_ca_file }}{% else %}?ssl=0{% endif %}{% endif %}{% endfor %}
+transport_url = {{ neutron_oslomsg_notify_transport }}://{% for host in neutron_oslomsg_notify_servers.split(',') %}{{ neutron_oslomsg_notify_userid }}:{{ neutron_oslomsg_notify_password }}@{{ host }}:{{ neutron_oslomsg_notify_port }}{% if not loop.last %},{% else %}/{{ _neutron_oslomsg_notify_vhost_conf }}{% if neutron_oslomsg_notify_use_ssl | bool %}?ssl=1&ssl_version={{ neutron_oslomsg_notify_ssl_version }}&ssl_ca_file={{ neutron_oslomsg_notify_ssl_ca_file }}{% else %}?ssl=0{% endif %}{% endif %}{% endfor %}
 
 # Concurrency (locking mechanisms)
 [oslo_concurrency]

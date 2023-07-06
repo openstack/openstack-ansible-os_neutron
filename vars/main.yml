@@ -14,6 +14,8 @@
 # limitations under the License.
 
 _neutron_is_first_play_host: "{{ (neutron_services['neutron-server']['group'] in group_names and inventory_hostname == (groups[neutron_services['neutron-server']['group']] | intersect(ansible_play_hosts)) | first) | bool }}"
+_neutron_oslomsg_rpc_vhost_conf: "{{ (neutron_oslomsg_rpc_vhost is string) | ternary(neutron_oslomsg_rpc_vhost, neutron_oslomsg_rpc_vhost | selectattr('state', 'eq', 'present') | map(attribute='name') | first) }}"
+_neutron_oslomsg_notify_vhost_conf: "{{ (neutron_oslomsg_notify_vhost is string) | ternary(neutron_oslomsg_notify_vhost, neutron_oslomsg_notify_vhost | selectattr('state', 'eq', 'present') | map(attribute='name') | first) }}"
 
 ###
 ### Open vSwitch

@@ -250,7 +250,11 @@ neutron_oslomsg_rpc_servers: "{{ oslomsg_rpc_servers | default('127.0.0.1') }}"
 neutron_oslomsg_rpc_port: "{{ oslomsg_rpc_port | default('5672') }}"
 neutron_oslomsg_rpc_use_ssl: "{{ oslomsg_rpc_use_ssl | default(False) }}"
 neutron_oslomsg_rpc_userid: neutron
-neutron_oslomsg_rpc_vhost: /neutron
+neutron_oslomsg_rpc_vhost:
+  - name: /neutron
+    state: "{{ neutron_oslomsg_rabbit_quorum_queues | ternary('absent', 'present') }}"
+  - name: neutron
+    state: "{{ neutron_oslomsg_rabbit_quorum_queues | ternary('present', 'absent') }}"
 neutron_oslomsg_rpc_ssl_version: "{{ oslomsg_rpc_ssl_version | default('TLSv1_2') }}"
 neutron_oslomsg_rpc_ssl_ca_file: "{{ oslomsg_rpc_ssl_ca_file | default('') }}"
 
@@ -277,7 +281,9 @@ neutron_oslomsg_amqp1_enabled: "{{ neutron_oslomsg_rpc_transport == 'amqp' }}"
 ###
 ### (RabbitMQ) integration
 ###
-
+neutron_oslomsg_rabbit_quorum_queues: "{{ oslomsg_rabbit_quorum_queues | default(True) }}"
+neutron_oslomsg_rabbit_quorum_delivery_limit: "{{ oslomsg_rabbit_quorum_delivery_limit | default(0) }}"
+neutron_oslomsg_rabbit_quorum_max_memory_bytes: "{{ oslomsg_rabbit_quorum_max_memory_bytes | default(0) }}"
 neutron_rpc_thread_pool_size: 64
 neutron_rpc_conn_pool_size: 30
 neutron_rpc_response_timeout: 60
