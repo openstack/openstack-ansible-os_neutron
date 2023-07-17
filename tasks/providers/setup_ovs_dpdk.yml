@@ -63,24 +63,28 @@
 
 - name: Set DPDK lcore mask
   command: "ovs-vsctl --no-wait set Open_vSwitch . other_config:dpdk-lcore-mask={{ ovs_dpdk_lcore_mask }}"
+  changed_when: false
   when:
     - neutron_services['neutron-openvswitch-agent']['group'] in group_names
     - '"nova_compute" in group_names'
 
 - name: Set DPDK PMD cpu mask
   command: "ovs-vsctl --no-wait set Open_vSwitch . other_config:pmd-cpu-mask={{ ovs_dpdk_pmd_cpu_mask }}"
+  changed_when: false
   when:
     - neutron_services['neutron-openvswitch-agent']['group'] in group_names
     - '"nova_compute" in group_names'
 
 - name: Set DPDK socket memory
   command: "ovs-vsctl --no-wait set Open_vSwitch . other_config:dpdk-socket-mem={{ ovs_dpdk_socket_mem }}"
+  changed_when: false
   when:
     - neutron_services['neutron-openvswitch-agent']['group'] in group_names
     - '"nova_compute" in group_names'
 
 - name: Enable DPDK support for openvswitch
   command: "ovs-vsctl --no-wait set Open_vSwitch . other_config:dpdk-init=true"
+  changed_when: false
   when:
     - neutron_services['neutron-openvswitch-agent']['group'] in group_names
     - '"nova_compute" in group_names'
@@ -117,8 +121,8 @@
 - name: Add ports to Network Provider Bridges
   openvswitch_port:
     bridge: "{{ interface_mapping.split(':')[0] }}"
-    port: "{{ interface_mapping.split(':',1)[1] }}"
-    set: "Interface {{ interface_mapping.split(':',1)[1] }} type=dpdk options:dpdk-devargs='{{ interface_mapping.split(':',1)[1] }}'"
+    port: "{{ interface_mapping.split(':', 1)[1] }}"
+    set: "Interface {{ interface_mapping.split(':', 1)[1] }} type=dpdk options:dpdk-devargs='{{ interface_mapping.split(':', 1)[1] }}'"
     state: present
   with_items: "{{ neutron_provider_networks.network_interface_mappings.split(',') }}"
   loop_control:
@@ -138,7 +142,9 @@
     lacp: "{{ bond_interfaces_mapping.lacp | default('off') }}"
     bond_updelay: "{{ bond_interfaces_mapping.bond_updelay | default(100) }}"
     bond_downdelay: "{{ bond_interfaces_mapping.bond_downdelay | default(100) }}"
-    set: "{% for interface in bond_interfaces_mapping.interfaces %}interface {{ interface }} type=dpdk options:dpdk-devargs='{{ interface }}'{% if not loop.last %},{% endif %}{% endfor %}"
+    set: >-
+      {% for interface in bond_interfaces_mapping.interfaces %}interface {{ interface }} type=dpdk options:dpdk-devargs='{{ interface }}'{%
+        if not loop.last %},{% endif %}{% endfor %}
     state: present
   with_items: "{{ neutron_provider_networks.network_bond_interfaces_mappings }}"
   loop_control:

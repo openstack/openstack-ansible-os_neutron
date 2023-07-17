@@ -41,6 +41,7 @@
     - neutron_provider_networks.network_interface_mappings is defined and (neutron_provider_networks.network_interface_mappings|length > 0)
     - not ovs_dpdk_support
 
-- ansible.builtin.include_tasks: setup_ovs_dpdk.yml
+- name: Including setup_ovs_dpdk tasks
+  ansible.builtin.include_tasks: setup_ovs_dpdk.yml
   when:
     - ovs_dpdk_support

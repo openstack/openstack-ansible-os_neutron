@@ -47,6 +47,7 @@
       fi
     done
   when: "'neutron-metadata-agent' in (filtered_neutron_services | map(attribute='service_key') | list)"
+  changed_when: false
   listen:
     - "Restart neutron services"
     - "venv changed"
@@ -68,6 +69,7 @@
       fi
     done
   when: "'neutron-l3-agent' in (filtered_neutron_services | map(attribute='service_key') | list)"
+  changed_when: false
   listen:
     - "Restart neutron services"
     - "venv changed"
@@ -111,6 +113,7 @@
   become: yes
   become_user: "{{ neutron_system_user_name }}"
   delegate_to: "{{ groups[neutron_services['neutron-server']['group']][0] }}"
+  changed_when: false
   when:
     - "ansible_local['openstack_ansible']['neutron']['need_db_contract'] | bool"
     - "_neutron_is_first_play_host"
@@ -135,10 +138,12 @@
     - "systemd service changed"
     - "cert installed"
 
-- name: start ovn service
+- name: Start ovn service
   service:
     name: "{{ neutron_ovn_northd_service_name }}"
     state: started
+  listen:
+    - start ovn service
 
 # (NOTE) Restarting twice to cleanup some pid.
 - name: Restart ovn northd

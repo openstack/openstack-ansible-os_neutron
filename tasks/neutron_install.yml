@@ -19,6 +19,7 @@
     section: "neutron"
     option: "install_method"
     value: "{{ neutron_install_method }}"
+    mode: "0644"
 
 - name: Refresh local facts to ensure the neutron section is present
   setup:
@@ -97,6 +98,7 @@
     section: neutron
     option: "{{ item.name }}"
     value: "{{ item.state }}"
+    mode: "0644"
   with_items:
     - name: "need_db_expand"
       state: "True"
@@ -140,7 +142,8 @@
       {{ apparmor_hosts | unique }}
   when: ansible_facts['pkg_mgr'] == 'apt'
 
-- import_tasks: neutron_apparmor.yml
+- name: Importing neutron_apparmor tasks
+  import_tasks: neutron_apparmor.yml
   when:
     - ansible_facts['pkg_mgr'] == 'apt'
     - inventory_hostname in neutron_apparmor_hosts

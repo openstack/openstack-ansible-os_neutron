@@ -28,7 +28,11 @@ debug: False
 # for the service setup. The host must already have
 # clouds.yaml properly configured.
 neutron_service_setup_host: "{{ openstack_service_setup_host | default('localhost') }}"
-neutron_service_setup_host_python_interpreter: "{{ openstack_service_setup_host_python_interpreter | default((neutron_service_setup_host == 'localhost') | ternary(ansible_playbook_python, ansible_facts['python']['executable'])) }}"
+neutron_service_setup_host_python_interpreter: >-
+  {{
+    openstack_service_setup_host_python_interpreter | default(
+      (neutron_service_setup_host == 'localhost') | ternary(ansible_playbook_python, ansible_facts['python']['executable']))
+  }}
 
 ###
 ### Packages Options
@@ -76,7 +80,8 @@ networking_nsx_git_install_branch: master
 networking_nsxlib_git_repo: https://opendev.org/x/vmware-nsxlib
 networking_nsxlib_git_install_branch: master
 
-neutron_upper_constraints_url: "{{ requirements_git_url | default('https://releases.openstack.org/constraints/upper/' ~ requirements_git_install_branch | default('master')) }}"
+neutron_upper_constraints_url: >-
+  {{ requirements_git_url | default('https://releases.openstack.org/constraints/upper/' ~ requirements_git_install_branch | default('master')) }}
 neutron_git_constraints:
   - "--constraint {{ neutron_upper_constraints_url }}"
 
@@ -98,7 +103,7 @@ neutron_fatal_deprecations: False
 
 ## Cap the maximun number of threads / workers when a user value is unspecified.
 neutron_api_threads_max: 16
-neutron_api_threads: "{{ [[ansible_facts['processor_vcpus']|default(2) // 2, 1] | max, neutron_api_threads_max] | min }}"
+neutron_api_threads: "{{ [[ansible_facts['processor_vcpus'] | default(2) // 2, 1] | max, neutron_api_threads_max] | min }}"
 
 neutron_agent_down_time: 120
 neutron_agent_polling_interval: 5
@@ -115,8 +120,8 @@ neutron_dns_domain: "{{ dhcp_domain | default('openstacklocal.') }}"
 ###
 # Dnsmasq doesn't work with config_template override, a deployer
 # should instead configure its own neutron_dhcp_config key/values like this:
-#neutron_dhcp_config:
-#  dhcp-option-force: "26,1500"
+# neutron_dhcp_config:
+#   dhcp-option-force: "26,1500"
 neutron_dhcp_config: {}
 
 # Dnsmasq has furthermore some options in its configuration that are not
@@ -164,9 +169,9 @@ neutron_nsx_conf_ini_overrides: {}
 # Provide a list of access controls to update the default policy.json with.
 # These changes will be merged
 # with the access controls in the default policy.json. E.g.
-#neutron_policy_overrides:
-#  "create_subnet": "rule:admin_or_network_owner"
-#  "get_subnet": "rule:admin_or_owner or rule:shared"
+# neutron_policy_overrides:
+#   "create_subnet": "rule:admin_or_network_owner"
+#   "get_subnet": "rule:admin_or_owner or rule:shared"
 neutron_policy_overrides: {}
 _neutron_rootwrap_conf_overrides:
   DEFAULT:
@@ -188,7 +193,7 @@ neutron_ovn_metadata_agent_init_overrides: {}
 # NOTE(noonedeadpunk): uWSGI is still not fully supported. See: https://bugs.launchpad.net/neutron/+bug/1912359
 neutron_use_uwsgi: "{{ (neutron_plugin_type not in ['ml2.ovn']) }}"
 neutron_wsgi_processes_max: 16
-neutron_wsgi_processes: "{{ [[ansible_processor_vcpus|default(1), 1] | max * 2, neutron_wsgi_processes_max] | min }}"
+neutron_wsgi_processes: "{{ [[ansible_processor_vcpus | default(1), 1] | max * 2, neutron_wsgi_processes_max] | min }}"
 neutron_wsgi_threads: 1
 neutron_uwsgi_tls:
   crt: "{{ neutron_ssl_cert }}"
@@ -221,7 +226,11 @@ neutron_quota_firewall_rule: 100
 ###
 
 neutron_db_setup_host: "{{ openstack_db_setup_host | default('localhost') }}"
-neutron_db_setup_python_interpreter: "{{ openstack_db_setup_python_interpreter | default((neutron_db_setup_host == 'localhost') | ternary(ansible_playbook_python, ansible_facts['python']['executable'])) }}"
+neutron_db_setup_python_interpreter: >-
+  {{
+    openstack_db_setup_python_interpreter | default(
+      (neutron_db_setup_host == 'localhost') | ternary(ansible_playbook_python, ansible_facts['python']['executable']))
+  }}
 neutron_galera_address: "{{ galera_address | default('127.0.0.1') }}"
 neutron_galera_user: neutron
 neutron_galera_database: neutron
@@ -261,7 +270,8 @@ neutron_oslomsg_rpc_ssl_ca_file: "{{ oslomsg_rpc_ssl_ca_file | default('') }}"
 # Notify
 
 neutron_oslomsg_notify_host_group: "{{ oslomsg_notify_host_group | default('rabbitmq_all') }}"
-neutron_oslomsg_notify_setup_host: "{{ (neutron_oslomsg_notify_host_group in groups) | ternary(groups[neutron_oslomsg_notify_host_group][0], 'localhost') }}"
+neutron_oslomsg_notify_setup_host: >-
+  {{ (neutron_oslomsg_notify_host_group in groups) | ternary(groups[neutron_oslomsg_notify_host_group][0], 'localhost') }}
 neutron_oslomsg_notify_transport: "{{ oslomsg_notify_transport | default('rabbit') }}"
 neutron_oslomsg_notify_servers: "{{ oslomsg_notify_servers | default('127.0.0.1') }}"
 neutron_oslomsg_notify_port: "{{ oslomsg_notify_port | default('5672') }}"
@@ -288,7 +298,8 @@ neutron_rpc_thread_pool_size: 64
 neutron_rpc_conn_pool_size: 30
 neutron_rpc_response_timeout: 60
 neutron_rpc_workers_max: 16
-neutron_rpc_workers: "{{ [[(ansible_facts['processor_vcpus']//ansible_facts['processor_threads_per_core'])|default(1), 1] | max * 2, neutron_rpc_workers_max] | min }}"
+neutron_rpc_workers: >-
+  {{ [[(ansible_facts['processor_vcpus'] // ansible_facts['processor_threads_per_core']) | default(1), 1] | max * 2, neutron_rpc_workers_max] | min }}
 
 ###
 ### Identity (Keystone) integration
@@ -469,7 +480,7 @@ neutron_fwaasv2_service_provider: FIREWALL_V2:fwaas_db:neutron_fwaas.services.fi
 neutron_driver_vpnaas: "{{ _neutron_driver_vpnaas }}"
 neutron_vpnaas_service_provider: "{{ _neutron_vpnaas_service_provider }}"
 
-#Set this variable to use custom config file for strongswan/openswan
+# Set this variable to use custom config file for strongswan/openswan
 # neutron_vpnaas_custom_config:
 #   - src: "/etc/openstack_deploy/strongswan/strongswan.conf.template"
 #     dest: "{{ neutron_conf_dir }}/strongswan.conf.template"
@@ -479,13 +490,15 @@ neutron_vpnaas_custom_config: []
 
 # OVN Defaults
 neutron_ovn_ssl: True
-ovn_proto: "{{ (neutron_ovn_ssl) | ternary('ssl','tcp') }}"
+ovn_proto: "{{ (neutron_ovn_ssl) | ternary('ssl', 'tcp') }}"
 neutron_ovn_primary_cluster_node: "{{ groups[neutron_services['neutron-ovn-northd']['group']] | first }}"
 neutron_ovn_northd_service_name: ovn-northd
 neutron_ovn_controller_service_name: ovn-controller
 neutron_ovn_l3_scheduler: leastloaded
-neutron_ovn_nb_connection: "{{ ovn_proto }}:{{ groups['neutron_ovn_northd'] | map('extract', hostvars, ['ansible_host']) | join(':6641,'+ ovn_proto + ':') }}:6641"
-neutron_ovn_sb_connection: "{{ ovn_proto }}:{{ groups['neutron_ovn_northd'] | map('extract', hostvars, ['ansible_host']) | join(':6642,' + ovn_proto + ':') }}:6642"
+neutron_ovn_nb_connection: >-
+  {{ ovn_proto }}:{{ groups['neutron_ovn_northd'] | map('extract', hostvars, ['ansible_host']) | join(':6641,' + ovn_proto + ':') }}:6641
+neutron_ovn_sb_connection: >-
+  {{ ovn_proto }}:{{ groups['neutron_ovn_northd'] | map('extract', hostvars, ['ansible_host']) | join(':6642,' + ovn_proto + ':') }}:6642
 neutron_ovsdb_manager: ptcp:6640:127.0.0.1
 neutron_ovn_sb_inactivity_probe: 60000
 neutron_ovn_nb_inactivity_probe: 60000
@@ -500,7 +513,8 @@ neutron_ovn_node_address: "{{ management_address | default('127.0.0.1') }}"
 neutron_ovn_pki_keys_path: "{{ neutron_ovn_pki_dir ~ '/certs/private/' }}"
 neutron_ovn_pki_certs_path: "{{ neutron_ovn_pki_dir ~ '/certs/certs/' }}"
 neutron_ovn_pki_intermediate_cert_name: "{{ openstack_pki_service_intermediate_cert_name }}"
-neutron_ovn_pki_intermediate_chain_path: "{{ neutron_ovn_pki_dir ~ '/roots/' ~ neutron_ovn_pki_intermediate_cert_name ~ '/certs/' ~ neutron_ovn_pki_intermediate_cert_name ~ '-chain.crt' }}"
+neutron_ovn_pki_intermediate_chain_path: >-
+  {{ neutron_ovn_pki_dir ~ '/roots/' ~ neutron_ovn_pki_intermediate_cert_name ~ '/certs/' ~ neutron_ovn_pki_intermediate_cert_name ~ '-chain.crt' }}
 neutron_ovn_pki_regen_cert: ""
 neutron_ovn_pki_certificates:
   - name: "neutron_ovn_{{ ansible_facts['hostname'] }}"
@@ -530,9 +544,9 @@ neutron_ovn_pki_install_certificates:
     mode: "0600"
     condition: "{{ (neutron_ovn_ssl and neutron_needs_openvswitch) }}"
   - src: "{{ neutron_ovn_user_ssl_ca_cert | default(neutron_ovn_pki_intermediate_chain_path) }}"
-    dest: "{{ [neutron_ovn_conf_dir, neutron_ovn_ssl_ca_cert] | join('/')  }}"
-    owner: "{{ (neutron_services['neutron-server']['group'] in group_names) | ternary( neutron_service_user_name, neutron_ovn_system_user_name) }}"
-    group: "{{ (neutron_services['neutron-server']['group'] in group_names) | ternary( neutron_service_user_name, neutron_ovn_system_user_name) }}"
+    dest: "{{ [neutron_ovn_conf_dir, neutron_ovn_ssl_ca_cert] | join('/') }}"
+    owner: "{{ (neutron_services['neutron-server']['group'] in group_names) | ternary(neutron_service_user_name, neutron_ovn_system_user_name) }}"
+    group: "{{ (neutron_services['neutron-server']['group'] in group_names) | ternary(neutron_service_user_name, neutron_ovn_system_user_name) }}"
     mode: "0644"
     condition: "{{ (neutron_ovn_ssl and neutron_needs_openvswitch and neutron_plugin_type == 'ml2.ovn') }}"
   - src: "{{ neutron_ovn_user_ssl_cert | default(neutron_ovn_pki_certs_path ~ 'neutron_ovn_' ~ ansible_facts['hostname'] ~ '-chain.crt') }}"
@@ -540,26 +554,26 @@ neutron_ovn_pki_install_certificates:
     owner: "{{ neutron_service_user_name }}"
     group: "{{ neutron_service_user_name }}"
     mode: "0644"
-    condition: "{{ (neutron_ovn_ssl and neutron_plugin_type == 'ml2.ovn' and (filtered_neutron_services |length + uwsgi_neutron_services | length ) > 0) }}"
+    condition: "{{ (neutron_ovn_ssl and neutron_plugin_type == 'ml2.ovn' and (filtered_neutron_services | length + uwsgi_neutron_services | length) > 0) }}"
   - src: "{{ neutron_ovn_user_ssl_key | default(neutron_ovn_pki_keys_path ~ 'neutron_ovn_' ~ ansible_facts['hostname'] ~ '.key.pem') }}"
     dest: "{{ [neutron_conf_version_dir, neutron_ovn_ssl_key] | join('/') }}"
     owner: "{{ neutron_service_user_name }}"
     group: "{{ neutron_service_user_name }}"
     mode: "0600"
-    condition: "{{ (neutron_ovn_ssl and neutron_plugin_type == 'ml2.ovn' and (filtered_neutron_services |length + uwsgi_neutron_services | length ) > 0) }}"
+    condition: "{{ (neutron_ovn_ssl and neutron_plugin_type == 'ml2.ovn' and (filtered_neutron_services | length + uwsgi_neutron_services | length) > 0) }}"
   - src: "{{ neutron_ovn_user_ssl_ca_cert | default(neutron_ovn_pki_intermediate_chain_path) }}"
     dest: "{{ [neutron_conf_version_dir, neutron_ovn_ssl_ca_cert] | join('/') }}"
     owner: "{{ neutron_service_user_name }}"
     group: "{{ neutron_service_user_name }}"
     mode: "0644"
-    condition: "{{ (neutron_ovn_ssl and neutron_plugin_type == 'ml2.ovn' and (filtered_neutron_services |length + uwsgi_neutron_services | length ) > 0) }}"
+    condition: "{{ (neutron_ovn_ssl and neutron_plugin_type == 'ml2.ovn' and (filtered_neutron_services | length + uwsgi_neutron_services | length) > 0) }}"
 
 # Define user-provided SSL certificates in:
 # /etc/openstack_deploy/user_variables.yml
-#neutron_ovnnb_user_ssl_cert: <path to cert on ansible deployment host>
-#neutron_ovnnb_user_ssl_key: <path to cert on ansible deployment host>
-#neutron_ovnsb_user_ssl_cert: <path to cert on ansible deployment host>
-#neutron_ovnsb_user_ssl_key: <path to cert on ansible deployment host>
+# neutron_ovnnb_user_ssl_cert: <path to cert on ansible deployment host>
+# neutron_ovnnb_user_ssl_key: <path to cert on ansible deployment host>
+# neutron_ovnsb_user_ssl_cert: <path to cert on ansible deployment host>
+# neutron_ovnsb_user_ssl_key: <path to cert on ansible deployment host>
 
 ###
 ### DPDK Configuration
@@ -620,5 +634,5 @@ neutron_pki_install_certificates:
     mode: "0600"
 
 # Define user-provided SSL certificates
-#neutron_user_ssl_cert: <path to cert on ansible deployment host>
-#neutron_user_ssl_key: <path to cert on ansible deployment host>
+# neutron_user_ssl_cert: <path to cert on ansible deployment host>
+# neutron_user_ssl_key: <path to cert on ansible deployment host>

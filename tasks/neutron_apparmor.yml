@@ -38,7 +38,7 @@
     # https://github.com/willthames/ansible-lint/issues/275
     set -o pipefail
     exit_code=0
-    if aa-status | grep -q {{ item.process  }} ; then
+    if aa-status | grep -q {{ item.process }} ; then
        aa-disable {{ item.profile }}
        if [[ $? == 0 ]]; then
          exit_code=2

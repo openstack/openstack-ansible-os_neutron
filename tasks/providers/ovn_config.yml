@@ -18,6 +18,7 @@
   template:
     src: ovn-controller-opts.j2
     dest: "{{ neutron_ovn_controller_opts_file }}"
+    mode: "0644"
   register: ovn_controller_config
   when:
     - neutron_services['neutron-ovn-controller']['group'] in group_names
@@ -62,9 +63,10 @@
 - name: Ensure ovn-controller service is started and enabled
   systemd:
     name: "{{ neutron_ovn_controller_service_name }}"
-    state: "{{ (ovn_controller_config.changed) | ternary('restarted','started') }}"
+    state: "{{ (ovn_controller_config.changed) | ternary('restarted', 'started') }}"
     enabled: yes
   when:
     - neutron_services['neutron-ovn-controller']['group'] in group_names
 
-- ansible.builtin.include_tasks: setup_ovs_ovn.yml
+- name: Including setup_ovs_ovn tasks
+  ansible.builtin.include_tasks: setup_ovs_ovn.yml

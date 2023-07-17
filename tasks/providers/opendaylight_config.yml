@@ -13,5 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-- import_tasks: setup_ovs_opendaylight.yml
+- name: Importing setup_ovs_opendaylight tasks
+  import_tasks: setup_ovs_opendaylight.yml
   when: neutron_services['neutron-server']['group'] not in group_names

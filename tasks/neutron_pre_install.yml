@@ -73,7 +73,7 @@
     - path: "{{ neutron_system_home_folder }}"
       mode: "0755"
     - path: "{{ neutron_system_home_folder }}/ha_confs"
-      state: "{{ (neutron_plugin_type == 'ml2.ovn') | ternary('absent','directory') }}"
+      state: "{{ (neutron_plugin_type == 'ml2.ovn') | ternary('absent', 'directory') }}"
 
 - name: Add dependency repos for Neutron
   package:
@@ -92,6 +92,7 @@
         dest: "/etc/tmpfiles.d/openstack-openvswitch.conf"
         line: "D /var/run/openvswitch 2755 root root"
         create: true
+        mode: "0644"
 
     - name: Create ovs tmp directory
       file:
