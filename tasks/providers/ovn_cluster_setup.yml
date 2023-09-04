@@ -93,6 +93,10 @@
     - ovn_northd_opts.changed
   loop_control:
     loop_var: cmd
+  register: _ovn_connection_settings
+  until: _ovn_connection_settings is success
+  retries: 5
+  delay: 2
   tags:
     - neutron_ovn-config
 
