@@ -23,34 +23,6 @@
     - neutron_services['neutron-ovn-controller']['group'] in group_names
     - neutron_ovn_ssl
 
-# NOTE(noonedeapdunk): ovs 3.1 installed by rdo now has a bug, where
-#                      `ovs-vsctl add` acts exactly as `set` and resets hostname
-#                      so we fully disable functionality of managing hostnames
-#                      Ubuntu in it's place don't run this vulnerable version and
-#                      passes --no-record-hostname in systemd unit file already
-- name: Disable seetting ovs hostname for RHEL
-  lineinfile:
-    path: /etc/sysconfig/openvswitch
-    line: OPTIONS="--no-record-hostname"
-    search_string: 'OPTIONS='
-  when:
-    - ansible_facts['pkg_mgr'] == 'dnf'
-    - neutron_services['neutron-ovn-controller']['group'] in group_names
-
-# NOTE(noonedeadpunk): ovs 3.1.0 installed from UCA for Antelope now has a bug where
-#                      `ovs-vsctl add` acts exactly as `set` and resets hostname
-#                      so we mask service that executes that part to prevent failures
-#                      https://bugs.launchpad.net/cloud-archive/+bug/2017757
-- name: Mask setting OVS hostname service
-  service:
-    name: ovs-record-hostname
-    enabled: false
-    state: stopped
-  when:
-    - ansible_facts['pkg_mgr'] == 'apt'
-    - ansible_facts['distribution_version'] == '22.04'
-    - neutron_services['neutron-ovn-controller']['group'] in group_names
-
 - name: Ensure ovn-northd service is started and enabled
   systemd:
     name: "{{ neutron_ovn_northd_service_name }}"
