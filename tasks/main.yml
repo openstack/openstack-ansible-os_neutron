@@ -14,7 +14,8 @@
 # limitations under the License.
 
 
-- import_tasks: neutron_check.yml
+- name: Importing neutron_check tasks
+  import_tasks: neutron_check.yml
 
 - name: Gather variables for each operating system
   include_vars: "{{ lookup('first_found', params) }}"
@@ -36,7 +37,8 @@
   tags:
     - always
 
-- include_role:
+- name: Including osa.db_setup role
+  include_role:
     name: openstack.osa.db_setup
     apply:
       tags:
@@ -57,7 +59,8 @@
   tags:
     - always
 
-- include_role:
+- name: Including osa.mq_setup role
+  include_role:
     name: openstack.osa.mq_setup
     apply:
       tags:
@@ -106,17 +109,20 @@
   tags:
     - always
 
-- import_tasks: dependent_neutron_roles.yml
+- name: Importing dependent_neutron_roles tasks
+  import_tasks: dependent_neutron_roles.yml
 
-- import_tasks: neutron_pre_install.yml
+- name: Importing neutron_pre_install tasks
+  import_tasks: neutron_pre_install.yml
   tags:
     - neutron-install
 
-- import_tasks: neutron_install.yml
+- name: Importing neutron_install tasks
+  import_tasks: neutron_install.yml
   tags:
     - neutron-install
 
-- name: refresh local facts
+- name: Refresh local facts
   setup:
     filter: ansible_local
     gather_subset: "!all"
@@ -163,12 +169,15 @@
   when:
     - neutron_plugin_type == 'ml2.ovn'
     - neutron_ovn_ssl
-    - (neutron_services['neutron-ovn-controller']['group'] in group_names) or (neutron_services['neutron-ovn-northd']['group'] in group_names) or (neutron_services['neutron-server']['group'] in group_names)
+    - (neutron_services['neutron-ovn-controller']['group'] in group_names) or
+      (neutron_services['neutron-ovn-northd']['group'] in group_names) or
+      (neutron_services['neutron-server']['group'] in group_names)
   tags:
     - always
 
 # Include provider specific config(s)
-- include_tasks: "{{ item }}"
+- name: Including plugin-specific tasks
+  include_tasks: "{{ item }}"
   with_first_found:
     - files:
         - "{{ neutron_plugin_type.split('.')[-1] }}_config.yml"
@@ -178,7 +187,8 @@
   tags:
     - neutron-install
 
-- import_tasks: neutron_post_install.yml
+- name: Importing neutron_post_install tasks
+  import_tasks: neutron_post_install.yml
   tags:
     - neutron-config
 
@@ -192,7 +202,7 @@
       service_facts:
 
     - name: Disable services if they present
-      service:
+      systemd:
         name: "{{ item['service_name'] }}"
         state: stopped
         enabled: False
@@ -215,10 +225,10 @@
     systemd_tempd_prefix: openstack
     systemd_slice_name: "{{ neutron_system_slice_name }}"
     systemd_lock_dir: "{{ neutron_lock_dir }}"
-    systemd_CPUAccounting: true
-    systemd_BlockIOAccounting: true
-    systemd_MemoryAccounting: true
-    systemd_TasksAccounting: true
+    systemd_service_cpu_accounting: true
+    systemd_service_block_io_accounting: true
+    systemd_service_memory_accounting: true
+    systemd_service_tasks_accounting: true
     systemd_services: |-
       {%- set services = [] -%}
       {%- for service in filtered_neutron_services -%}
@@ -238,7 +248,8 @@
     - neutron-config
     - systemd-service
 
-- include_tasks: neutron_db_setup.yml
+- name: Including neutron_db_setup role
+  include_tasks: neutron_db_setup.yml
   args:
     apply:
       tags:
@@ -258,7 +269,8 @@
     - neutron-config
     - uwsgi
 
-- include_role:
+- name: Including osa.service_setup role
+  include_role:
     name: openstack.osa.service_setup
     apply:
       tags:

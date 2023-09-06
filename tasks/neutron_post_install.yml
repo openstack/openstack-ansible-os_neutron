@@ -21,9 +21,9 @@
       file:
         path: "{{ item.path | default(omit) }}"
         state: "directory"
-        owner: "{{ item.owner|default(neutron_system_user_name) }}"
-        group: "{{ item.group|default(neutron_system_group_name) }}"
-        mode: "{{ item.mode | default(omit) }}"
+        owner: "{{ item.owner | default(neutron_system_user_name) }}"
+        group: "{{ item.group | default(neutron_system_group_name) }}"
+        mode: "{{ item.mode | default('0755') }}"
       with_items:
         - path: "{{ neutron_conf_version_dir }}/plugins"
           mode: "0750"
@@ -41,6 +41,7 @@
         dest: "{{ neutron_conf_version_dir }}/rootwrap.d/"
         owner: "root"
         group: "root"
+        mode: "0644"
       with_fileglob:
         - rootwrap.d/*
       notify:
@@ -52,7 +53,7 @@
         src: "{{ item.src }}"
         dest: "{{ item.dest }}"
         owner: "root"
-        group: "{{ item.group|default(neutron_system_group_name) }}"
+        group: "{{ item.group | default(neutron_system_group_name) }}"
         mode: "0640"
         config_overrides: "{{ item.config_overrides }}"
         config_type: "{{ item.config_type }}"
@@ -219,7 +220,7 @@
     state: stopped
     enabled: false
   when:
-     - ansible_facts['pkg_mgr'] == 'apt'
-     - ansible_facts['hostname'] in groups['neutron_metadata_agent'] or ansible_facts['hostname'] in groups['neutron_ovn_controller']
-     - groups['haproxy_all'] is defined
-     - ansible_facts['hostname'] not in groups['haproxy_all']
+    - ansible_facts['pkg_mgr'] == 'apt'
+    - ansible_facts['hostname'] in groups['neutron_metadata_agent'] or ansible_facts['hostname'] in groups['neutron_ovn_controller']
+    - groups['haproxy_all'] is defined
+    - ansible_facts['hostname'] not in groups['haproxy_all']

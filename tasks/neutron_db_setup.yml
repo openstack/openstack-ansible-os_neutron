@@ -17,6 +17,7 @@
   command: "{{ neutron_bin }}/neutron-db-manage --config-file {{ neutron_conf_version_dir }}/neutron.conf upgrade --expand"
   become: yes
   become_user: "{{ neutron_system_user_name }}"
+  changed_when: false
   when:
     - "ansible_local['openstack_ansible']['neutron']['need_db_expand'] | bool"
     - "_neutron_is_first_play_host"
@@ -27,6 +28,7 @@
     section: neutron
     option: "need_db_expand"
     value: "False"
+    mode: "0644"
 
 - name: Check for available offline migrations
   command: "{{ neutron_bin }}/neutron-db-manage --config-file {{ neutron_conf_version_dir }}/neutron.conf has_offline_migrations"
@@ -48,6 +50,7 @@
     section: neutron
     option: "need_db_contract"
     value: "True"
+    mode: "0644"
   when:
     - "'stdout' in _offline_migrations_check"
     - "'Need to apply migrations' in _offline_migrations_check.stdout"

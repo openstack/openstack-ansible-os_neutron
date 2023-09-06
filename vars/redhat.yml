@@ -57,7 +57,7 @@ neutron_distro_packages:
   - which
 
 neutron_ovn_distro_packages:
-   - openvswitch-ovn-common
+  - openvswitch-ovn-common
 
 neutron_ovn_controller_distro_packages:
   - openvswitch-ovn-host

@@ -58,13 +58,14 @@
 # set leader_node variable
 - name: Set leader_node fact
   set_fact:
-    leader_node: "{{ (_find_leader.results | selectattr('stdout', 'search', 'leader')) | map(attribute='container') | list  }}"
+    leader_node: "{{ (_find_leader.results | selectattr('stdout', 'search', 'leader')) | map(attribute='container') | list }}"
 
 # This play only run first time to build cluster using primary node.
 - name: Setup ovn cluster using primary node.
   template:
     src: ovn-northd-opts.j2
     dest: "{{ neutron_ovn_northd_opts_file }}"
+    mode: "0644"
   when:
     - "inventory_hostname == neutron_ovn_primary_cluster_node"
     - _check_cluster_db.rc != 0
@@ -83,6 +84,7 @@
 
 - name: Configure connection settings for ovn-nb and ovn-sb
   command: "{{ cmd }}"
+  changed_when: false
   with_items:
     - "ovn-nbctl --inactivity-probe={{ neutron_ovn_nb_inactivity_probe }} set-connection p{{ ovn_proto }}:6641"
     - "ovn-sbctl --inactivity-probe={{ neutron_ovn_sb_inactivity_probe }} set-connection p{{ ovn_proto }}:6642"
@@ -101,6 +103,7 @@
   template:
     src: ovn-northd-opts.j2
     dest: "{{ neutron_ovn_northd_opts_file }}"
+    mode: "0644"
   when:
     - _check_cluster_db.rc != 0
   notify:
