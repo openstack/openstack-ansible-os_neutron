@@ -220,6 +220,7 @@
     enabled: false
   when:
      - ansible_facts['pkg_mgr'] == 'apt'
-     - ansible_facts['hostname'] in groups['neutron_metadata_agent'] or ansible_facts['hostname'] in groups['neutron_ovn_controller']
+     - ansible_facts['hostname'] in groups['neutron_metadata_agent'] or (
+         neutron_plugin_type == 'ml2.ovn' and ansible_facts['hostname'] in groups['neutron_ovn_controller'])
      - groups['haproxy_all'] is defined
      - ansible_facts['hostname'] not in groups['haproxy_all']
