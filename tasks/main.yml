@@ -109,9 +109,6 @@
   tags:
     - always
 
-- name: Importing dependent_neutron_roles tasks
-  import_tasks: dependent_neutron_roles.yml
-
 - name: Importing neutron_pre_install tasks
   import_tasks: neutron_pre_install.yml
   tags:

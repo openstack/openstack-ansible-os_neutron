@@ -15,7 +15,6 @@ Neutron role for OpenStack-Ansible
    app-ovn.rst
    app-nuage.rst
    app-nsx.rst
-   app-opendaylight.rst
    app-genericswitch.rst
 
 :tags: openstack, neutron, cloud, ansible
