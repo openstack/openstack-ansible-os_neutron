@@ -141,15 +141,13 @@ You can also define customized configuration files for VPN service with the vari
 
    neutron_vpnaas_custom_config:
       - src: "/etc/openstack_deploy/strongswan/strongswan.conf.template"
-        dest: "{{ neutron_conf_dir }}/strongswan.conf.template"
+        dest: "{{ neutron_conf_version_dir }}/strongswan.conf.template"
         condition: "{{ ansible_facts['os_family'] | lower == 'debian' }}"
       - src: "/etc/openstack_deploy/strongswan/strongswan.d"
         dest: "/etc/strongswan.d"
         condition: "{{ ansible_facts['os_family'] | lower == 'debian' }}"
-      - src: "/etc/openstack_deploy/{{ neutron_vpnaas_distro_packages }}/ipsec.conf.template"
-        dest: "{{ neutron_conf_dir }}/ipsec.conf.template"
-      - src: "/etc/openstack_deploy/{{ neutron_vpnaas_distro_packages }}/ipsec.secret.template"
-        dest: "{{ neutron_conf_dir }}/ipsec.secret.template"
+      - src: "/etc/openstack_deploy/neutron/ipsec.conf.template"
+        dest: "{{ neutron_conf_version_dir }}/ipsec.conf.template"
 
 With that ``neutron_l3_agent_ini_overrides`` should be also defined in 'user_variables.yml'
 to tell ``l3_agent`` use the new config file:
