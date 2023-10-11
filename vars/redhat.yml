@@ -95,7 +95,7 @@ neutron_lxb_distro_packages:
   - bridge-utils
 
 neutron_vpnaas_distro_packages:
-  - openswan
+  - libreswan
 
 _neutron_driver_vpnaas: neutron_vpnaas.services.vpn.device_drivers.libreswan_ipsec.LibreSwanDriver
 _neutron_vpnaas_service_provider: VPN:openswan:neutron_vpnaas.services.vpn.service_drivers.ipsec.IPsecVPNDriver:default
