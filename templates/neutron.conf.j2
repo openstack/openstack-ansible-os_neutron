@@ -259,10 +259,10 @@ lock_path = {{ neutron_lock_dir }}/{{ neutron_system_slice_name }}
 {% if neutron_services['neutron-server']['group'] in group_names and 'sfc' in neutron_plugin_base %}
 # ODL-SFC
 [sfc]
-drivers = {{ (neutron_plugin_type == 'ml2.opendaylight') | ternary('odl_v2', 'ovs') }}
+drivers = ovs
 
 [flowclassifier]
-drivers = {{ (neutron_plugin_type == 'ml2.opendaylight') | ternary('odl_v2', 'ovs') }}
+drivers = ovs
 {% endif %}
 
 {% if neutron_services['neutron-server']['group'] in group_names and neutron_backend_ssl | bool %}

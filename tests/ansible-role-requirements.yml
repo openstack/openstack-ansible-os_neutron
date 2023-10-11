@@ -51,10 +51,6 @@
   scm: git
   src: https://github.com/logan2211/ansible-etcd
   version: master
-- name: opendaylight
-  scm: git
-  src: https://github.com/opendaylight/integration-packaging-ansible-opendaylight
-  version: master
 - name: systemd_service
   src: https://opendev.org/openstack/ansible-role-systemd_service
   scm: git
