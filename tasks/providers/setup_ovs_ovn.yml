@@ -22,7 +22,7 @@
 
 - name: Set CMS Options for Gateway Scheduling
   changed_when: false
-  command: "ovs-vsctl set open . external-ids:ovn-cms-options=enable-chassis-as-gw"
+  command: "ovs-vsctl set Open_vSwitch . external-ids:ovn-cms-options=enable-chassis-as-gw,availability-zones={{ neutron_availability_zone }}"
   when:
     - '"neutron_ovn_gateway" in group_names'
 

@@ -335,6 +335,18 @@ neutron_keystone_auth_type: password
 neutron_service_in_ldap: "{{ service_ldap_backend_enabled | default(False) }}"
 
 ###
+### Availability zones
+###
+# Default availability zones do define a list of zones to where routers/agents
+# will be scheduled by default. This is a list, since a deployment might stretch
+# networks across AZs
+neutron_default_availability_zones: []
+
+# Availability zone defines current AZ of the component. For OVN you can define
+# multiple AZs separated with a colon, ie "az1:az2"
+neutron_availability_zone: nova
+
+###
 ### Telemetry integration
 ###
 

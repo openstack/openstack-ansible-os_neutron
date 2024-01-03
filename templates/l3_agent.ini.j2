@@ -47,7 +47,8 @@ vpn_device_driver = {{ neutron_driver_vpnaas }}
 {% set _ = l3_agent_plugins.append("port_forwarding") %}
 {% endif %}
 
-{% if l3_agent_plugins|length > 0 %}
 [AGENT]
+{% if l3_agent_plugins | length > 0 %}
 extensions = {{ l3_agent_plugins | join(',') }}
 {% endif %}
+availability_zone = {{ neutron_availability_zone }}

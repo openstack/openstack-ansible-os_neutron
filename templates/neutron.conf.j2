@@ -31,6 +31,15 @@ use_ssl = {{ neutron_backend_ssl }}
 # General, only applies to neutron server host group
 vlan_transparent = False
 
+# Availability zone
+{% if neutron_default_availability_zones %}
+default_availability_zones = {{ neutron_default_availability_zones | join(',') }}
+{%   if neutron_default_availability_zones | length > 1 %}
+router_scheduler_driver = neutron.scheduler.l3_agent_scheduler.AZLeastRoutersScheduler
+network_scheduler_driver = neutron.scheduler.dhcp_agent_scheduler.AZAwareWeightScheduler
+{%   endif %}
+{% endif %}
+
 # Plugins
 core_plugin = {{ neutron_plugin_core }}
 {% if neutron_plugin_type.split('.')[0] == 'ml2' %}

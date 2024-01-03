@@ -18,3 +18,6 @@ dnsmasq_lease_max = {{ neutron_dnsmasq_lease_max }}
 # Metadata
 enable_isolated_metadata = True
 force_metadata = {{ neutron_dnsmasq_force_metadata }}
+
+[AGENT]
+availability_zone = {{ neutron_availability_zone }}
