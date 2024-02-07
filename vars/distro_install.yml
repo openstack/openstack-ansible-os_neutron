@@ -39,7 +39,8 @@ neutron_package_list: |-
   {% if neutron_services['neutron-l3-agent']['group'] in group_names and neutron_fwaas_v2 | bool %}
   {% set _ = packages.extend(neutron_optional_fwaas_distro_packages) %}
   {% endif %}
-  {% if neutron_services['neutron-l3-agent']['group'] in group_names and neutron_vpnaas | bool %}
+  {% if (neutron_services['neutron-l3-agent']['group'] in group_names or
+         neutron_services['neutron-ovn-vpn-agent']['group'] in group_names) and neutron_vpnaas | bool %}
   {% set _ = packages.extend(neutron_vpnaas_distro_packages) %}
   {% set _ = packages.extend(neutron_optional_vpnaas_distro_packages) %}
   {% endif %}

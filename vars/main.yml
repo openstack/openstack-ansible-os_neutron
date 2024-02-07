@@ -284,7 +284,7 @@ neutron_fwaas_v2: "{{ ('firewall_v2' in neutron_plugin_base) | ternary('True', '
 ###
 
 # Please add the 'vpnaas' to the neutron_plugin_base list
-neutron_vpnaas: "{% if 'vpnaas' in neutron_plugin_base %}True{% else %}False{% endif %}"
+neutron_vpnaas: "{{ ('vpnaas' in neutron_plugin_base or 'ovn-vpnaas' in neutron_plugin_base) }}"
 
 ## Neutron Dynamic Routing Agent's BGP Plugin Configuration
 # To enable the BGP plugin, add the following item to the neutron_plugin_base list:
@@ -525,6 +525,21 @@ neutron_services:
     config_type: "ini"
     init_config_overrides: "{{ neutron_ovn_metadata_agent_init_overrides }}"
     start_order: 3
+  neutron-ovn-vpn-agent:
+    group: neutron_ovn_gateway
+    systemd_lock_dir: /run/lock/neutron-ovn-vpn-agent
+    service_name: neutron-ovn-vpn-agent
+    service_en: "{{ neutron_vpnaas and neutron_plugin_type == 'ml2.ovn' }}"
+    service_conf_path: "{{ neutron_conf_version_dir }}"
+    service_conf: neutron_ovn_vpn_agent.ini
+    service_rootwrap: rootwrap.d/vpnaas.filters
+    execstarts: >-
+      {{ neutron_bin }}/neutron-ovn-vpn-agent --config-file {{ neutron_conf_dir }}/neutron.conf
+      --config-file {{ neutron_conf_dir }}/neutron_ovn_vpn_agent.ini
+    config_overrides: "{{ neutron_ovn_vpn_agent_overrides }}"
+    config_type: "ini"
+    init_config_overrides: "{{ neutron_ovn_vpn_agent_init_overrides }}"
+    start_order: 4
   ironic-neutron-agent:
     group: ironic_neutron_agent
     service_name: ironic-neutron-agent

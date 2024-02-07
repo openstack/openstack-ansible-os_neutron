@@ -1,0 +1,22 @@
+# {{ ansible_managed }}
+
+[DEFAULT]
+interface_driver = neutron.agent.linux.interface.OVSInterfaceDriver
+
+[AGENT]
+extensions = vpnaas
+
+[vpnagent]
+vpn_device_driver = {{ neutron_driver_vpnaas }}
+
+[ovs]
+ovsdb_connection = {{ neutron_ovsdb_manager_connection }}
+ovsdb_connection_timeout = 180
+
+[ovn]
+ovn_sb_connection = {{ neutron_ovn_sb_connection }}
+{% if neutron_ovn_ssl %}
+ovn_sb_ca_cert = {{ [neutron_conf_version_dir, neutron_ovn_ssl_ca_cert] | join('/') }}
+ovn_sb_certificate = {{ [neutron_conf_version_dir, neutron_ovn_ssl_cert] | join('/') }}
+ovn_sb_private_key = {{ [neutron_conf_version_dir, neutron_ovn_ssl_key] | join('/') }}
+{% endif %}

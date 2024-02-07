@@ -34,7 +34,8 @@ neutron_package_list: |-
   {% if neutron_services['neutron-linuxbridge-agent']['group'] in group_names and neutron_services['neutron-linuxbridge-agent'].service_en | bool %}
   {% set _ = packages.extend(neutron_lxb_distro_packages) %}
   {% endif %}
-  {% if neutron_services['neutron-l3-agent']['group'] in group_names and neutron_vpnaas | bool %}
+  {% if (neutron_services['neutron-l3-agent']['group'] in group_names or
+         neutron_services['neutron-ovn-vpn-agent']['group'] in group_names) and neutron_vpnaas | bool %}
   {% set _ = packages.extend(neutron_vpnaas_distro_packages) %}
   {% endif %}
   {% if neutron_services['neutron-metadata-agent']['group'] in group_names %}

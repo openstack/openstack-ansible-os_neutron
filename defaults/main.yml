@@ -498,6 +498,8 @@ neutron_vpnaas_service_provider: "{{ _neutron_vpnaas_service_provider }}"
 #     condition: "{{ ansible_facts['os_family'] | lower == 'debian' }}"
 
 neutron_vpnaas_custom_config: []
+neutron_ovn_vpn_agent_overrides: {}
+neutron_ovn_vpn_agent_init_overrides: {}
 
 # OVN Defaults
 neutron_ovn_ssl: True

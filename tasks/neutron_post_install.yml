@@ -200,7 +200,7 @@
   loop: "{{ neutron_vpnaas_custom_config }}"
   when:
     - neutron_vpnaas_custom_config | length > 0
-    - neutron_services['neutron-l3-agent']['group'] in group_names
+    - (neutron_services['neutron-l3-agent']['group'] in group_names) or (neutron_services['neutron-ovn-vpn-agent']['group'] in group_names)
     - item.condition | default(True)
 
 - name: Stop haproxy service on debian derivatives with standalone network nodes

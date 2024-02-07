@@ -95,8 +95,21 @@ neutron_lxb_distro_packages:
 neutron_vpnaas_distro_packages:
   - libreswan
 
-_neutron_driver_vpnaas: neutron_vpnaas.services.vpn.device_drivers.libreswan_ipsec.LibreSwanDriver
-_neutron_vpnaas_service_provider: VPN:openswan:neutron_vpnaas.services.vpn.service_drivers.ipsec.IPsecVPNDriver:default
+_neutron_driver_vpnaas: >-
+  {{
+    (neutron_plugin_type == 'ml2.ovn') | ternary(
+      'neutron_vpnaas.services.vpn.device_drivers.ovn_ipsec.OvnLibreSwanDriver',
+      'neutron_vpnaas.services.vpn.device_drivers.libreswan_ipsec.LibreSwanDriver'
+    )
+  }}
+
+_neutron_vpnaas_service_provider: >-
+  {{
+    (neutron_plugin_type == 'ml2.ovn') | ternary(
+      'VPN:openswan:neutron_vpnaas.services.vpn.service_drivers.ovn_ipsec.IPsecOvnVPNDriver:default',
+      'VPN:openswan:neutron_vpnaas.services.vpn.service_drivers.ipsec.IPsecVPNDriver:default'
+    )
+  }}
 
 neutron_metadata_agent_distro_packages:
   - haproxy
