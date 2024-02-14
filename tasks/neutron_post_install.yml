@@ -23,12 +23,10 @@
         state: "directory"
         owner: "{{ item.owner | default(neutron_system_user_name) }}"
         group: "{{ item.group | default(neutron_system_group_name) }}"
-        mode: "{{ item.mode | default('0755') }}"
+        mode: "{{ item.mode | default('0750') }}"
       with_items:
         - path: "{{ neutron_conf_version_dir }}/plugins"
-          mode: "0750"
         - path: "{{ neutron_conf_version_dir }}/plugins/{{ neutron_plugin_type.split('.')[0] }}"
-          mode: "0750"
         - path: "{{ neutron_conf_version_dir }}/rootwrap.d"
           owner: "root"
           group: "root"
@@ -41,7 +39,7 @@
         dest: "{{ neutron_conf_version_dir }}/rootwrap.d/"
         owner: "root"
         group: "root"
-        mode: "0644"
+        mode: "0640"
       with_fileglob:
         - rootwrap.d/*
       notify:
@@ -137,15 +135,6 @@
       delegate_to: localhost
       check_mode: false
       with_items: "{{ neutron_core_files }}"
-
-    # NOTE(cloudnull): This will ensure strong permissions on all rootwrap files.
-    - name: Set rootwrap.d permissions
-      file:
-        path: "{{ neutron_conf_version_dir }}/rootwrap.d"
-        owner: "root"
-        group: "root"
-        mode: "0640"
-        recurse: true
 
     - name: Copy neutron ml2 plugin config
       openstack.config_template.config_template:
