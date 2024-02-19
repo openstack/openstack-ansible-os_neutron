@@ -47,6 +47,7 @@ ovn_native_dhcp = True
 ovn_nb_connection = {{ neutron_ovn_nb_connection }}
 ovn_sb_connection = {{ neutron_ovn_sb_connection }}
 ovn_l3_scheduler = {{ neutron_ovn_l3_scheduler }}
+enable_distributed_floating_ip = {{ neutron_ovn_distributed_fip }}
 ovn_metadata_enabled = True
 {%   endif %}
 {%   if neutron_ovn_ssl and (neutron_services['neutron-server']['group'] in group_names or neutron_services['neutron-ovn-controller']['group'] in group_names) %}
