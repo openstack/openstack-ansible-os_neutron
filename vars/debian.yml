@@ -23,8 +23,6 @@ neutron_ovn_northd_service_name: ovn-central
 
 neutron_ovn_controller_service_name: ovn-host
 
-neutron_ovs_socket_path: "/var/run/openvswitch"
-
 neutron_ovn_northd_opts: "OVN_CTL_OPTS"
 
 neutron_ovn_northd_opts_file: "/etc/default/ovn-central"

@@ -512,8 +512,6 @@ neutron_services:
     service_en: False
   neutron-ovn-metadata-agent:
     group: neutron_ovn_controller
-    systemd_user_name: root
-    systemd_group_name: root
     systemd_lock_dir: /run/lock/neutron-ovn-metadata
     service_name: neutron-ovn-metadata-agent
     service_en: "{{ neutron_plugin_type == 'ml2.ovn' }}"

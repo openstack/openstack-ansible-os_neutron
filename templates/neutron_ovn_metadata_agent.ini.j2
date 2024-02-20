@@ -14,5 +14,5 @@ metadata_proxy_shared_secret = {{ nova_metadata_proxy_secret }}
 nova_metadata_protocol = {{ neutron_nova_metadata_protocol }}
 
 [ovs]
-ovsdb_connection = unix:{{ neutron_ovs_socket_path }}/db.sock
+ovsdb_connection = {{ neutron_ovsdb_manager_connection }}
 ovsdb_connection_timeout = 180
