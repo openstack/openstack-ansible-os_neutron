@@ -58,6 +58,9 @@ neutron_optional_oslomsg_amqp1_pip_packages:
 neutron_optional_bgp_pip_packages:
   - "git+{{ neutron_dynamic_routing_git_repo }}@{{ neutron_dynamic_routing_git_install_branch }}#egg=neutron-dynamic-routing"
 
+neutron_optional_ovn_bgp_pip_packages:
+  - "git+{{ networking_ovn_bgp_git_repo }}@{{ networking_ovn_bgp_install_branch }}#egg=ovn-bgp-agent"
+
 neutron_optional_fwaas_pip_packages:
   - "git+{{ neutron_fwaas_git_repo }}@{{ neutron_fwaas_git_install_branch }}#egg=neutron-fwaas"
 
@@ -89,6 +92,10 @@ neutron_venv_packages: >-
   {%- endif %}
   {%- if neutron_fwaas_v2 | bool %}
   {%- set _ = pkg_list.extend(neutron_optional_fwaas_pip_packages) %}
+  {%- endif %}
+  {%- if (neutron_ovn_bgp_enable | bool) and
+         (neutron_services['neutron-ovn-bgp-agent']['group'] in group_names) %}
+  {%-   set _ = pkg_list.extend(neutron_optional_ovn_bgp_pip_packages) %}
   {%- endif %}
   {%- if neutron_vpnaas | bool %}
   {%-   set _ = pkg_list.extend(neutron_optional_vpnaas_pip_packages) %}
@@ -510,6 +517,19 @@ neutron_services:
   neutron-ovn-controller:
     group: neutron_ovn_controller
     service_en: False
+  neutron-ovn-bgp-agent:
+    group: "{{ neutron_ovn_bgp_agent_group }}"
+    systemd_lock_dir: /run/lock/ovn-bgp-agent
+    service_name: neutron-ovn-bgp-agent
+    service_en: "{{ (neutron_plugin_type == 'ml2.ovn') and neutron_ovn_bgp_enable | bool }}"
+    service_conf_path: "{{ neutron_conf_version_dir }}"
+    service_conf: neutron_ovn_bgp_agent.ini
+    service_rootwrap: rootwrap.d/ovn-bgp.filters
+    execstarts: "{{ neutron_bin }}/ovn-bgp-agent --config-file {{ neutron_conf_dir }}/neutron_ovn_bgp_agent.ini"
+    config_overrides: "{{ neutron_ovn_bgp_agent_ini_overrides }}"
+    config_type: "ini"
+    init_config_overrides: "{{ neutron_ovn_bgp_agent_init_overrides }}"
+    start_order: 4
   neutron-ovn-metadata-agent:
     group: neutron_ovn_controller
     systemd_lock_dir: /run/lock/neutron-ovn-metadata

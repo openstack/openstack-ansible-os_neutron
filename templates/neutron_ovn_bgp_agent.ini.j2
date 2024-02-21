@@ -1,0 +1,38 @@
+[DEFAULT]
+debug = {{ debug }}
+expose_tenant_networks = {{ neutron_ovn_bgp_expose_tenant_networks }}
+expose_ipv6_gua_tenant_networks = {{ neutron_ovn_bgp_expose_ipv6_gua_tenant_networks }}
+driver = {{ neutron_ovn_bgp_agent_driver }}
+exposing_method = {{ neutron_ovn_bgp_exposing_method }}
+
+{% for param, value in neutron_ovn_bgp_config.items() %}
+bgp_{{ param }} = {{ value }}
+{% endfor %}
+
+ovsdb_connection = {{ neutron_ovsdb_manager_connection }}
+ovsdb_connection_timeout = 180
+
+[agent]
+root_helper=sudo {{ neutron_bin }}/ovn-bgp-agent-rootwrap {{ neutron_conf_dir }}/rootwrap.conf
+root_helper_daemon=sudo {{ neutron_bin }}/ovn-bgp-agent-rootwrap-daemon {{ neutron_conf_dir }}/rootwrap.conf
+
+[ovn]
+ovn_nb_connection = {{ neutron_ovn_nb_connection }}
+ovn_sb_connection = {{ neutron_ovn_sb_connection }}
+
+{% if neutron_ovn_ssl %}
+ovn_sb_ca_cert={{ [neutron_conf_version_dir, neutron_ovn_ssl_ca_cert] | join('/') }}
+ovn_sb_certificate={{ [neutron_conf_version_dir, neutron_ovn_ssl_cert] | join('/') }}
+ovn_sb_private_key={{ [neutron_conf_version_dir, neutron_ovn_ssl_key] | join('/') }}
+ovn_nb_ca_cert={{ [neutron_conf_version_dir, neutron_ovn_ssl_ca_cert] | join('/') }}
+ovn_nb_certificate={{ [neutron_conf_version_dir, neutron_ovn_ssl_cert] | join('/') }}
+ovn_nb_private_key={{ [neutron_conf_version_dir, neutron_ovn_ssl_key] | join('/') }}
+{% endif %}
+
+{% if neutron_ovn_bgp_exposing_method == 'ovn' %}
+[local_ovn_cluster]
+ovn_nb_connection = {{ neutron_ovn_bgp_local_nbdb }}
+external_nics = {{ neutron_ovn_bgp_local_nics | join(',') }}
+peer_ips = {{ neutron_ovn_bgp_local_peers | join(',') }}
+provider_networks_pool_prefixes = {{ neutron_ovn_bgp_provider_networks_prefixes | join(',') }}
+{% endif %}

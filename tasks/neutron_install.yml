@@ -52,6 +52,21 @@
   delay: 2
   with_items: "{{ neutron_remove_distro_packages }}"
 
+- name: Include FRR role for OVN BGP Agent
+  include_role:
+    name: frrouting
+    apply:
+      tags:
+        - frrouting
+  vars:
+    frr_bgpd_config: "{{ neutron_frr_bgp_config }}"
+    frr_staticd_routes: "{{ neutron_frr_staticd_routes }}"
+  when:
+    - neutron_ovn_bgp_enable | bool
+    - neutron_services['neutron-ovn-bgp-agent']['group'] in group_names
+  tags:
+    - always
+
 # NOTE(jrosser)
 # ceilometer appears in u-c as is used by networking-odl stats plugin.
 # the new pip resolver will fail to install ceilometer if two contradictory
