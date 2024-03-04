@@ -88,6 +88,11 @@ The following procedure describes how to modify the
 
 #. ``neutron_plugin_base`` is as follows:
 
+   .. NOTE::
+
+      In the case your ``neutron_plugin_type`` is ``ml2.ovn``,
+      use ``ovn-vpnaas`` plugin instead
+
    .. code-block:: yaml
 
       neutron_plugin_base:
@@ -152,6 +157,11 @@ You can also define customized configuration files for VPN service with the vari
 With that ``neutron_l3_agent_ini_overrides`` should be also defined in 'user_variables.yml'
 to tell ``l3_agent`` use the new config file:
 
+.. NOTE::
+
+   Please, use variable ``neutron_ovn_vpn_agent_overrides`` when
+   ``neutron_plugin_type`` is set to ``ml2.ovn``.
+
 .. code-block:: yaml
 
    neutron_l3_agent_ini_overrides:
@@ -161,6 +171,30 @@ to tell ``l3_agent`` use the new config file:
             strongswan_config_template : "{{ neutron_conf_dir }}/strongswan.conf.template"
          openswan:
             ipsec_config_template:  "{{ neutron_conf_dir }}/ipsec.conf.template"
+
+VPNaaS Agent for OVN
+--------------------
+
+Since 2024.1 release (Caracal) VPNaaS service does support ``ml2.ovn``
+plugin type.
+
+While configuration of the service is pretty much alike, implementation beneath
+has significant differences.
+
+First of all, VPNaaS is represented with a standalone agent that is coordinated
+with help of RabbitMQ. This means, that a new Agent Type ``VPN Agent`` will
+appear in ``openstack network agent list`` output.
+On a VPN site connection creation, VPN agent will handle a namespace creation
+on an arbitrary OVN gateway node, inside which ipsec connection will be created
+
+Since OVN L3 Router implementation is not using namespaces, VPN Agent will
+utilize an extra external IP, since it can not be shared now with the router.
+Moreover, an extra patch network will be created to connect VPN Agent with L3
+agent.
+
+For more details on the implementation please reffer to the `VPNaaS OVN Spec`_
+
+.. _VPNaaS OVN Spec: https://opendev.org/openstack/neutron-specs/src/branch/master/specs/xena/vpnaas-ovn.rst
 
 
 BGP Dynamic Routing service (optional)
