@@ -149,6 +149,7 @@
     - neutron_services['neutron-ovn-northd']['group'] in group_names and neutron_plugin_type == 'ml2.ovn'
   listen:
     - restart ovn service
+    - ovn cert installed
 
 - name: Restart ovn controller
   service:
@@ -158,3 +159,4 @@
     - neutron_services['neutron-ovn-controller']['group'] in group_names and neutron_plugin_type == 'ml2.ovn'
   listen:
     - restart ovn service
+    - ovn cert installed
