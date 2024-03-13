@@ -163,6 +163,7 @@
     pki_regen_cert: "{{ neutron_ovn_pki_regen_cert }}"
     pki_certificates: "{{ neutron_ovn_pki_certificates }}"
     pki_install_certificates: "{{ neutron_ovn_pki_install_certificates }}"
+    pki_handler_cert_installed: "ovn cert installed"
   when:
     - neutron_plugin_type == 'ml2.ovn'
     - neutron_ovn_ssl
