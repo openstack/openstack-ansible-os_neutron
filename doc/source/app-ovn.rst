@@ -157,7 +157,7 @@ OpenStack-Ansible user variables
 To deploy OpenStack-Ansible using the ML2/OVN mechanism driver, set the
 following user variables in the``/etc/openstack_deploy/user_variables.yml``
 file:
- 
+
 .. code-block:: yaml
 
   neutron_plugin_type: ml2.ovn
@@ -236,6 +236,15 @@ Useful Open Virtual Network (OVN) Commands
 The following commands can be used to provide useful information about the
 state of Open vSwitch networking and configurations.
 
+The following ad-hoc command can be executed to find the current state and the
+leader of the NB/SB database:
+
+.. code-block:: console
+
+  ansible neutron_ovn_northd -m command -a "ovs-appctl -t /var/run/ovn/ovnnb_db.ctl cluster/status OVN_Northbound"
+  ansible neutron_ovn_northd -m command -a "ovs-appctl -t /var/run/ovn/ovnsb_db.ctl cluster/status OVN_Southbound"
+
+
 The ``ovs-vsctl list open_vswitch`` command provides information about the
 ``open_vswitch`` table in the local Open vSwitch database and can be run from
 any network or compute host:
@@ -261,6 +270,23 @@ any network or compute host:
   statistics          : {}
   system_type         : ubuntu
   system_version      : "20.04"
+
+
+If you want to check only for only a specific field from the ovs-vsctl output, like applied
+interface mappings, you can select it in the following way:
+
+.. code-block:: console
+
+  root@mnaio-controller1:~# ovs-vsctl get open . external_ids:ovn-bridge-mappings
+  "vlan:br-provider"
+
+You can also get information about the agent UUID which will be stated in
+``openstack network agent list`` output via similar command:
+
+.. code-block:: console
+
+  root@mnaio-controller1:~# ovs-vsctl get open . external_ids:system-id
+  "a67926f2-9543-419a-903d-23e2aa308368"
 
 .. note::
 
@@ -304,6 +330,31 @@ connection details:
           ip: "172.25.1.33"
           options: {csum="true"}
       Port_Binding cr-lrp-022933b6-fb12-4f40-897f-745761f03186
+
+You can get specific information about chassis by providing either it's
+`name`, where `name` is UUID of the agent (`external_ids:system-id` from the
+ovs-vsctl output), for example:
+
+.. code-block:: console
+
+  root@mnaio-controller1:~# ovn-sbctl list Chassis ff66288c-5a7c-41fb-ba54-6c781f95a81e
+  _uuid               : b0b6ebec-1c64-417a-adb7-d383632a4c5e
+  encaps              : [a3ba78c3-df14-4144-81e0-e6379541bc89]
+  external_ids        : {}
+  hostname            : mnaio-compute2
+  name                : "ff66288c-5a7c-41fb-ba54-6c781f95a81e"
+  nb_cfg              : 0
+  other_config        : {ct-no-masked-label="true", datapath-type=system, fdb-timestamp="true", iface-types="afxdp,afxdp-nonpmd,bareudp,erspan,geneve,gre,gtpu,internal,ip6erspan,ip6gre,lisp,patch,srv6,stt,system,tap,vxlan", is-interconn="false", mac-binding-timestamp="true", ovn-bridge-mappings="vlan:br-provider", ovn-chassis-mac-mappings="", ovn-cms-options="", ovn-ct-lb-related="true", ovn-enable-lflow-cache="true", ovn-limit-lflow-cache="", ovn-memlimit-lflow-cache-kb="", ovn-monitor-all="false", ovn-trim-limit-lflow-cache="", ovn-trim-timeout-ms="", ovn-trim-wmark-perc-lflow-cache="", port-up-notif="true"}
+  transport_zones     : []
+  vtep_logical_switches: []
+
+As you might see, ``other_config`` row also contains bridge-mapping, which can
+be fetched from the table similarly to the ovs-vsctl way:
+
+.. code-block:: console
+
+  root@mnaio-controller1:~# ovn-sbctl get Chassis ff66288c-5a7c-41fb-ba54-6c781f95a81e other_config:ovn-bridge-mappings
+  "vlan:br-provider"
 
 The ``ovn-nbctl show`` command provides information about networks, ports,
 and other objects known to OVN and demonstrates connectivity between the
@@ -360,8 +411,83 @@ northbound database and neutron-server.
           logical ip: "10.3.3.49"
           type: "dnat_and_snat"
 
+Floating IPs and Router SNAT are represented via NAT rules in the NB database,
+where FIP has type `dnat_and_snat`.
+You can fetch the list of NAT rules assigned to a specific router using the router
+name in the OVN database, which is formatted like ``neutron-<UUID>``, where UUID
+is the UUID of the router in Neutron database. Command will look like this:
+
+.. code-block:: console
+
+  root@mnaio-controller1:~# ovn-nbctl lr-nat-list neutron-b0d6ca32-fda3-4fdc-b648-82c8bee303dc
+  TYPE             GATEWAY_PORT          EXTERNAL_IP        EXTERNAL_PORT    LOGICAL_IP          EXTERNAL_MAC         LOGICAL_PORT
+  dnat_and_snat                          192.168.25.246                      10.3.3.49
+  snat                                   192.168.25.242                      10.3.3.0/24
+
+
+Mapping/location of the router to the gateway node can be established by
+logical ports of the router. For that you need to know the UUID of the
+external port attached to the router. Port name in OVN database is constructed as
+``lrp-<UUID>``, where UUID is the Neutron port UUID. Given, that an external
+network in the topic is named `public`, you can determine the gateway node in a
+following way:
+
+.. code-block:: console
+
+  root@mnaio-controller1:~# openstack port list --router b0d6ca32-fda3-4fdc-b648-82c8bee303dc --network public -c ID
+  +--------------------------------------+
+  | ID                                   |
+  +--------------------------------------+
+  | 16555e74-fbef-4ecb-918c-2fb76bf5d42d |
+  +--------------------------------------+
+  root@mnaio-controller1:~# ovn-nbctl get Logical_Router_Port lrp-16555e74-fbef-4ecb-918c-2fb76bf5d42d status:hosting-chassis
+  "5335c34d-9233-47bd-92f1-fc7503270783"
+  root@mnaio-controller1:~# ovn-sbctl get Chassis 5335c34d-9233-47bd-92f1-fc7503270783 hostname
+  mnaio-compute1
+  root@mnaio-controller1:~# openstack network agent show 5335c34d-9233-47bd-92f1-fc7503270783 -c host
+  +-------+-----------------------------+
+  | Field | Value                       |
+  +-------+-----------------------------+
+  | host  | mnaio-compute1              |
+  +-------+-----------------------------+
+
+To list all gateway chassis on which the logical port is scheduled with their priorities, you can use:
+
+.. code-block:: console
+
+  root@mnaio-controller1:~# ovn-nbctl lrp-get-gateway-chassis lrp-16555e74-fbef-4ecb-918c-2fb76bf5d42d | cut -d '_' -f 2
+  5335c34d-9233-47bd-92f1-fc7503270783     2
+  cb6761f4-c14c-41f8-9654-16f3fc7cc7e6     1
+
+
+In order to migrate active router logical port to another node, you can
+execute the following command:
+
+.. code-block:: console
+
+  root@mnaio-controller1:~# ovn-nbctl lrp-set-gateway-chassis lrp-16555e74-fbef-4ecb-918c-2fb76bf5d42d ff66288c-5a7c-41fb-ba54-6c781f95a81e 10
+
 Additional commands can be found in upstream OVN documentation and other
 resources listed on this page.
+
+OVN database population
+-----------------------
+
+In case of OVN DB clustering failure and data loss as a result, you can always
+re-populate data in OVN SB/NB from stored state in Neutron database.
+
+For that, you can execute the following:
+
+.. code-block:: console
+
+  root@mnaio-controller1:~# lxc-attach -n $(lxc-ls -1 | grep neutron-server)
+  root@mnaio-controller1-neutron-server-container-7510c8bf:/# source /etc/openstack-release
+  root@mnaio-controller1-neutron-server-container-7510c8bf:/# /openstack/venvs/neutron-${DISTRIB_RELEASE}/bin/neutron-ovn-db-sync-util --config-file /etc/neutron/neutron.conf --config-file /etc/neutron/plugins/ml2/ml2_conf.ini --ovn-neutron_sync_mode repair
+
+Command ``neutron-ovn-db-sync-util`` is also used during migration from OVS to
+OVN. For that, you need to supply ``--ovn-neutron_sync_mode migrate`` instead
+of `repair` as shown in example above.
+
 
 Notes
 -----
