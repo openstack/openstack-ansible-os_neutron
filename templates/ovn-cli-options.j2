@@ -1,0 +1,7 @@
+export OVN_NB_DB="{{ neutron_ovn_nb_connection }}"
+export OVN_SB_DB="{{ neutron_ovn_sb_connection }}"
+
+{% if neutron_ovn_ssl | bool %}
+export OVN_NBCTL_OPTIONS="--certificate {{ neutron_ovn_conf_dir ~ '/' ~ neutron_ovn_ssl_cert }} --private-key {{ neutron_ovn_conf_dir ~ '/' ~ neutron_ovn_ssl_key }} --ca-cert {{ neutron_ovn_conf_dir ~ '/' ~ neutron_ovn_ssl_ca_cert }}"
+export OVN_SBCTL_OPTIONS="--certificate {{ neutron_ovn_conf_dir ~ '/' ~ neutron_ovn_ssl_cert }} --private-key {{ neutron_ovn_conf_dir ~ '/' ~ neutron_ovn_ssl_key }} --ca-cert {{ neutron_ovn_conf_dir ~ '/' ~ neutron_ovn_ssl_ca_cert }}"
+{% endif %}
