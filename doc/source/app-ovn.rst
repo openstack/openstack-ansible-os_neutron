@@ -237,7 +237,8 @@ The following commands can be used to provide useful information about the
 state of Open vSwitch networking and configurations.
 
 The ``ovs-vsctl list open_vswitch`` command provides information about the
-``open_vswitch`` table in the local Open vSwitch database:
+``open_vswitch`` table in the local Open vSwitch database and can be run from
+any network or compute host:
 
 .. code-block:: console
 
@@ -260,6 +261,15 @@ The ``ovs-vsctl list open_vswitch`` command provides information about the
   statistics          : {}
   system_type         : ubuntu
   system_version      : "20.04"
+
+.. note::
+
+  Commands towards OVN Southbound and Northbound databases are expected to be run
+  from ``neutron_ovn_northd`` hosts. OpenStack-Ansible places an openrc file
+  named `/root/ovnctl.rc` on these hosts. Once you ``source`` that file,
+  required environment variables will be set to connect to the database.
+  Alternatively, you can use ``--no-leader-only`` flag to connect to the
+  local database only instead of the leader one (which is default).
 
 The ``ovn-sbctl show`` command provides information related to southbound
 connections. If used outside the ovn_northd container, specify the

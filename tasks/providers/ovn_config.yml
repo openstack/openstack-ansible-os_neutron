@@ -56,3 +56,13 @@
 
 - name: Including setup_ovs_ovn tasks
   ansible.builtin.include_tasks: setup_ovs_ovn.yml
+
+- name: Set CLI options to connect to leader
+  template:
+    src: ovn-cli-options.j2
+    dest: "/root/ovnctl.rc"
+    owner: root
+    group: root
+    mode: "0640"
+  when:
+    - neutron_services['neutron-ovn-northd']['group'] in group_names
