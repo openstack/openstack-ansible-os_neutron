@@ -467,7 +467,7 @@ neutron_services:
     uwsgi_port: "{{ neutron_service_port }}"
     uwsgi_tls: "{{ neutron_backend_ssl | ternary(neutron_uwsgi_tls, {}) }}"
     uwsgi_pyargv: >-
-      --config-file {{ neutron_conf_dir }}/neutron.conf --config-file {{ neutron_conf_dir }}/{{ neutron_plugins[neutron_plugin_type].plugin_ini -}}
+      --config-file {{ neutron_conf_dir }}/neutron.conf --config-file {{ neutron_conf_dir }}/{{ neutron_plugins[neutron_plugin_type].plugin_ini }}
       {% if ('ml2.genericswitch' in neutron_plugin_types) -%}
       --config-file {{ neutron_conf_dir }}/{{ neutron_plugins['ml2.genericswitch'].plugin_ini }}
       {% endif %}
