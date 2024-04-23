@@ -103,6 +103,7 @@ neutron_lxb_distro_packages:
 
 neutron_vpnaas_distro_packages:
   - strongswan
+  - libstrongswan-standard-plugins
 
 _neutron_driver_vpnaas: >-
   {{
