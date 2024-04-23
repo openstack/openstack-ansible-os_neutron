@@ -105,6 +105,7 @@ neutron_lxb_distro_packages:
 
 neutron_vpnaas_distro_packages:
   - strongswan
+  - libstrongswan-standard-plugins
 
 _neutron_driver_vpnaas: neutron_vpnaas.services.vpn.device_drivers.strongswan_ipsec.StrongSwanDriver
 _neutron_vpnaas_service_provider: VPN:strongswan:neutron_vpnaas.services.vpn.service_drivers.ipsec.IPsecVPNDriver:default
