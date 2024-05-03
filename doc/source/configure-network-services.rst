@@ -234,6 +234,80 @@ Routing plugin.
        # openstack-ansible os-neutron-install.yml
 
 
+OVN BGP Agent (optional)
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+The `OVN BGP Agent`_ exposes VM Floating IPs on provider networks through BGP
+by leveraging `FRRouting`_.
+
+This intends to provide feature-complete replacement for BGP Dynamic Routing
+service for environments running OVN as their ml2 plugin.
+
+`OVN BGP Agent`_ provides multiple drivers and exposure methods which can be
+checked on the `BGP Supportability Matrix`_
+
+.. NOTE::
+
+   At the moment of writing only ``underlay`` exposure method is fully
+   supported by ``os_neutron`` role.
+
+In order to enable ovn-bgp-agent you need to explicitly configure some
+variables:
+
+.. code-block:: yaml
+
+   neutron_ovn_bgp_enable: True
+   # This defines an AS to which ovn-bgp-agent will inject an VRF to FRR
+   neutron_ovn_bgp_config:
+      AS: 64513
+
+   # In this variable we define a base configuration for FRR that will be
+   # deployed as pre-requisite of ovn-bgp-agent
+   neutron_frr_bgp_config:
+   - router bgp 64513
+   - "bgp router-id {{ ansible_facts['bond0']['ipv4']['address'] }}"
+   - bgp log-neighbor-changes
+   - bgp graceful-shutdown
+   - neighbor uplink peer-group
+   - neighbor uplink remote-as 64512
+   - neighbor uplink ebgp-multihop
+   - neighbor 203.0.113.10 peer-group uplink
+   - neighbor 203.0.113.11 peer-group uplink
+   - neighbor 203.0.113.10 description leaf_1
+   - neighbor 203.0.113.11 description leaf_2
+   - address-family ipv4 unicast
+   - "  redistribute connected"
+   - "  neighbor uplink activate"
+   - "  neighbor uplink allowas-in origin"
+   - "  neighbor uplink prefix-list only-host-prefixes out"
+   - "exit-address-family"
+   - "ip prefix-list only-default permit 0.0.0.0/0"
+   - "ip prefix-list only-host-prefixes permit 0.0.0.0/0 ge 32"
+   - route-map rm-only-default permit 10
+   - "  match ip address prefix-list only-default"
+   - "  set src {{ ansible_facts['bond0']['ipv4']['address'] }}"
+   - ip protocol bgp route-map rm-only-default
+
+   # This variable might be useful for ebgp-multihop scenarios
+   neutron_frr_staticd_routes:
+   - ip route 203.0.113.10/32 198.51.100.1
+   - ip route 203.0.113.10/32 198.51.100.1
+
+
+Once all required variables are set, running
+``openstack-ansible os-neutron-install.yml`` should install and configure
+FRRouting on all of your ``neutron_ovn_controller`` as well as a new service
+``neutron-ovn-bgp-agent`` will appear.
+
+This service does not use RabbitMQ for communication and listens for events
+directly on OVN NB/SB databases, so it will not appear on
+``openstack network agent list`` output like one may assume.
+
+.. _OVN BGP Agent: https://docs.openstack.org/ovn-bgp-agent/latest/index.html
+.. _FRRouting: https://docs.frrouting.org/en/latest/bgp.html
+.. _BGP Supportability Matrix: https://docs.openstack.org/ovn-bgp-agent/latest/bgp_supportability_matrix.html
+
+
 SR-IOV Support (optional)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 

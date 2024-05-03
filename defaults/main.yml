@@ -65,6 +65,8 @@ neutron_dynamic_routing_git_repo: https://opendev.org/openstack/neutron-dynamic-
 neutron_dynamic_routing_git_install_branch: master
 networking_odl_git_repo: https://opendev.org/openstack/networking-odl
 networking_odl_git_install_branch: master
+networking_ovn_bgp_git_repo: https://opendev.org/openstack/ovn-bgp-agent
+networking_ovn_bgp_install_branch: master
 networking_sfc_git_repo: https://opendev.org/openstack/networking-sfc
 networking_sfc_git_install_branch: master
 networking_bgpvpn_git_repo: https://opendev.org/openstack/networking-bgpvpn
@@ -164,6 +166,8 @@ neutron_neutron_conf_overrides: {}
 neutron_nuage_conf_ini_overrides: {}
 neutron_openvswitch_agent_ini_overrides: {}
 neutron_openvswitch_agent_init_overrides: {}
+neutron_ovn_bgp_agent_ini_overrides: {}
+neutron_ovn_bgp_agent_init_overrides: {}
 neutron_nsx_conf_ini_overrides: {}
 # Provide a list of access controls to update the default policy.json with.
 # These changes will be merged
@@ -520,6 +524,32 @@ neutron_ovsdb_manager: "p{{ [neutron_ovsdb_manager_proto, neutron_ovsdb_manager_
 neutron_ovsdb_manager_connection: "{{ [neutron_ovsdb_manager_proto, neutron_ovsdb_manager_host, neutron_ovsdb_manager_port] | select | join(':') }}"
 neutron_ovn_sb_inactivity_probe: 60000
 neutron_ovn_nb_inactivity_probe: 60000
+
+# OVN BGP Agent
+neutron_ovn_bgp_enable: False
+neutron_ovn_bgp_agent_group: "{{ neutron_ovn_distributed_fip | ternary('neutron_ovn_controller', 'neutron_ovn_gateway') }}"
+neutron_ovn_bgp_agent_driver: nb_ovn_bgp_driver
+neutron_ovn_bgp_exposing_method: underlay
+neutron_ovn_bgp_expose_tenant_networks: False
+neutron_ovn_bgp_expose_ipv6_gua_tenant_networks: False
+# Provide config needed for BGP peering
+# neutron_ovn_bgp_config:
+#   AS: 64999
+#   nic: bgp-nic
+#   vrf: bgp-vrf
+#   vrf_table_id: 10
+neutron_ovn_bgp_config: {}
+neutron_frr_bgp_config: []
+neutron_frr_staticd_routes: []
+
+# This section is used when neutron_ovn_bgp_exposing_method
+# is set to "ovn".
+# This requires a standalone "local" cluster per node where
+# ovn-bgp-agent runs.
+neutron_ovn_bgp_local_nbdb: tcp:127.0.0.1:6641
+neutron_ovn_bgp_local_nics: []
+neutron_ovn_bgp_local_peers: []
+neutron_ovn_bgp_provider_networks_prefixes: []
 
 # Storage location for SSL certificate authority
 neutron_ovn_pki_dir: "{{ openstack_pki_dir }}"
