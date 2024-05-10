@@ -297,6 +297,10 @@ neutron_oslomsg_amqp1_enabled: "{{ neutron_oslomsg_rpc_transport == 'amqp' }}"
 ### (RabbitMQ) integration
 ###
 neutron_oslomsg_rabbit_quorum_queues: "{{ oslomsg_rabbit_quorum_queues | default(True) }}"
+neutron_oslomsg_rabbit_stream_fanout: "{{ oslomsg_rabbit_stream_fanout | default(neutron_oslomsg_rabbit_quorum_queues) }}"
+neutron_oslomsg_rabbit_transient_quorum_queues: "{{ oslomsg_rabbit_transient_quorum_queues | default(neutron_oslomsg_rabbit_stream_fanout) }}"
+neutron_oslomsg_rabbit_qos_prefetch_count: "{{ oslomsg_rabbit_qos_prefetch_count | default(neutron_oslomsg_rabbit_stream_fanout | ternary(10, 0)) }}"
+neutron_oslomsg_rabbit_queue_manager: "{{ oslomsg_rabbit_queue_manager | default(neutron_oslomsg_rabbit_quorum_queues) }}"
 neutron_oslomsg_rabbit_quorum_delivery_limit: "{{ oslomsg_rabbit_quorum_delivery_limit | default(0) }}"
 neutron_oslomsg_rabbit_quorum_max_memory_bytes: "{{ oslomsg_rabbit_quorum_max_memory_bytes | default(0) }}"
 neutron_rpc_thread_pool_size: 64

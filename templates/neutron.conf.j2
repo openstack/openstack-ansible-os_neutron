@@ -248,6 +248,10 @@ root_helper_daemon = sudo {{ neutron_bin }}/neutron-rootwrap-daemon {{ neutron_c
 rpc_conn_pool_size = {{ neutron_rpc_conn_pool_size }}
 heartbeat_in_pthread = {{ neutron_oslomsg_heartbeat_in_pthread }}
 rabbit_quorum_queue = {{ neutron_oslomsg_rabbit_quorum_queues }}
+rabbit_transient_quorum_queue = {{ neutron_oslomsg_rabbit_transient_quorum_queues }}
+rabbit_qos_prefetch_count = {{ neutron_oslomsg_rabbit_qos_prefetch_count }}
+use_queue_manager = {{ neutron_oslomsg_rabbit_queue_manager }}
+rabbit_stream_fanout = {{ neutron_oslomsg_rabbit_stream_fanout }}
 rabbit_quorum_delivery_limit = {{ neutron_oslomsg_rabbit_quorum_delivery_limit }}
 rabbit_quorum_max_memory_bytes = {{ neutron_oslomsg_rabbit_quorum_max_memory_bytes }}
 
