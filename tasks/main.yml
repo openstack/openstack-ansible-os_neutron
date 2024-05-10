@@ -74,11 +74,13 @@
     _oslomsg_rpc_password: "{{ neutron_oslomsg_rpc_password }}"
     _oslomsg_rpc_vhost: "{{ neutron_oslomsg_rpc_vhost }}"
     _oslomsg_rpc_transport: "{{ neutron_oslomsg_rpc_transport }}"
+    _oslomsg_rpc_policies: "{{ neutron_oslomsg_rpc_policies }}"
     _oslomsg_notify_setup_host: "{{ neutron_oslomsg_notify_setup_host }}"
     _oslomsg_notify_userid: "{{ neutron_oslomsg_notify_userid }}"
     _oslomsg_notify_password: "{{ neutron_oslomsg_notify_password }}"
     _oslomsg_notify_vhost: "{{ neutron_oslomsg_notify_vhost }}"
     _oslomsg_notify_transport: "{{ neutron_oslomsg_notify_transport }}"
+    _oslomsg_notify_policies: "{{ neutron_oslomsg_notify_policies }}"
   tags:
     - always
 

@@ -262,6 +262,7 @@ neutron_oslomsg_rpc_servers: "{{ oslomsg_rpc_servers | default('127.0.0.1') }}"
 neutron_oslomsg_rpc_port: "{{ oslomsg_rpc_port | default('5672') }}"
 neutron_oslomsg_rpc_use_ssl: "{{ oslomsg_rpc_use_ssl | default(False) }}"
 neutron_oslomsg_rpc_userid: neutron
+neutron_oslomsg_rpc_policies: []
 neutron_oslomsg_rpc_vhost:
   - name: /neutron
     state: "{{ neutron_oslomsg_rabbit_quorum_queues | ternary('absent', 'present') }}"
@@ -284,6 +285,7 @@ neutron_oslomsg_notify_password: "{{ neutron_oslomsg_rpc_password }}"
 neutron_oslomsg_notify_vhost: "{{ neutron_oslomsg_rpc_vhost }}"
 neutron_oslomsg_notify_ssl_version: "{{ oslomsg_notify_ssl_version | default('TLSv1_2') }}"
 neutron_oslomsg_notify_ssl_ca_file: "{{ oslomsg_notify_ssl_ca_file | default('') }}"
+neutron_oslomsg_notify_policies: []
 
 ###
 ### (Qdrouterd) integration
