@@ -81,6 +81,7 @@
     _oslomsg_notify_vhost: "{{ neutron_oslomsg_notify_vhost }}"
     _oslomsg_notify_transport: "{{ neutron_oslomsg_notify_transport }}"
     _oslomsg_notify_policies: "{{ neutron_oslomsg_notify_policies }}"
+    _oslomsg_notify_configure: "{{ neutron_oslomsg_notify_configure }}"
   tags:
     - always
 

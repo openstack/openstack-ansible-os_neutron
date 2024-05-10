@@ -254,7 +254,7 @@ rabbit_quorum_max_memory_bytes = {{ neutron_oslomsg_rabbit_quorum_max_memory_byt
 # Notifications
 [oslo_messaging_notifications]
 {% set notification_topics = [] %}
-{% if neutron_ceilometer_enabled %}
+{% if neutron_oslomsg_notify_configure %}
 {%   set _ = notification_topics.append('notifications') %}
 {% endif %}
 topics = {{ notification_topics | join(',') }}

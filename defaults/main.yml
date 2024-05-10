@@ -272,7 +272,7 @@ neutron_oslomsg_rpc_ssl_version: "{{ oslomsg_rpc_ssl_version | default('TLSv1_2'
 neutron_oslomsg_rpc_ssl_ca_file: "{{ oslomsg_rpc_ssl_ca_file | default('') }}"
 
 # Notify
-
+neutron_oslomsg_notify_configure: "{{ oslomsg_notify_configure | default(neutron_ceilometer_enabled) }}"
 neutron_oslomsg_notify_host_group: "{{ oslomsg_notify_host_group | default('rabbitmq_all') }}"
 neutron_oslomsg_notify_setup_host: >-
   {{ (neutron_oslomsg_notify_host_group in groups) | ternary(groups[neutron_oslomsg_notify_host_group][0], 'localhost') }}
