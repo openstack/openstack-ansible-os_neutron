@@ -192,6 +192,7 @@
   import_tasks: neutron_post_install.yml
   tags:
     - neutron-config
+    - post-install
 
 # TODO(noonedeadpunk): Remove block for Bobcat release
 - name: Disable dhcp and metadata agents for OVN scenario
