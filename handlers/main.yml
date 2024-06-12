@@ -112,7 +112,6 @@
   command: "{{ neutron_bin }}/neutron-db-manage upgrade --contract"
   become: yes
   become_user: "{{ neutron_system_user_name }}"
-  delegate_to: "{{ groups[neutron_services['neutron-server']['group']][0] }}"
   changed_when: false
   when:
     - "ansible_local['openstack_ansible']['neutron']['need_db_contract'] | bool"
