@@ -16,7 +16,7 @@
 _neutron_is_first_play_host: >-
   {{
     (neutron_services['neutron-server']['group'] in group_names and inventory_hostname == (
-      groups[neutron_services['neutron-server']['group']] | intersect(ansible_play_hosts)) | first) | bool
+      groups[neutron_services['neutron-server']['group']] | select('in', ansible_play_hosts)) | first) | bool
   }}
 _neutron_oslomsg_rpc_vhost_conf: >-
   {{
