@@ -80,7 +80,7 @@
       when:
         - neutron_policy_overrides | length > 0
       tags:
-        - neutron-policy-overrides
+        - neutron-policy-override
 
     - name: Remove legacy policy.yaml file
       file:
