@@ -447,6 +447,11 @@ neutron_l3_ha_net_cidr: 169.254.192.0/18
 
 neutron_l3_cleanup_on_shutdown: False
 
+## List of extensions enabled for L3
+## The list can be extended by operator if needed, ie in user_variables.yml:
+# neutron_l3_agent_extensions: "{{ _neutron_l3_agent_extensions + ['neutron_fip_qos'] }}"
+neutron_l3_agent_extensions: "{{ _neutron_l3_agent_extensions }}"
+
 # Specify the maximum number of L3 agents per tenant network. Defaults to the total number of agents deployed
 # neutron_l3_agents_max: 2
 

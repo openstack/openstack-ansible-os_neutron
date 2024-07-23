@@ -269,6 +269,19 @@ neutron_l3: >-
       'df-l3' in neutron_plugin_base
     %}True{% else %}False{% endif %}
 
+_neutron_l3_agent_extensions: |-
+  {% set extensions = [] %}
+  {% if neutron_fwaas_v2 | bool %}
+  {%   set _ = extensions.append('fwaas_v2') %}
+  {% endif %}
+  {% if neutron_vpnaas | bool %}
+  {%   set _ = extensions.append("vpnaas") %}
+  {% endif %}
+  {% if neutron_port_forwarding | bool %}
+  {%   set _ = extensions.append("port_forwarding") %}
+  {% endif %}
+  {{ extensions }}
+
 ###
 ### DHCP Agent Plugin Configuration
 ###
