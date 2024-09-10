@@ -20,9 +20,8 @@
   command: ovsdb-tool db-is-clustered /var/lib/ovn/ovnnb_db.db
   ignore_errors: true
   failed_when: false
+  changed_when: false
   register: _check_cluster_db
-  tags:
-    - skip_ansible_lint
 
 # We need to clean existing ovn db/lock file before cluster join.
 - name: Clean up db/lock files before creating ovn cluster
@@ -51,9 +50,8 @@
     loop_var: container
   run_once: true
   failed_when: false
+  changed_when: false
   register: _find_leader
-  tags:
-    - skip_ansible_lint
 
 # set leader_node variable
 - name: Set leader_node fact
