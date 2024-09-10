@@ -30,27 +30,6 @@
     - "systemd service changed"
     - "cert installed"
 
-# NOTE(cloudnull):
-# When installing or upgrading it is possible that an old metadata proxy process will not
-#  be restarted by the metadata agent when a version changes. To fix it the ns-metadata
-#  proxy pids are killed if they're not running the current tag. Once the old processeses
-#  are removed the metadata agent will respawn the missing process within 60 seconds using
-#  the correct code.
-- name: Run ns-metadata-proxy process cleanup
-  shell: |
-    for ns_pid in $(pgrep neutron-ns-meta); do
-      echo $(readlink -f "/proc/$ns_pid/exe") | grep -qv "{{ neutron_venv_tag }}"
-      if [ $? -eq 0 ]; then
-        if kill -9 "$ns_pid"; then
-          logger -s "old metadata proxy pid found and has been cleaned up on: \"$ns_pid\""
-        fi
-      fi
-    done
-  when: "'neutron-metadata-agent' in (filtered_neutron_services | map(attribute='service_key') | list)"
-  changed_when: false
-  listen:
-    - "Restart neutron services"
-    - "venv changed"
 
 # NOTE
 # When restarting neutron-l3-agent, a non-default systemd KillMode of 'process' is used
