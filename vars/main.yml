@@ -502,7 +502,9 @@ neutron_services:
   neutron-rpc-server:
     group: neutron_server
     service_name: neutron-rpc-server
-    service_en: "{{ neutron_use_uwsgi }}"
+    service_en: True
+    enabled: "{{ neutron_use_uwsgi }}"
+    state: "{{ neutron_use_uwsgi | ternary('started', 'stopped') }}"
     init_config_overrides: "{{ neutron_rpc_server_init_overrides | combine(neutron_server_init_overrides) }}"
     start_order: 2
     execstarts: >-
