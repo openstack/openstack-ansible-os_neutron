@@ -478,7 +478,9 @@ neutron_services:
   neutron-rpc-server:
     group: neutron_server
     service_name: neutron-rpc-server
-    service_en: "{{ neutron_use_uwsgi }}"
+    service_en: True
+    enabled: "{{ neutron_use_uwsgi }}"
+    state: "{{ neutron_use_uwsgi | ternary('started', 'stopped') }}"
     init_config_overrides: "{{ neutron_rpc_server_init_overrides | combine(neutron_server_init_overrides) }}"
     start_order: 2
     execstarts: "{{ neutron_bin }}/neutron-rpc-server --config-file {{ neutron_conf_dir }}/neutron.conf --config-file {{ neutron_conf_dir }}/{{ neutron_plugins[neutron_plugin_type].plugin_ini }}{%- if ('ml2.genericswitch' in neutron_plugin_types) %} --config-file {{ neutron_conf_dir }}/{{ neutron_plugins['ml2.genericswitch'].plugin_ini }}{%- endif %}"
