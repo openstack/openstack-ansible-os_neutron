@@ -347,14 +347,20 @@ neutron_service_in_ldap: "{{ service_ldap_backend_enabled | default(False) }}"
 ###
 ### Availability zones
 ###
-# Default availability zones do define a list of zones to where routers/agents
-# will be scheduled by default. This is a list, since a deployment might stretch
-# networks across AZs
-neutron_default_availability_zones: []
-
 # Availability zone defines current AZ of the component. For OVN you can define
 # multiple AZs separated with a colon, ie "az1:az2"
 neutron_availability_zone: nova
+
+# Default availability zones do define a list of zones to where routers/agents
+# will be scheduled by default. This is a list, since a deployment might stretch
+# networks across AZs.
+# Default: Neutron will attempt scheduling across all defined AZs for Neutron hosts.
+neutron_default_availability_zones: >-
+  {{
+    groups['neutron_all'] | map(
+      'extract', hostvars, 'neutron_availability_zone') | map(
+        'default', neutron_availability_zone) | map('split', ':') | flatten | unique
+  }}
 
 ###
 ### Telemetry integration
