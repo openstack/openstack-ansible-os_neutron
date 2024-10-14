@@ -16,7 +16,6 @@
 - name: Stop services
   service:
     name: "{{ item.service_name }}"
-    enabled: yes
     state: "stopped"
     daemon_reload: yes
   with_items: "{{ filtered_neutron_services }}"
@@ -124,8 +123,8 @@
 - name: Start services
   service:
     name: "{{ item.service_name }}"
-    enabled: yes
-    state: "started"
+    enabled: "{{ item.enabled | default(True) }}"
+    state: "{{ item.state | default('started') }}"
     daemon_reload: yes
   with_items: "{{ filtered_neutron_services }}"
   register: _start
