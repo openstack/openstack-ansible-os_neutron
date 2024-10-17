@@ -417,20 +417,27 @@ You can fetch the list of NAT rules assigned to a specific router using the rout
 name in the OVN database, which is formatted like ``neutron-<UUID>``, where UUID
 is the UUID of the router in Neutron database. Command will look like this:
 
+.. note::
+
+  Keep in mind, that GATEWAY_PORT will not be defined for dnat_and_snat rule
+  when the external network of the router is on a geneve network and
+  the router is bound to the chassis instead of it's external port.
+
 .. code-block:: console
 
   root@mnaio-controller1:~# ovn-nbctl lr-nat-list neutron-b0d6ca32-fda3-4fdc-b648-82c8bee303dc
   TYPE             GATEWAY_PORT          EXTERNAL_IP        EXTERNAL_PORT    LOGICAL_IP          EXTERNAL_MAC         LOGICAL_PORT
-  dnat_and_snat                          192.168.25.246                      10.3.3.49
+  dnat_and_snat    lrp-16555e74-fbef-    192.168.25.246                      10.3.3.49
   snat                                   192.168.25.242                      10.3.3.0/24
 
 
-Mapping/location of the router to the gateway node can be established by
-logical ports of the router. For that you need to know the UUID of the
-external port attached to the router. Port name in OVN database is constructed as
-``lrp-<UUID>``, where UUID is the Neutron port UUID. Given, that an external
-network in the topic is named `public`, you can determine the gateway node in a
-following way:
+The mapping/location of the router to the gateway node can be established via
+logical ports of the router when the external network to which router is
+connected happens to have either VLAN or FLAT type. For that you need to know
+the UUID of the external port attached to the router. The port name in the OVN
+database is constructed as ``lrp-<UUID>``, where UUID is the Neutron port UUID.
+Given that an external network in the topic is named `public`, you can determine
+the gateway node in a following way:
 
 .. code-block:: console
 
@@ -469,6 +476,17 @@ execute the following command:
 
 Additional commands can be found in upstream OVN documentation and other
 resources listed on this page.
+
+In cases when a Geneve network acts as the external network for the router,
+Logical Router will be pinned to the chassis instead of it's LRP:
+
+.. code-block:: console
+
+  # ovn-nbctl --no-leader-only get Logical_Router neutron-b0d6ca32-fda3-4fdc-b648-82c8bee303dc options
+  {always_learn_from_arp_request="false", chassis="5335c34d-9233-47bd-92f1-fc7503270783", dynamic_neigh_routers="true", mac_binding_age_threshold="0"}
+
+All LRPs of such router will remain unbinded.
+
 
 OVN database population
 -----------------------
