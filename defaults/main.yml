@@ -183,18 +183,19 @@ _neutron_rootwrap_conf_overrides:
 neutron_rootwrap_conf_overrides: {}
 
 neutron_api_uwsgi_ini_overrides: {}
-neutron_server_init_overrides: {}
+neutron_periodic_workers_init_overrides: {}
 neutron_rpc_server_init_overrides: {}
+neutron_server_init_overrides: {}
 neutron_sriov_nic_agent_ini_overrides: {}
 neutron_sriov_nic_agent_init_overrides: {}
+neutron_ovn_maintenance_init_overrides: {}
 neutron_ovn_metadata_agent_ini_overrides: {}
 neutron_ovn_metadata_agent_init_overrides: {}
 
 ###
 ### UWSGI
 ###
-# NOTE(noonedeadpunk): uWSGI is still not fully supported. See: https://bugs.launchpad.net/neutron/+bug/1912359
-neutron_use_uwsgi: False
+neutron_use_uwsgi: True
 neutron_wsgi_processes_max: 16
 neutron_wsgi_processes: "{{ [[ansible_facts['processor_vcpus'] | default(1), 1] | max * 2, neutron_wsgi_processes_max] | min }}"
 neutron_wsgi_threads: 1
