@@ -9,6 +9,10 @@ interface_driver = {{ neutron_plugins[neutron_plugin_type].driver_interface }}
 
 agent_mode = {{ neutron_plugins[neutron_plugin_type].l3_agent_mode }}
 
+{% if 'gateway_ip_qos' in neutron_l3_agent_extensions %}
+ovs_use_veth = True
+{% endif %}
+
 # Conventional failover
 allow_automatic_l3agent_failover = True
 
