@@ -115,8 +115,3 @@ neutron_metadata_agent_distro_packages:
   - haproxy
 
 neutron_remove_distro_packages: []
-
-neutron_oslomsg_amqp1_distro_packages:
-  - cyrus-sasl-lib
-  - cyrus-sasl-plain
-  - cyrus-sasl-md5

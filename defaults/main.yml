@@ -289,12 +289,6 @@ neutron_oslomsg_notify_ssl_ca_file: "{{ oslomsg_notify_ssl_ca_file | default('')
 neutron_oslomsg_notify_policies: []
 
 ###
-### (Qdrouterd) integration
-###
-# TODO(evrardjp): Change structure when more backends will be supported
-neutron_oslomsg_amqp1_enabled: "{{ neutron_oslomsg_rpc_transport == 'amqp' }}"
-
-###
 ### (RabbitMQ) integration
 ###
 neutron_oslomsg_rabbit_quorum_queues: "{{ oslomsg_rabbit_quorum_queues | default(True) }}"

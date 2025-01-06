@@ -52,9 +52,6 @@ neutron_pip_packages:
 # Specific pip packages provided by the user
 neutron_user_pip_packages: []
 
-neutron_optional_oslomsg_amqp1_pip_packages:
-  - oslo.messaging[amqp1]
-
 neutron_optional_bgp_pip_packages:
   - "git+{{ neutron_dynamic_routing_git_repo }}@{{ neutron_dynamic_routing_git_install_branch }}#egg=neutron-dynamic-routing"
 
@@ -102,9 +99,6 @@ neutron_venv_packages: >-
   {%- endif %}
   {%- if neutron_sfc | bool %}
   {%-   set _ = pkg_list.extend(neutron_optional_sfc_pip_packages) %}
-  {%- endif %}
-  {%- if neutron_oslomsg_amqp1_enabled | bool %}
-  {%-   set _ = pkg_list.extend(neutron_optional_oslomsg_amqp1_pip_packages) %}
   {%- endif %}
   {%- if (neutron_plugin_type.split('.')[-1] == 'nuage') and
          (neutron_services['neutron-server']['group'] in group_names) %}

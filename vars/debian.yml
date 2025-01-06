@@ -126,7 +126,3 @@ neutron_metadata_agent_distro_packages:
 
 neutron_remove_distro_packages:
   - conntrackd
-
-neutron_oslomsg_amqp1_distro_packages:
-  - libsasl2-modules
-  - sasl2-bin
