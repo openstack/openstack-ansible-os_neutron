@@ -108,7 +108,7 @@
       fetch:
         src: "{{ item.target_f }}.original"
         dest: "{{ item.tmp_f }}"
-        flat: yes
+        flat: true
       changed_when: false
       with_items: "{{ neutron_core_files }}"
       run_once: true

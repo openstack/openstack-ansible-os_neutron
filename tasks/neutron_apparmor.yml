@@ -21,15 +21,15 @@
   until: apparmor_packages is success
   retries: 5
   delay: 2
-  become: yes
+  become: true
   delegate_to: "{{ physical_host | default('localhost') }}"
 
 - name: Ensure apparmor service is running
   systemd:
     name: "apparmor"
-    enabled: yes
+    enabled: true
     state: "started"
-  become: yes
+  become: true
   delegate_to: "{{ physical_host | default('localhost') }}"
 
 - name: "Disable apparmor profile"
@@ -50,12 +50,12 @@
   failed_when: _apparmor_profile_disabled.rc not in [0,2]
   args:
     executable: /bin/bash
-  become: yes
+  become: true
   delegate_to: "{{ physical_host | default('localhost') }}"
   with_items:
-    - profile: 'usr.sbin.haproxy'
-      process: 'haproxy'
-    - profile: 'bin.ping'
-      process: 'ping'
-    - profile: 'usr.sbin.dnsmasq'
-      process: 'dnsmasq'
+    - profile: "usr.sbin.haproxy"
+      process: "haproxy"
+    - profile: "bin.ping"
+      process: "ping"
+    - profile: "usr.sbin.dnsmasq"
+      process: "dnsmasq"

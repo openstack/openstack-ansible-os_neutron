@@ -79,7 +79,7 @@
 - name: Retrieve the constraints URL
   uri:
     url: "{{ neutron_upper_constraints_url }}"
-    return_content: yes
+    return_content: true
   register: _u_c_contents
   check_mode: false
 
@@ -137,8 +137,8 @@
 # NOTE(hwoarang) contains may share the same physical host so we only
 # need to execute the apparmor configuration once per physical host.
 - name: Record the first container on each physical host
-  delegate_to: 'localhost'
-  run_once: True
+  delegate_to: "localhost"
+  run_once: true
   set_fact:
     neutron_apparmor_hosts: |
       {%- set apparmor_hosts = [] -%}

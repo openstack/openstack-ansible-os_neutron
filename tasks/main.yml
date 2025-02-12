@@ -12,8 +12,6 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
-
 - name: Importing neutron_check tasks
   import_tasks: neutron_check.yml
 
@@ -207,8 +205,8 @@
       systemd:
         name: "{{ item['service_name'] }}"
         state: stopped
-        enabled: False
-        masked: True
+        enabled: false
+        masked: true
       when:
         - item['group'] in group_names
         - item['service_name'] ~ '.service' in ansible_facts.services

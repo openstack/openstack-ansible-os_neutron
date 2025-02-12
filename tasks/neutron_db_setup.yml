@@ -15,7 +15,7 @@
 
 - name: Perform a DB expand
   command: "{{ neutron_bin }}/neutron-db-manage --config-file {{ neutron_conf_version_dir }}/neutron.conf upgrade --expand"
-  become: yes
+  become: true
   become_user: "{{ neutron_system_user_name }}"
   changed_when: false
   when:
@@ -34,7 +34,7 @@
   command: "{{ neutron_bin }}/neutron-db-manage --config-file {{ neutron_conf_version_dir }}/neutron.conf has_offline_migrations"
   environment:
     LANGUAGE: en_US.UTF-8
-  become: yes
+  become: true
   become_user: "{{ neutron_system_user_name }}"
   when:
     - "_neutron_is_first_play_host"

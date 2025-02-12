@@ -17,7 +17,7 @@
   service:
     name: "{{ item.service_name }}"
     state: "stopped"
-    daemon_reload: yes
+    daemon_reload: true
   with_items: "{{ filtered_neutron_services }}"
   register: _stop
   until: _stop is success
@@ -28,7 +28,6 @@
     - "venv changed"
     - "systemd service changed"
     - "cert installed"
-
 
 # NOTE
 # When restarting neutron-l3-agent, a non-default systemd KillMode of 'process' is used
@@ -89,7 +88,7 @@
 
 - name: Perform a DB contract
   command: "{{ neutron_bin }}/neutron-db-manage upgrade --contract"
-  become: yes
+  become: true
   become_user: "{{ neutron_system_user_name }}"
   changed_when: false
   when:
@@ -104,7 +103,7 @@
     name: "{{ item.service_name }}"
     enabled: "{{ item.enabled | default(True) }}"
     state: "{{ item.state | default('started') }}"
-    daemon_reload: yes
+    daemon_reload: true
   with_items: "{{ filtered_neutron_services }}"
   register: _start
   until: _start is success

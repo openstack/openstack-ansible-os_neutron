@@ -48,7 +48,7 @@
   systemd:
     name: "{{ dpdk_service_name }}"
     state: restarted
-    enabled: yes
+    enabled: true
   when:
     - neutron_services['neutron-openvswitch-agent']['group'] in group_names
     - '"nova_compute" in group_names'
@@ -57,7 +57,7 @@
   systemd:
     name: "{{ neutron_ovs_service_name }}"
     state: restarted
-    enabled: yes
+    enabled: true
   when:
     - neutron_services['neutron-openvswitch-agent']['group'] in group_names
 

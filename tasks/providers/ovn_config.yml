@@ -1,3 +1,4 @@
+---
 # (c) 2018, James Denton <james.denton@rackspace.com>
 #
 # Copyright 2018, Rackspace US, Inc.
@@ -42,7 +43,7 @@
   systemd:
     name: "{{ neutron_ovn_northd_service_name }}"
     state: started
-    enabled: yes
+    enabled: true
   when:
     - neutron_services['neutron-ovn-northd']['group'] in group_names
 
@@ -50,7 +51,7 @@
   systemd:
     name: "{{ neutron_ovn_controller_service_name }}"
     state: "{{ (ovn_controller_config.changed) | ternary('restarted', 'started') }}"
-    enabled: yes
+    enabled: true
   when:
     - neutron_services['neutron-ovn-controller']['group'] in group_names
 

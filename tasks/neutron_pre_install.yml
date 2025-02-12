@@ -75,7 +75,7 @@
       mode: "0755"
     - path: "{{ neutron_system_home_folder }}/ovn-metadata-proxy"
       mode: "u=rwX,g=rX,o=rX"
-      recurse: True
+      recurse: true
       condition: "{{ (neutron_plugin_type == 'ml2.ovn' and neutron_services['neutron-ovn-metadata-agent']['group'] in group_names) }}"
     - path: "{{ neutron_system_home_folder }}/ha_confs"
       state: "{{ (neutron_plugin_type == 'ml2.ovn') | ternary('absent', 'directory') }}"

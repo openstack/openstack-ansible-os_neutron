@@ -182,7 +182,7 @@ neutron_plugins:
     l2_population: "{{ neutron_l2_population }}"
     mechanisms: "openvswitch"
     l3_agent_mode: "{% if 'network_hosts' in group_names %}dvr_snat{% else %}dvr{% endif %}"
-    router_distributed: True
+    router_distributed: true
     plugin_conf_ini_overrides: "{{ neutron_ml2_conf_ini_overrides }}"
     plugin_core: ml2
     plugin_ini: plugins/ml2/ml2_conf.ini
@@ -205,7 +205,7 @@ neutron_plugins:
   ml2.genericswitch:
     drivers_type: "vlan"
     mechanisms: "genericswitch"
-    plugin_conf_bare: True
+    plugin_conf_bare: true
     plugin_conf_ini_overrides: "{{ neutron_ml2_conf_genericswitch_ini_overrides }}"
     plugin_core: ml2
     plugin_ini: plugins/ml2/ml2_conf_genericswitch.ini
@@ -473,7 +473,7 @@ neutron_services:
   neutron-server:
     group: neutron_server
     service_name: neutron-server
-    service_en: True
+    service_en: true
     start_order: 1
     wsgi_app: "{{ neutron_use_uwsgi }}"
     uwsgi_overrides: "{{ neutron_api_uwsgi_ini_overrides }}"
@@ -496,7 +496,7 @@ neutron_services:
   neutron-rpc-server:
     group: neutron_server
     service_name: neutron-rpc-server
-    service_en: True
+    service_en: true
     enabled: "{{ neutron_use_uwsgi }}"
     state: "{{ neutron_use_uwsgi | ternary('started', 'stopped') }}"
     init_config_overrides: "{{ neutron_rpc_server_init_overrides | combine(neutron_server_init_overrides) }}"
@@ -510,7 +510,7 @@ neutron_services:
   neutron-periodic-workers:
     group: neutron_server
     service_name: neutron-periodic-workers
-    service_en: True
+    service_en: true
     enabled: "{{ neutron_use_uwsgi }}"
     state: "{{ neutron_use_uwsgi | ternary('started', 'stopped') }}"
     init_config_overrides: "{{ neutron_periodic_workers_init_overrides | combine(neutron_server_init_overrides) }}"
@@ -547,10 +547,10 @@ neutron_services:
     start_order: 3
   neutron-ovn-northd:
     group: neutron_ovn_northd
-    service_en: False
+    service_en: false
   neutron-ovn-controller:
     group: neutron_ovn_controller
-    service_en: False
+    service_en: false
   neutron-ovn-bgp-agent:
     group: "{{ neutron_ovn_bgp_agent_group }}"
     systemd_lock_dir: /run/lock/ovn-bgp-agent

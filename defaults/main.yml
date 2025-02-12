@@ -17,8 +17,7 @@
 ### Verbosity Options
 ###
 
-debug: False
-
+debug: false
 
 ###
 ### Service setup options
@@ -97,7 +96,7 @@ neutron_venv_tag: "{{ venv_tag | default('untagged') }}"
 ###
 
 # Fatal Deprecations
-neutron_fatal_deprecations: False
+neutron_fatal_deprecations: false
 
 # If ``neutron_api_workers`` is unset the system will use half the number of available VCPUs to
 # compute the number of api workers to use with a default capping value of 16.
@@ -135,7 +134,7 @@ neutron_dhcp_config_list: []
 # When dnsmasq_dns_servers are not set,
 # and neutron_dnsmasq_noresolv is set to True, dnsmasq will reply with
 # empty respose on DNS requests.
-neutron_dnsmasq_noresolv: False
+neutron_dnsmasq_noresolv: false
 
 ###
 ### Tunable Overrides (Sorted alphabetically)
@@ -196,7 +195,7 @@ neutron_ovn_metadata_agent_init_overrides: {}
 ### UWSGI
 ###
 # NOTE(noonedeadpunk): uWSGI is still not fully supported. See: https://bugs.launchpad.net/neutron/+bug/1912359
-neutron_use_uwsgi: False
+neutron_use_uwsgi: false
 neutron_wsgi_processes_max: 16
 neutron_wsgi_processes: "{{ [[ansible_facts['processor_vcpus'] | default(1), 1] | max * 2, neutron_wsgi_processes_max] | min }}"
 neutron_wsgi_threads: 1
@@ -369,7 +368,7 @@ neutron_ceilometer_enabled: "{{ (groups['ceilometer_all'] is defined) and (group
 ###
 
 neutron_designate_enabled: "{{ (groups['designate_all'] is defined) and (groups['designate_all'] | length > 0) }}"
-neutron_allow_reverse_dns_lookup: True
+neutron_allow_reverse_dns_lookup: true
 neutron_ipv4_ptr_zone_prefix_size: 24
 neutron_ipv6_ptr_zone_prefix_size: 116
 
@@ -401,7 +400,7 @@ neutron_memcached_servers: "{{ memcached_servers }}"
 
 # The neutron core plugin (ML2) is defined with neutron_plugin_type,
 # you can not load multiple ML2 plugins as core.
-neutron_plugin_type: 'ml2.ovn'
+neutron_plugin_type: "ml2.ovn"
 
 # Additional ML2 plugins can be loaded with neutron_plugin_types (as list)
 neutron_plugin_types: []
@@ -447,7 +446,7 @@ neutron_local_ip: "{{ tunnel_address | default('127.0.0.1') }}"
 neutron_ha_vrrp_auth_type: PASS
 neutron_l3_ha_net_cidr: 169.254.192.0/18
 
-neutron_l3_cleanup_on_shutdown: False
+neutron_l3_cleanup_on_shutdown: false
 
 ## List of extensions enabled for L3
 ## The list can be extended by operator if needed, ie in user_variables.yml:
@@ -469,7 +468,7 @@ neutron_dnsmasq_dns_servers: ""
 neutron_dnsmasq_lease_max: 16777216
 
 # Specify if dnsmasq should send a route to metadata server through DHCP 121 message to VM
-neutron_dnsmasq_force_metadata: False
+neutron_dnsmasq_force_metadata: false
 
 # Specify the maximum number of DHCP agents per tenant network. Defaults to the total number of agents deployed
 # neutron_dhcp_agents_max: 2
@@ -520,13 +519,13 @@ neutron_ovn_vpn_agent_overrides: {}
 neutron_ovn_vpn_agent_init_overrides: {}
 
 # OVN Defaults
-neutron_ovn_ssl: True
+neutron_ovn_ssl: true
 ovn_proto: "{{ (neutron_ovn_ssl) | ternary('ssl', 'tcp') }}"
 neutron_ovn_primary_cluster_node: "{{ groups[neutron_services['neutron-ovn-northd']['group']] | first }}"
 neutron_ovn_northd_service_name: ovn-northd
 neutron_ovn_controller_service_name: ovn-controller
 neutron_ovn_l3_scheduler: leastloaded
-neutron_ovn_distributed_fip: False
+neutron_ovn_distributed_fip: false
 neutron_ovn_nb_connection: >-
   {{ ovn_proto }}:{{ groups['neutron_ovn_northd'] | map('extract', hostvars, ['ansible_host']) | join(':6641,' + ovn_proto + ':') }}:6641
 neutron_ovn_sb_connection: >-
@@ -540,12 +539,12 @@ neutron_ovn_sb_inactivity_probe: 60000
 neutron_ovn_nb_inactivity_probe: 60000
 
 # OVN BGP Agent
-neutron_ovn_bgp_enable: False
+neutron_ovn_bgp_enable: false
 neutron_ovn_bgp_agent_group: "{{ neutron_ovn_distributed_fip | ternary('neutron_ovn_controller', 'neutron_ovn_gateway') }}"
 neutron_ovn_bgp_agent_driver: nb_ovn_bgp_driver
 neutron_ovn_bgp_exposing_method: underlay
-neutron_ovn_bgp_expose_tenant_networks: False
-neutron_ovn_bgp_expose_ipv6_gua_tenant_networks: False
+neutron_ovn_bgp_expose_tenant_networks: false
+neutron_ovn_bgp_expose_ipv6_gua_tenant_networks: false
 # Provide config needed for BGP peering
 # neutron_ovn_bgp_config:
 #   AS: 64999
@@ -644,7 +643,7 @@ neutron_ovn_pki_install_certificates:
 ovs_datapath: "netdev"
 ovs_dpdk_pci_addresses: []
 ovs_dpdk_driver: vfio-pci
-ovs_dpdk_support: False
+ovs_dpdk_support: false
 ovs_dpdk_lcore_mask: 1
 ovs_dpdk_pmd_cpu_mask: 2
 ovs_dpdk_socket_mem: "1024"
@@ -669,7 +668,7 @@ neutron_pki_setup_host: "{{ openstack_pki_setup_host | default('localhost') }}"
 neutron_pki_keys_path: "{{ neutron_pki_dir ~ '/certs/private/' }}"
 neutron_pki_certs_path: "{{ neutron_pki_dir ~ '/certs/certs/' }}"
 neutron_pki_intermediate_cert_name: "{{ openstack_pki_service_intermediate_cert_name | default('ExampleCorpIntermediate') }}"
-neutron_pki_regen_cert: ''
+neutron_pki_regen_cert: ""
 neutron_pki_san: "{{ openstack_pki_san | default('DNS:' ~ ansible_facts['hostname'] ~ ',IP:' ~ management_address) }}"
 neutron_pki_certificates:
   - name: "neutron_{{ ansible_facts['hostname'] }}"
