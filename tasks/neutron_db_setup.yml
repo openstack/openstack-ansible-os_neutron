@@ -14,7 +14,7 @@
 # limitations under the License.
 
 - name: Perform a DB expand
-  command: "{{ neutron_bin }}/neutron-db-manage --config-file {{ neutron_conf_version_dir }}/neutron.conf upgrade --expand"
+  ansible.builtin.command: "{{ neutron_bin }}/neutron-db-manage --config-file {{ neutron_conf_version_dir }}/neutron.conf upgrade --expand"
   become: true
   become_user: "{{ neutron_system_user_name }}"
   changed_when: false
@@ -23,7 +23,7 @@
     - "_neutron_is_first_play_host"
 
 - name: Disable the db expand fact
-  ini_file:
+  community.general.ini_file:
     dest: "/etc/ansible/facts.d/openstack_ansible.fact"
     section: neutron
     option: "need_db_expand"
@@ -31,7 +31,7 @@
     mode: "0644"
 
 - name: Check for available offline migrations
-  command: "{{ neutron_bin }}/neutron-db-manage --config-file {{ neutron_conf_version_dir }}/neutron.conf has_offline_migrations"
+  ansible.builtin.command: "{{ neutron_bin }}/neutron-db-manage --config-file {{ neutron_conf_version_dir }}/neutron.conf has_offline_migrations"
   environment:
     LANGUAGE: en_US.UTF-8
   become: true
@@ -45,7 +45,7 @@
     - "'Need to apply migrations' not in _offline_migrations_check.stdout"
 
 - name: Set the fact for the required offline migrations
-  ini_file:
+  community.general.ini_file:
     dest: "/etc/ansible/facts.d/openstack_ansible.fact"
     section: neutron
     option: "need_db_contract"
@@ -57,6 +57,6 @@
   notify: Restart neutron services
 
 - name: Refresh local facts
-  setup:
+  ansible.builtin.setup:
     filter: ansible_local
     gather_subset: "!all"

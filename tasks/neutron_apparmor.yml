@@ -14,7 +14,7 @@
 # limitations under the License.
 
 - name: Install required apparmor packages on the physical host
-  package:
+  ansible.builtin.package:
     name: "{{ neutron_apparmor_distro_packages }}"
     state: present
   register: apparmor_packages
@@ -25,7 +25,7 @@
   delegate_to: "{{ physical_host | default('localhost') }}"
 
 - name: Ensure apparmor service is running
-  systemd:
+  ansible.builtin.systemd:
     name: "apparmor"
     enabled: true
     state: "started"
@@ -33,7 +33,7 @@
   delegate_to: "{{ physical_host | default('localhost') }}"
 
 - name: "Disable apparmor profile"
-  shell: |
+  ansible.builtin.shell: |
     # empty line to workaround bug in EnvVarsInCommandRule.py lint test
     # https://github.com/willthames/ansible-lint/issues/275
     set -o pipefail

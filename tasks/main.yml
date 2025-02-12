@@ -13,10 +13,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 - name: Importing neutron_check tasks
-  import_tasks: neutron_check.yml
+  ansible.builtin.import_tasks: neutron_check.yml
 
 - name: Gather variables for each operating system
-  include_vars: "{{ lookup('first_found', params) }}"
+  ansible.builtin.include_vars: "{{ lookup('first_found', params) }}"
   vars:
     params:
       files:
@@ -31,12 +31,12 @@
     - always
 
 - name: Gather variables for installation method
-  include_vars: "{{ neutron_install_method }}_install.yml"
+  ansible.builtin.include_vars: "{{ neutron_install_method }}_install.yml"
   tags:
     - always
 
 - name: Including osa.db_setup role
-  include_role:
+  ansible.builtin.include_role:
     name: openstack.osa.db_setup
     apply:
       tags:
@@ -58,7 +58,7 @@
     - always
 
 - name: Including osa.mq_setup role
-  include_role:
+  ansible.builtin.include_role:
     name: openstack.osa.mq_setup
     apply:
       tags:
@@ -84,7 +84,7 @@
     - always
 
 - name: Get CPU info content and store as var
-  command: cat /proc/cpuinfo
+  ansible.builtin.command: cat /proc/cpuinfo
   register: cpuinfo_contents
   changed_when: false
   failed_when: false
@@ -105,23 +105,23 @@
     - always
 
 - name: Set provider network fact(s)
-  set_fact:
+  ansible.builtin.set_fact:
     neutron_provider_networks: "{{ neutron_provider_networks | default(pndata) }}"
   tags:
     - always
 
 - name: Importing neutron_pre_install tasks
-  import_tasks: neutron_pre_install.yml
+  ansible.builtin.import_tasks: neutron_pre_install.yml
   tags:
     - neutron-install
 
 - name: Importing neutron_install tasks
-  import_tasks: neutron_install.yml
+  ansible.builtin.import_tasks: neutron_install.yml
   tags:
     - neutron-install
 
 - name: Refresh local facts
-  setup:
+  ansible.builtin.setup:
     filter: ansible_local
     gather_subset: "!all"
   tags:
@@ -129,7 +129,7 @@
 
 # create the ssl certs before the installation of the services.
 - name: Create and install SSL certificates for API
-  include_role:
+  ansible.builtin.include_role:
     name: pki
     tasks_from: main_certs.yml
     apply:
@@ -150,7 +150,7 @@
     - always
 
 - name: Create and install SSL certificates for OVN
-  include_role:
+  ansible.builtin.include_role:
     name: pki
     tasks_from: main_certs.yml
     apply:
@@ -176,7 +176,7 @@
 
 # Include provider specific config(s)
 - name: Including plugin-specific tasks
-  include_tasks: "{{ item }}"
+  ansible.builtin.include_tasks: "{{ item }}"
   with_first_found:
     - files:
         - "{{ neutron_plugin_type.split('.')[-1] }}_config.yml"
@@ -187,7 +187,7 @@
     - neutron-install
 
 - name: Importing neutron_post_install tasks
-  import_tasks: neutron_post_install.yml
+  ansible.builtin.import_tasks: neutron_post_install.yml
   tags:
     - neutron-config
     - post-install
@@ -199,10 +199,10 @@
     - (neutron_services['neutron-metadata-agent']['group'] in group_names) or (neutron_services['neutron-dhcp-agent']['group'] in group_names)
   block:
     - name: Gather service facts
-      service_facts:
+      ansible.builtin.service_facts:
 
     - name: Disable services if they present
-      systemd:
+      ansible.builtin.systemd:
         name: "{{ item['service_name'] }}"
         state: stopped
         enabled: false
@@ -217,7 +217,7 @@
         - "{{ neutron_services['neutron-dhcp-agent'] }}"
 
 - name: Run the systemd service role
-  import_role:
+  ansible.builtin.import_role:
     name: systemd_service
   vars:
     systemd_user_name: "{{ neutron_system_user_name }}"
@@ -249,7 +249,7 @@
     - systemd-service
 
 - name: Including neutron_db_setup role
-  include_tasks: neutron_db_setup.yml
+  ansible.builtin.include_tasks: neutron_db_setup.yml
   args:
     apply:
       tags:
@@ -260,7 +260,7 @@
     - always
 
 - name: Import uwsgi role
-  import_role:
+  ansible.builtin.import_role:
     name: uwsgi
   vars:
     uwsgi_services: "{{ uwsgi_neutron_services }}"
@@ -270,7 +270,7 @@
     - uwsgi
 
 - name: Including osa.service_setup role
-  include_role:
+  ansible.builtin.include_role:
     name: openstack.osa.service_setup
     apply:
       tags:
@@ -307,4 +307,4 @@
     - always
 
 - name: Flush handlers
-  meta: flush_handlers
+  ansible.builtin.meta: flush_handlers

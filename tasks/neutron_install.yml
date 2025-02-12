@@ -14,7 +14,7 @@
 # limitations under the License.
 
 - name: Record the installation method
-  ini_file:
+  community.general.ini_file:
     dest: "/etc/ansible/facts.d/openstack_ansible.fact"
     section: "neutron"
     option: "install_method"
@@ -22,12 +22,12 @@
     mode: "0644"
 
 - name: Refresh local facts to ensure the neutron section is present
-  setup:
+  ansible.builtin.setup:
     filter: ansible_local
     gather_subset: "!all"
 
 - name: Install neutron role packages
-  package:
+  ansible.builtin.package:
     name: "{{ neutron_package_list }}"
     state: "{{ neutron_package_state }}"
     policy_rc_d: "{{ (neutron_needs_openvswitch | bool and ansible_facts['pkg_mgr'] == 'apt') | ternary(101, omit) }}"
@@ -43,7 +43,7 @@
     - "restart ovn service"
 
 - name: Remove known problem packages
-  package:
+  ansible.builtin.package:
     name: "{{ item }}"
     state: absent
   register: remove_packages
@@ -53,7 +53,7 @@
   with_items: "{{ neutron_remove_distro_packages }}"
 
 - name: Include FRR role for OVN BGP Agent
-  include_role:
+  ansible.builtin.include_role:
     name: frrouting
     apply:
       tags:
@@ -77,14 +77,14 @@
 # neutron itself also appears in u-c (!) as the split between neutron and
 # neutron-lib appears incomplete.
 - name: Retrieve the constraints URL
-  uri:
+  ansible.builtin.uri:
     url: "{{ neutron_upper_constraints_url }}"
     return_content: true
   register: _u_c_contents
   check_mode: false
 
 - name: Install the python venv
-  import_role:
+  ansible.builtin.import_role:
     name: "python_venv_build"
   vars:
     venv_python_executable: "{{ neutron_venv_python_executable }}"
@@ -108,7 +108,7 @@
     - ((filtered_neutron_services|length) + (uwsgi_neutron_services|length)) > 0
 
 - name: Initialise the upgrade facts
-  ini_file:
+  community.general.ini_file:
     dest: "/etc/ansible/facts.d/openstack_ansible.fact"
     section: neutron
     option: "{{ item.name }}"
@@ -127,7 +127,7 @@
         ('need_db_contract' not in ansible_local['openstack_ansible']['neutron'])
 
 - name: Ensure Open vSwitch service state is set according to node group
-  service:
+  ansible.builtin.service:
     name: "{{ neutron_ovs_service_name }}"
     state: "{{ _neutron_ovs_disabled | ternary('stopped', 'started') }}"
     enabled: "{{ _neutron_ovs_disabled | ternary(false, true) }}"
@@ -139,7 +139,7 @@
 - name: Record the first container on each physical host
   delegate_to: "localhost"
   run_once: true
-  set_fact:
+  ansible.builtin.set_fact:
     neutron_apparmor_hosts: |
       {%- set apparmor_hosts = [] -%}
       {%- set physical_hosts = [] -%}
@@ -158,7 +158,7 @@
   when: ansible_facts['pkg_mgr'] == 'apt'
 
 - name: Importing neutron_apparmor tasks
-  import_tasks: neutron_apparmor.yml
+  ansible.builtin.import_tasks: neutron_apparmor.yml
   when:
     - ansible_facts['pkg_mgr'] == 'apt'
     - inventory_hostname in neutron_apparmor_hosts

@@ -16,7 +16,7 @@
 # limitations under the License.
 
 - name: Configure ovn-controller
-  template:
+  ansible.builtin.template:
     src: ovn-controller-opts.j2
     dest: "{{ neutron_ovn_controller_opts_file }}"
     mode: "0644"
@@ -30,7 +30,7 @@
 #                      so we mask service that executes that part to prevent failures
 #                      https://bugs.launchpad.net/cloud-archive/+bug/2017757
 - name: Mask setting OVS hostname service
-  service:
+  ansible.builtin.service:
     name: ovs-record-hostname
     enabled: false
     state: stopped
@@ -40,7 +40,7 @@
     - neutron_services['neutron-ovn-controller']['group'] in group_names
 
 - name: Ensure ovn-northd service is started and enabled
-  systemd:
+  ansible.builtin.systemd:
     name: "{{ neutron_ovn_northd_service_name }}"
     state: started
     enabled: true
@@ -48,7 +48,7 @@
     - neutron_services['neutron-ovn-northd']['group'] in group_names
 
 - name: Ensure ovn-controller service is started and enabled
-  systemd:
+  ansible.builtin.systemd:
     name: "{{ neutron_ovn_controller_service_name }}"
     state: "{{ (ovn_controller_config.changed) | ternary('restarted', 'started') }}"
     enabled: true
@@ -59,7 +59,7 @@
   ansible.builtin.include_tasks: setup_ovs_ovn.yml
 
 - name: Set CLI options to connect to leader
-  template:
+  ansible.builtin.template:
     src: ovn-cli-options.j2
     dest: "/root/ovnctl.rc"
     owner: root

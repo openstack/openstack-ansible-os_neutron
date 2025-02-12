@@ -14,7 +14,7 @@
 # limitations under the License.
 
 - name: Stop services
-  service:
+  ansible.builtin.service:
     name: "{{ item.service_name }}"
     state: "stopped"
     daemon_reload: true
@@ -36,7 +36,7 @@
 # processes will be running code from the previous version. This step ensures these
 # orphaned processes are cleaned up correctly.
 - name: Run neutron-l3-agent process cleanup
-  shell: |
+  ansible.builtin.shell: |
     cgroup_path=$(findmnt -t cgroup2 -r -n -f -o target)
     for ns_pid in $(cat ${cgroup_path}/neutron.slice/neutron-l3-agent.service/cgroup.procs); do
       echo $(readlink -f "/proc/$ns_pid/exe") | egrep -qv "keepalived|haproxy|ipsec"
@@ -53,7 +53,7 @@
     - "venv changed"
 
 - name: Restart openvswitch
-  service:
+  ansible.builtin.service:
     name: "{{ neutron_ovs_service_name }}"
     state: restarted
   listen:
@@ -63,7 +63,7 @@
     - not _neutron_ovs_disabled
 
 - name: Symlink neutron config directory
-  file:
+  ansible.builtin.file:
     # NOTE(cloudnull): The "src" path is relative. This ensures all files remain
     #                  within the host/container confines when connecting to
     #                  them using the connection plugin or the root filesystem.
@@ -76,7 +76,7 @@
     - "venv changed"
 
 - name: Drop sudoers file
-  template:
+  ansible.builtin.template:
     src: "sudoers.j2"
     dest: "/etc/sudoers.d/{{ neutron_system_user_name }}_sudoers"
     mode: "0440"
@@ -87,7 +87,7 @@
     - "venv changed"
 
 - name: Perform a DB contract
-  command: "{{ neutron_bin }}/neutron-db-manage upgrade --contract"
+  ansible.builtin.command: "{{ neutron_bin }}/neutron-db-manage upgrade --contract"
   become: true
   become_user: "{{ neutron_system_user_name }}"
   changed_when: false
@@ -99,7 +99,7 @@
     - "venv changed"
 
 - name: Start services
-  service:
+  ansible.builtin.service:
     name: "{{ item.service_name }}"
     enabled: "{{ item.enabled | default(True) }}"
     state: "{{ item.state | default('started') }}"
@@ -116,7 +116,7 @@
     - "cert installed"
 
 - name: Start ovn service
-  service:
+  ansible.builtin.service:
     name: "{{ neutron_ovn_northd_service_name }}"
     state: started
   listen:
@@ -124,7 +124,7 @@
 
 # (NOTE) Restarting twice to cleanup some pid.
 - name: Restart ovn northd
-  service:
+  ansible.builtin.service:
     name: "{{ neutron_ovn_northd_service_name }}"
     state: restarted
   when:
@@ -134,7 +134,7 @@
     - ovn cert installed
 
 - name: Restart ovn controller
-  service:
+  ansible.builtin.service:
     name: "{{ neutron_ovn_controller_service_name }}"
     state: restarted
   when:

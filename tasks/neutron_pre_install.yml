@@ -14,13 +14,13 @@
 # limitations under the License.
 
 - name: Create the system group
-  group:
+  ansible.builtin.group:
     name: "{{ neutron_system_group_name }}"
     state: "present"
     system: "yes"
 
 - name: Create the neutron system user
-  user:
+  ansible.builtin.user:
     name: "{{ neutron_system_user_name }}"
     group: "{{ neutron_system_group_name }}"
     comment: "{{ neutron_system_comment }}"
@@ -36,12 +36,12 @@
 - name: Source config block
   block:
     - name: Stat config directory
-      stat:
+      ansible.builtin.stat:
         path: "{{ neutron_conf_dir }}"
       register: neutron_conf_dir_stat
 
     - name: Remove the config directory
-      file:
+      ansible.builtin.file:
         path: "{{ neutron_conf_dir }}"
         state: absent
       when:
@@ -52,7 +52,7 @@
     - ((filtered_neutron_services|length) + (uwsgi_neutron_services|length)) > 0
 
 - name: Create neutron dir
-  file:
+  ansible.builtin.file:
     path: "{{ item.path | default(omit) }}"
     state: "{{ item.state | default('directory') }}"
     owner: "{{ item.owner | default(neutron_system_user_name) }}"
@@ -81,7 +81,7 @@
       state: "{{ (neutron_plugin_type == 'ml2.ovn') | ternary('absent', 'directory') }}"
 
 - name: Add dependency repos for Neutron
-  package:
+  ansible.builtin.package:
     name: "{{ neutron_repos }}"
     state: "{{ neutron_package_state }}"
   retries: 5
@@ -93,14 +93,14 @@
 - name: Create ovs tempfiles directory
   block:
     - name: Create ovs tmpfiles file
-      lineinfile:
+      ansible.builtin.lineinfile:
         dest: "/etc/tmpfiles.d/openstack-openvswitch.conf"
         line: "D /var/run/openvswitch 2755 root root"
         create: true
         mode: "0644"
 
     - name: Create ovs tmp directory
-      file:
+      ansible.builtin.file:
         path: "/var/run/openvswitch"
         state: directory
         mode: "02755"

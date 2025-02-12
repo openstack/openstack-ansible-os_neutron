@@ -18,7 +18,7 @@
     - ((filtered_neutron_services|length) + (uwsgi_neutron_services|length)) > 0
   block:
     - name: Create plugins neutron dir
-      file:
+      ansible.builtin.file:
         path: "{{ item.path | default(omit) }}"
         state: "directory"
         owner: "{{ item.owner | default(neutron_system_user_name) }}"
@@ -34,7 +34,7 @@
     # NOTE(cloudnull): This task is required to copy rootwrap filters that we need
     #                  and neutron does not provide by default.
     - name: Copy extra neutron rootwrap filters
-      copy:
+      ansible.builtin.copy:
         src: "{{ item }}"
         dest: "{{ neutron_conf_version_dir }}/rootwrap.d/"
         owner: "root"
@@ -82,7 +82,7 @@
         - neutron-policy-override
 
     - name: Remove legacy policy.yaml file
-      file:
+      ansible.builtin.file:
         path: "{{ neutron_conf_dir }}/policy.yaml"
         state: absent
       when:
@@ -91,7 +91,7 @@
         - neutron-policy-override
 
     - name: Create symlink to neutron-keepalived-state-change
-      file:
+      ansible.builtin.file:
         src: "{{ neutron_bin }}/neutron-keepalived-state-change"
         dest: "/usr/local/bin/neutron-keepalived-state-change"
         state: link
@@ -99,13 +99,13 @@
         - neutron_install_method == 'source'
 
     - name: Preserve original configuration file(s)
-      command: "cp {{ item.target_f }} {{ item.target_f }}.original"
+      ansible.builtin.command: "cp {{ item.target_f }} {{ item.target_f }}.original"
       args:
         creates: "{{ item.target_f }}.original"
       with_items: "{{ neutron_core_files }}"
 
     - name: Fetch override files
-      fetch:
+      ansible.builtin.fetch:
         src: "{{ item.target_f }}.original"
         dest: "{{ item.tmp_f }}"
         flat: true
@@ -128,7 +128,7 @@
         - Restart uwsgi services
 
     - name: Cleanup fetched temp files
-      file:
+      ansible.builtin.file:
         path: "{{ item.tmp_f }}"
         state: absent
       changed_when: false
@@ -148,7 +148,7 @@
       with_items: "{{ neutron_plugin_types }}"
 
 - name: Generate neutron dnsmasq Config
-  template:
+  ansible.builtin.template:
     src: "dnsmasq-neutron.conf.j2"
     dest: "{{ neutron_conf_version_dir }}/dnsmasq-neutron.conf"
     owner: "root"
@@ -178,7 +178,7 @@
     - "'service_conf' in item"
 
 - name: Generate neutron bgpvpn networking configuration
-  template:
+  ansible.builtin.template:
     src: "networking_bgpvpn.conf.j2"
     dest: "{{ neutron_conf_version_dir }}/networking_bgpvpn.conf"
     owner: "root"
@@ -191,7 +191,7 @@
     - "'bgpvpn' in neutron_plugin_base"
 
 - name: Copy vpnaas custom config files
-  copy:
+  ansible.builtin.copy:
     src: "{{ item.src }}"
     dest: "{{ item.dest }}"
     owner: "root"
@@ -204,7 +204,7 @@
     - item.condition | default(True)
 
 - name: Stop haproxy service on debian derivatives with standalone network nodes
-  service:
+  ansible.builtin.service:
     name: haproxy
     state: stopped
     enabled: false

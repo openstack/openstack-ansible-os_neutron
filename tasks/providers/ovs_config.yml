@@ -14,7 +14,7 @@
 # limitations under the License.
 
 - name: Setup Network Provider Bridges
-  openvswitch_bridge:
+  openvswitch.openvswitch.openvswitch_bridge:
     bridge: "{{ bridge_mapping.split(':')[1] }}"
     fail_mode: secure
     state: present
@@ -28,7 +28,7 @@
     - not ovs_dpdk_support
 
 - name: Add ports to Network Provider Bridges
-  openvswitch_port:
+  openvswitch.openvswitch.openvswitch_port:
     bridge: "{{ interface_mapping.split(':')[0] }}"
     port: "{{ interface_mapping.split(':')[1] }}"
     state: present

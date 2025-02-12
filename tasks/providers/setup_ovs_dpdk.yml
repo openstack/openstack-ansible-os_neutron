@@ -14,7 +14,7 @@
 # limitations under the License.
 
 - name: Set alternative ovs-vswitchd service
-  alternatives:
+  community.general.alternatives:
     name: ovs-vswitchd
     path: /usr/lib/openvswitch-switch-dpdk/ovs-vswitchd-dpdk
   when:
@@ -23,7 +23,7 @@
     - '"nova_compute" in group_names'
 
 - name: Configure DPDK interface to driver bindings
-  template:
+  ansible.builtin.template:
     src: dpdk_interfaces.j2
     dest: "/etc/dpdk/interfaces"
     owner: "root"
@@ -34,7 +34,7 @@
     - '"nova_compute" in group_names'
 
 - name: Configure DPDK hugepage allocation
-  template:
+  ansible.builtin.template:
     src: dpdk.conf.j2
     dest: "/etc/dpdk/dpdk.conf"
     owner: "root"
@@ -45,7 +45,7 @@
     - '"nova_compute" in group_names'
 
 - name: Ensure DPDK service is started and enabled
-  systemd:
+  ansible.builtin.systemd:
     name: "{{ dpdk_service_name }}"
     state: restarted
     enabled: true
@@ -54,7 +54,7 @@
     - '"nova_compute" in group_names'
 
 - name: Ensure Open vSwitch service is started and enabled
-  systemd:
+  ansible.builtin.systemd:
     name: "{{ neutron_ovs_service_name }}"
     state: restarted
     enabled: true
@@ -62,28 +62,28 @@
     - neutron_services['neutron-openvswitch-agent']['group'] in group_names
 
 - name: Set DPDK lcore mask
-  command: "ovs-vsctl --no-wait set Open_vSwitch . other_config:dpdk-lcore-mask={{ ovs_dpdk_lcore_mask }}"
+  ansible.builtin.command: "ovs-vsctl --no-wait set Open_vSwitch . other_config:dpdk-lcore-mask={{ ovs_dpdk_lcore_mask }}"
   changed_when: false
   when:
     - neutron_services['neutron-openvswitch-agent']['group'] in group_names
     - '"nova_compute" in group_names'
 
 - name: Set DPDK PMD cpu mask
-  command: "ovs-vsctl --no-wait set Open_vSwitch . other_config:pmd-cpu-mask={{ ovs_dpdk_pmd_cpu_mask }}"
+  ansible.builtin.command: "ovs-vsctl --no-wait set Open_vSwitch . other_config:pmd-cpu-mask={{ ovs_dpdk_pmd_cpu_mask }}"
   changed_when: false
   when:
     - neutron_services['neutron-openvswitch-agent']['group'] in group_names
     - '"nova_compute" in group_names'
 
 - name: Set DPDK socket memory
-  command: "ovs-vsctl --no-wait set Open_vSwitch . other_config:dpdk-socket-mem={{ ovs_dpdk_socket_mem }}"
+  ansible.builtin.command: "ovs-vsctl --no-wait set Open_vSwitch . other_config:dpdk-socket-mem={{ ovs_dpdk_socket_mem }}"
   changed_when: false
   when:
     - neutron_services['neutron-openvswitch-agent']['group'] in group_names
     - '"nova_compute" in group_names'
 
 - name: Enable DPDK support for openvswitch
-  command: "ovs-vsctl --no-wait set Open_vSwitch . other_config:dpdk-init=true"
+  ansible.builtin.command: "ovs-vsctl --no-wait set Open_vSwitch . other_config:dpdk-init=true"
   changed_when: false
   when:
     - neutron_services['neutron-openvswitch-agent']['group'] in group_names
@@ -91,7 +91,7 @@
 
 # (jamesdenton) Should replace hard dir with var, and only do this on computes
 - name: Create vhost_socket directory
-  file:
+  ansible.builtin.file:
     path: /var/lib/vhost_socket
     state: directory
     owner: "{{ vhost_socket_directory_owner }}"
@@ -104,7 +104,7 @@
 # NOTE: This needs to be netdev for compute and system for network node
 # Should I set an override for network nodes (non-dpdk)to default 'system' rather than 'netdev'?
 - name: Setup Network Provider Bridges
-  openvswitch_bridge:
+  openvswitch.openvswitch.openvswitch_bridge:
     bridge: "{{ bridge_mapping.split(':')[1] }}"
     set: "bridge {{ bridge_mapping.split(':')[1] }} datapath_type={{ ovs_datapath }}"
     fail_mode: secure
@@ -119,7 +119,7 @@
 
 # Adds a single host interface to an OVS bridge
 - name: Add ports to Network Provider Bridges
-  openvswitch_port:
+  openvswitch.openvswitch.openvswitch_port:
     bridge: "{{ interface_mapping.split(':')[0] }}"
     port: "{{ interface_mapping.split(':', 1)[1] }}"
     set: "Interface {{ interface_mapping.split(':', 1)[1] }} type=dpdk options:dpdk-devargs='{{ interface_mapping.split(':', 1)[1] }}'"

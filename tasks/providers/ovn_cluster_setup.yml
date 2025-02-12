@@ -17,7 +17,7 @@
 
 # checking if ovn db are clustered or not, if not then this is fresh node.
 - name: Check if ovn db is clustered
-  command: ovsdb-tool db-is-clustered /var/lib/ovn/ovnnb_db.db
+  ansible.builtin.command: ovsdb-tool db-is-clustered /var/lib/ovn/ovnnb_db.db
   ignore_errors: true
   failed_when: false
   changed_when: false
@@ -29,18 +29,18 @@
     - _check_cluster_db.rc != 0
   block:
     - name: Stop ovn services
-      service:
+      ansible.builtin.service:
         name: "{{ neutron_ovn_northd_service_name }}"
         state: stopped
 
     - name: Clean up ovn db directory
-      file:
+      ansible.builtin.file:
         path: /var/lib/ovn/
         state: absent
 
 # We are finding leader node so new nodes use leader to join cluster.
 - name: Find leader node in ovn cluster
-  shell: ovs-appctl -t /var/run/ovn/ovnnb_db.ctl cluster/status OVN_Northbound | sed 's/ //g' | grep -oP '(?<=Role:).*'
+  ansible.builtin.shell: ovs-appctl -t /var/run/ovn/ovnnb_db.ctl cluster/status OVN_Northbound | sed 's/ //g' | grep -oP '(?<=Role:).*'
   args:
     executable: /bin/bash
   ignore_errors: true
@@ -55,12 +55,12 @@
 
 # set leader_node variable
 - name: Set leader_node fact
-  set_fact:
+  ansible.builtin.set_fact:
     leader_node: "{{ (_find_leader.results | selectattr('stdout', 'search', 'leader')) | map(attribute='container') | list }}"
 
 # This play only run first time to build cluster using primary node.
 - name: Setup ovn cluster using primary node.
-  template:
+  ansible.builtin.template:
     src: ovn-northd-opts.j2
     dest: "{{ neutron_ovn_northd_opts_file }}"
     mode: "0644"
@@ -71,7 +71,7 @@
   register: ovn_northd_opts
 
 - name: Start ovn service
-  service:
+  ansible.builtin.service:
     name: "{{ neutron_ovn_northd_service_name }}"
     state: started
   when:
@@ -81,7 +81,7 @@
     - ovn_northd_opts.changed
 
 - name: Configure connection settings for ovn-nb and ovn-sb
-  command: "{{ cmd }}"
+  ansible.builtin.command: "{{ cmd }}"
   changed_when: false
   with_items:
     - "ovn-nbctl --inactivity-probe={{ neutron_ovn_nb_inactivity_probe }} set-connection p{{ ovn_proto }}:6641"
@@ -102,7 +102,7 @@
 
 # This play will add nodes in existing cluster using leader_node var.
 - name: Join new nodes to ovn cluster using leader node
-  template:
+  ansible.builtin.template:
     src: ovn-northd-opts.j2
     dest: "{{ neutron_ovn_northd_opts_file }}"
     mode: "0644"
