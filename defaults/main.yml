@@ -183,10 +183,12 @@ _neutron_rootwrap_conf_overrides:
 neutron_rootwrap_conf_overrides: {}
 
 neutron_api_uwsgi_ini_overrides: {}
+neutron_periodic_workers_init_overrides: {}
 neutron_server_init_overrides: {}
 neutron_rpc_server_init_overrides: {}
 neutron_sriov_nic_agent_ini_overrides: {}
 neutron_sriov_nic_agent_init_overrides: {}
+neutron_ovn_maintenance_init_overrides: {}
 neutron_ovn_metadata_agent_ini_overrides: {}
 neutron_ovn_metadata_agent_init_overrides: {}
 
