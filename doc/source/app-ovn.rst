@@ -58,14 +58,14 @@ act as an OVN Gateway Chassis, which is a node running ``ovn-controller`` that
 is capable of providing external (north/south) connectivity to the tenant traffic.
 This is essentially a node(s) capable of hosting the logical router performing
 SNAT and DNAT (Floating IP) translations. East/West traffic flow is not limited
-to a gateway chassis and is performed between an OVN chassis nodes.
+to a gateway chassis and is performed between the OVN chassis nodes themselves.
 
 When planning out your architecture, it is important to determine early if you
 want to centralize OVN gateway chassis functions to a subset of nodes or
 across all compute nodes. Centralizing north/south routing to a set of dedicated
 network or gateway nodes is reminiscent of the legacy network node model. Enabling
 all compute nodes as gateway chassis will narrow the failure domain and potential
-bottlenecks at the cost of ensuring the computes can connect to the provider
+bottlenecks at the cost of ensuring the compute nodes can connect to the provider
 networks.
 
 The following section will describe how to configure your inventory to meet certain
@@ -217,6 +217,7 @@ in ``openstack_user_config.yml`` or host vars.
 
 (Optional) DVR or Distributed L3 routing
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 DVR will be used for floating IPs if the ovn / enable_distributed_floating_ip
 flag is configured to True in the neutron server configuration.
 
@@ -432,7 +433,7 @@ is the UUID of the router in Neutron database. Command will look like this:
 
 
 The mapping/location of the router to the gateway node can be established via
-logical ports of the router when the external network to which router is
+logical ports of that router when the external network to which the router is
 connected happens to have either VLAN or FLAT type. For that you need to know
 the UUID of the external port attached to the router. The port name in the OVN
 database is constructed as ``lrp-<UUID>``, where UUID is the Neutron port UUID.
@@ -485,7 +486,7 @@ Logical Router will be pinned to the chassis instead of its LRP:
   # ovn-nbctl --no-leader-only get Logical_Router neutron-b0d6ca32-fda3-4fdc-b648-82c8bee303dc options
   {always_learn_from_arp_request="false", chassis="5335c34d-9233-47bd-92f1-fc7503270783", dynamic_neigh_routers="true", mac_binding_age_threshold="0"}
 
-All LRPs of such router will remain unbinded.
+All LRPs of such routers will remain unbound.
 
 
 OVN database population
@@ -504,7 +505,7 @@ For that, you can execute the following:
 
 Command ``neutron-ovn-db-sync-util`` is also used during migration from OVS to
 OVN. For that, you need to supply ``--ovn-neutron_sync_mode migrate`` instead
-of `repair` as shown in example above.
+of `repair` as shown in the example above.
 
 
 Notes
