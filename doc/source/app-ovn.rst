@@ -331,7 +331,7 @@ connection details:
           options: {csum="true"}
       Port_Binding cr-lrp-022933b6-fb12-4f40-897f-745761f03186
 
-You can get specific information about chassis by providing either it's
+You can get specific information about a chassis by providing either its
 `name`, where `name` is UUID of the agent (`external_ids:system-id` from the
 ovs-vsctl output), for example:
 
@@ -421,7 +421,7 @@ is the UUID of the router in Neutron database. Command will look like this:
 
   Keep in mind, that GATEWAY_PORT will not be defined for dnat_and_snat rule
   when the external network of the router is on a geneve network and
-  the router is bound to the chassis instead of it's external port.
+  the router is bound to the chassis instead of its external port.
 
 .. code-block:: console
 
@@ -478,7 +478,7 @@ Additional commands can be found in upstream OVN documentation and other
 resources listed on this page.
 
 In cases when a Geneve network acts as the external network for the router,
-Logical Router will be pinned to the chassis instead of it's LRP:
+Logical Router will be pinned to the chassis instead of its LRP:
 
 .. code-block:: console
 
