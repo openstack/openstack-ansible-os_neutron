@@ -226,9 +226,7 @@ Create a group var file for neutron server
 .. code-block:: yaml
 
   # DVR/Distributed L3 routing support
-  neutron_neutron_conf_overrides:
-    ovn:
-      enable_distributed_floating_ip: True
+  neutron_ovn_distributed_fip: True
 
 Useful Open Virtual Network (OVN) Commands
 ------------------------------------------
