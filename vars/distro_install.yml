@@ -32,10 +32,6 @@ neutron_package_list: |-
   {% set _ = packages.extend(neutron_ovs_distro_packages) %}
   {% endif %}
   {% endif %}
-  {% if neutron_services['neutron-linuxbridge-agent']['group'] in group_names and neutron_services['neutron-linuxbridge-agent'].service_en | bool %}
-  {% set _ = packages.extend(neutron_lxb_distro_packages) %}
-  {% set _ = packages.extend(neutron_optional_lxb_distro_packages) %}
-  {% endif %}
   {% if neutron_services['neutron-l3-agent']['group'] in group_names and neutron_fwaas_v2 | bool %}
   {% set _ = packages.extend(neutron_optional_fwaas_distro_packages) %}
   {% endif %}

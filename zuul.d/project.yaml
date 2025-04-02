@@ -28,16 +28,8 @@
         - openstack-ansible-deploy-aio_ovs_lxc-centos-9-stream:
             voting: false
         - openstack-ansible-deploy-aio_metal_ovs-rockylinux-9
-        - openstack-ansible-deploy-aio_lxb_lxc-centos-9-stream:
-            voting: false
-        - openstack-ansible-deploy-aio_lxb_metal-rockylinux-9
-        - openstack-ansible-deploy-aio_lxb_lxc-ubuntu-jammy
-        - openstack-ansible-deploy-aio_lxb_metal-ubuntu-jammy
     gate:
       jobs:
         - openstack-ansible-deploy-aio_ovs_lxc-ubuntu-jammy
         - openstack-ansible-deploy-aio_metal_ovs-ubuntu-jammy
         - openstack-ansible-deploy-aio_metal_ovs-rockylinux-9
-        - openstack-ansible-deploy-aio_lxb_metal-rockylinux-9
-        - openstack-ansible-deploy-aio_lxb_lxc-ubuntu-jammy
-        - openstack-ansible-deploy-aio_lxb_metal-ubuntu-jammy

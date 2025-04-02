@@ -153,8 +153,6 @@ neutron_ironic_neutron_agent_ini_overrides: {}
 neutron_ironic_neutron_agent_init_overrides: {}
 neutron_l3_agent_ini_overrides: {}
 neutron_l3_agent_init_overrides: {}
-neutron_linuxbridge_agent_ini_overrides: {}
-neutron_linuxbridge_agent_init_overrides: {}
 neutron_metadata_agent_ini_overrides: {}
 neutron_metadata_agent_init_overrides: {}
 neutron_metering_agent_ini_overrides: {}

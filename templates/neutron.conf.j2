@@ -70,7 +70,7 @@ agent_down_time = {{ neutron_agent_down_time }}
 
 {% set num_l3_agent = (neutron_l3_agents_max | int) if neutron_l3_agents_max is defined else groups[neutron_services['neutron-l3-agent']['group']] | length %}
 {% if neutron_plugin_type.split('.')[0] == 'ml2' and num_l3_agent >= 2 %}
-{% if neutron_services['neutron-linuxbridge-agent']['service_en'] | bool or neutron_services['neutron-openvswitch-agent']['service_en'] | bool %}
+{% if neutron_services['neutron-openvswitch-agent']['service_en'] | bool %}
 
 {% set max_l3_router = num_l3_agent if num_l3_agent > 2 else 2 %}
 
@@ -119,11 +119,6 @@ notify_nova_on_port_data_changes = True
 send_events_interval = 2
 
 # End of [DEFAULT] section
-
-{% if neutron_plugin_type == 'ml2.lxb' %}
-[experimental]
-linuxbridge = True
-{% endif %}
 
 {% if neutron_designate_enabled %}
 

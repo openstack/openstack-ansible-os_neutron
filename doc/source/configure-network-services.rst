@@ -342,7 +342,7 @@ configuration to enable Neutron SR-IOV support.
           net_name: "physnet1"
           sriov_host_interfaces: "p1p1,p4p1"
           group_binds:
-            - neutron_linuxbridge_agent
+            - neutron_openvswitch_agent
             - neutron_sriov_nic_agent
 
 #. Configure Nova
@@ -395,9 +395,7 @@ configuration to enable Neutron SR-IOV support.
    The `conf override`_ ``neutron_plugin_types`` variable can contain a list
    of additional ML2 plugins to load. Make sure that only compatible
    ML2 plugins are loaded at all times.
-   The SR-IOV ML2 plugin is known to work with the linuxbridge (``ml2.lxb``)
-   and openvswitch (``ml2.ovs``) ML2 plugins.
-   ``ml2.lxb`` is the standard activated core ML2 plugin.
+   The SR-IOV ML2 plugin is known to work with openvswitch (``ml2.ovs``) ML2 plugin.
 
    .. code-block:: yaml
 

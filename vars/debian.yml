@@ -89,17 +89,11 @@ neutron_service_distro_packages:
 neutron_optional_ovs_distro_packages:
   - neutron-openvswitch-agent
 
-neutron_optional_lxb_distro_packages:
-  - neutron-linuxbridge-agent
-
 neutron_optional_fwaas_distro_packages:
   - python3-neutron-fwaas
 
 neutron_optional_vpnaas_distro_packages:
   - neutron-vpnaas-agent
-
-neutron_lxb_distro_packages:
-  - bridge-utils
 
 neutron_vpnaas_distro_packages:
   - strongswan
