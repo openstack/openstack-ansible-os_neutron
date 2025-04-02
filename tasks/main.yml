@@ -137,9 +137,10 @@
         - neutron-config
         - pki
   vars:
+    pki_backend: "{{ neutron_pki_backend }}"
     pki_setup_host: "{{ neutron_pki_setup_host }}"
     pki_dir: "{{ neutron_pki_dir }}"
-    pki_create_certificates: "{{ neutron_user_ssl_cert is not defined and neutron_user_ssl_key is not defined }}"
+    pki_create_certificates: "{{ neutron_user_ssl_cert | length == 0 and neutron_user_ssl_key | length == 0 }}"
     pki_regen_cert: "{{ neutron_pki_regen_cert }}"
     pki_certificates: "{{ neutron_pki_certificates }}"
     pki_install_certificates: "{{ neutron_pki_install_certificates }}"
@@ -158,9 +159,10 @@
         - neutron_ovn-config
         - pki
   vars:
+    pki_backend: "{{ neutron_pki_backend }}"
     pki_setup_host: "{{ neutron_ovn_pki_setup_host }}"
     pki_dir: "{{ neutron_ovn_pki_dir }}"
-    pki_create_certificates: "{{ neutron_ovn_user_ssl_cert is not defined and neutron_ovn_user_ssl_key is not defined }}"
+    pki_create_certificates: "{{ neutron_ovn_user_ssl_cert | length == 0 and neutron_ovn_user_ssl_key | length == 0 }}"
     pki_regen_cert: "{{ neutron_ovn_pki_regen_cert }}"
     pki_certificates: "{{ neutron_ovn_pki_certificates }}"
     pki_install_certificates: "{{ neutron_ovn_pki_install_certificates }}"
