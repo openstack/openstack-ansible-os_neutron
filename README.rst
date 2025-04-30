@@ -1,13 +1,8 @@
-========================
-OpenStack-Ansible neutron
-========================
+=========================
+OpenStack-Ansible Neutron
+=========================
 
-.. image:: https://governance.openstack.org/tc/badges/openstack-ansible-os_neutron.svg
-    :target: https://governance.openstack.org/tc/reference/tags/index.html
-
-.. Change things from this point on
-
-Ansible role that installs and configures OpenStack neutron.
+Ansible role that installs and configures OpenStack Neutron.
 
 Documentation for the project can be found at:
   https://docs.openstack.org/openstack-ansible-os_neutron/latest/
