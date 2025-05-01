@@ -22,6 +22,8 @@
 # All configuration values have a default; values that are commented out
 # serve to show the default.
 
+import openstackdocstheme
+
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
@@ -38,6 +40,7 @@
 extensions = [
     'openstackdocstheme',
     'sphinx.ext.autodoc',
+    'sphinx.ext.extlinks',
     'sphinxcontrib.rsvgconverter',
 ]
 
@@ -56,9 +59,10 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
+project = 'OpenStack-Ansible Neutron'
 author = 'OpenStack-Ansible Contributors'
 category = 'Miscellaneous'
-copyright = '2014-2016, OpenStack-Ansible Contributors'
+copyright = '2014-2025, OpenStack-Ansible Contributors'
 description = 'OpenStack-Ansible deploys OpenStack environments using Ansible.'
 role_name = 'os_neutron'
 target_name = 'openstack-ansible-' + role_name
@@ -112,7 +116,6 @@ pygments_style = 'native'
 
 # If true, `todo` and `todoList` produce output, else they produce nothing.
 todo_include_todos = False
-
 
 # -- Options for HTML output ----------------------------------------------
 
@@ -239,7 +242,6 @@ latex_use_xindy = False
 
 # If false, no module index is generated.
 # latex_domain_indices = True
-
 
 # -- Options for manual page output ---------------------------------------
 

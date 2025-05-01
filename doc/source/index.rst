@@ -16,9 +16,6 @@ Neutron role for OpenStack-Ansible
    app-nsx.rst
    app-genericswitch.rst
 
-:tags: openstack, neutron, cloud, ansible
-:category: \*nix
-
 This role installs the following Systemd services:
 
 * neutron-server
