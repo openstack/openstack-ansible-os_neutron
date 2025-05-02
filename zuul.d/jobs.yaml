@@ -13,7 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Ubuntu Focal
+# Ubuntu Jammy
 - job:
     name: openstack-ansible-deploy-aio_ovs_lxc-ubuntu-jammy
     parent: openstack-ansible-deploy-aio
@@ -23,6 +23,17 @@
     name: openstack-ansible-deploy-aio_metal_ovs-ubuntu-jammy
     parent: openstack-ansible-deploy-aio
     nodeset: ubuntu-jammy
+
+# Ubuntu Noble
+- job:
+    name: openstack-ansible-deploy-aio_lxc_ovs-ubuntu-noble
+    parent: openstack-ansible-deploy-aio
+    nodeset: ubuntu-noble
+
+- job:
+    name: openstack-ansible-deploy-aio_metal_ovs-ubuntu-noble
+    parent: openstack-ansible-deploy-aio
+    nodeset: ubuntu-noble
 
 # CentOS 9
 - job:
