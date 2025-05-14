@@ -28,6 +28,21 @@
     enabled: true
     state: "started"
 
+- name: "Place required apparmor overrides"
+  ansible.builtin.copy:
+    content: "{{ item['content'] }}"
+    dest: "/etc/apparmor.d/local/{{ item['profile'] }}"
+    mode: "0644"
+    owner: root
+    group: root
+  loop: "{{ neutron_apparmor_profile_overrides }}"
+  loop_control:
+    label: "{{ item['profile'] }}"
+  when:
+    - item.condition | default(true)
+  notify:
+    - Reload apparmor
+
 - name: "Disable apparmor profile"
   ansible.builtin.shell: |
     # empty line to workaround bug in EnvVarsInCommandRule.py lint test
@@ -52,5 +67,3 @@
       process: "haproxy"
     - profile: "bin.ping"
       process: "ping"
-    - profile: "usr.sbin.dnsmasq"
-      process: "dnsmasq"

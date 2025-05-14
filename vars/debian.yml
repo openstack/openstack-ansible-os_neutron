@@ -51,6 +51,19 @@ neutron_apparmor_distro_packages:
   - apparmor-profiles
   - apparmor-utils
 
+neutron_apparmor_profile_overrides:
+  - profile: "usr.sbin.dnsmasq"
+    content: |
+        /etc/neutron/dnsmasq-neutron.conf r,
+        /openstack/venvs/neutron-*/etc/neutron/dnsmasq-neutron.conf r,
+        /var/lib/neutron/dhcp/*/leases rw,
+        /var/lib/neutron/dhcp/*/pid rw,
+        /var/lib/neutron/dhcp/*/host r,
+        /var/lib/neutron/dhcp/*/addn_hosts r,
+        /var/lib/neutron/dhcp/*/opts r,
+        /var/lib/neutron/dhcp/*/leases rw,
+    condition: "{{ (neutron_dhcp | bool and neutron_services['neutron-dhcp-agent']['group'] in group_names) }}"
+
 neutron_distro_packages:
   - conntrack
   - dnsmasq-base
