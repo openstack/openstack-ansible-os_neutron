@@ -32,6 +32,21 @@
   become: yes
   delegate_to: "{{ physical_host | default('localhost') }}"
 
+- name: "Place required apparmor overrides"
+  ansible.builtin.copy:
+    content: "{{ item['content'] }}"
+    dest: "/etc/apparmor.d/local/{{ item['profile'] }}"
+    mode: "0644"
+    owner: root
+    group: root
+  loop: "{{ neutron_apparmor_profile_overrides }}"
+  loop_control:
+    label: "{{ item['profile'] }}"
+  when:
+    - item.condition | default(true)
+  notify:
+    - Reload apparmor
+
 - name: "Disable apparmor profile"
   shell: |
     # empty line to workaround bug in EnvVarsInCommandRule.py lint test
@@ -54,9 +69,7 @@
   become: yes
   delegate_to: "{{ physical_host | default('localhost') }}"
   with_items:
-    - profile: 'usr.sbin.haproxy'
-      process: 'haproxy'
-    - profile: 'bin.ping'
-      process: 'ping'
-    - profile: 'usr.sbin.dnsmasq'
-      process: 'dnsmasq'
+    - profile: "usr.sbin.haproxy"
+      process: "haproxy"
+    - profile: "bin.ping"
+      process: "ping"
