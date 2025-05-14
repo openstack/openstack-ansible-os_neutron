@@ -40,7 +40,8 @@
     exit_code=0
     if aa-status | grep -q {{ item.process }} ; then
        aa-disable {{ item.profile }}
-       if [[ $? == 0 ]]; then
+       exit_code=$?
+       if [[ $exit_code == 0 ]]; then
          exit_code=2
        fi
     fi
