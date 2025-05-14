@@ -21,16 +21,12 @@
   until: apparmor_packages is success
   retries: 5
   delay: 2
-  become: true
-  delegate_to: "{{ physical_host | default('localhost') }}"
 
 - name: Ensure apparmor service is running
   ansible.builtin.systemd:
     name: "apparmor"
     enabled: true
     state: "started"
-  become: true
-  delegate_to: "{{ physical_host | default('localhost') }}"
 
 - name: "Disable apparmor profile"
   ansible.builtin.shell: |
@@ -51,8 +47,6 @@
   failed_when: _apparmor_profile_disabled.rc not in [0,2]
   args:
     executable: /bin/bash
-  become: true
-  delegate_to: "{{ physical_host | default('localhost') }}"
   with_items:
     - profile: "usr.sbin.haproxy"
       process: "haproxy"

@@ -134,31 +134,9 @@
     masked: "{{ _neutron_ovs_disabled | ternary(true, omit) }}"
   when: neutron_needs_openvswitch | bool
 
-# NOTE(hwoarang) contains may share the same physical host so we only
-# need to execute the apparmor configuration once per physical host.
-- name: Record the first container on each physical host
-  delegate_to: "localhost"
-  run_once: true
-  ansible.builtin.set_fact:
-    neutron_apparmor_hosts: |
-      {%- set apparmor_hosts = [] -%}
-      {%- set physical_hosts = [] -%}
-      {%- for host in groups[neutron_role_project_group] -%}
-      {%-   if hostvars[host]['physical_host'] is defined -%}
-      {%-     set phost = hostvars[host]['physical_host'] -%}
-      {%-     if phost not in physical_hosts -%}
-      {%-       set _ = apparmor_hosts.append(host) -%}
-      {%-       set _ = physical_hosts.append(phost) -%}
-      {%-     endif -%}
-      {%-   else -%}
-      {%-     set _ = apparmor_hosts.append('localhost') -%}
-      {%-   endif -%}
-      {%- endfor -%}
-      {{ apparmor_hosts | unique }}
-  when: ansible_facts['pkg_mgr'] == 'apt'
-
-- name: Importing neutron_apparmor tasks
-  ansible.builtin.import_tasks: neutron_apparmor.yml
+- name: Including neutron_apparmor tasks
+  ansible.builtin.include_tasks: neutron_apparmor.yml
   when:
     - ansible_facts['pkg_mgr'] == 'apt'
-    - inventory_hostname in neutron_apparmor_hosts
+    - is_metal
+    - inventory_hostname in groups[neutron_role_project_group]
