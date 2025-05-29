@@ -1,0 +1,114 @@
+---
+# Copyright 2016, Rackspace US, Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+_neutron_ovs_version: 3.5
+_neutron_ovn_version: 24.09
+
+neutron_repos:
+  - centos-release-nfv-openvswitch
+
+neutron_ovs_distro_packages:
+  - "openvswitch{{ _neutron_ovs_version }}"
+
+dpdk_service_name: openvswitch
+
+vhost_socket_directory_group: hugetlbfs
+vhost_socket_directory_owner: qemu
+
+neutron_ovs_service_name: openvswitch
+
+neutron_ovn_northd_service_name: ovn-northd
+
+neutron_ovn_controller_service_name: ovn-controller
+
+neutron_ovn_northd_opts: "OVN_NORTHD_OPTS"
+
+neutron_ovn_northd_opts_file: "/etc/sysconfig/ovn-northd"
+
+neutron_ovn_controller_opts: "OVN_CONTROLLER_OPTS"
+
+neutron_ovn_controller_opts_file: "/etc/sysconfig/ovn-controller"
+
+neutron_ovn_system_user_name: openvswitch
+
+neutron_distro_packages:
+  - conntrack-tools
+  - dnsmasq
+  - dnsmasq-utils
+  - ebtables
+  - libxml2
+  - ipset
+  - iptables
+  - iputils
+  - keepalived
+  - net-tools
+  - radvd
+  - which
+
+neutron_ovn_distro_packages:
+  - "ovn{{ _neutron_ovn_version }}"
+
+neutron_ovn_controller_distro_packages:
+  - "ovn{{ _neutron_ovn_version }}-host"
+  - haproxy
+
+neutron_ovn_northd_distro_packages:
+  - "ovn{{ _neutron_ovn_version }}-central"
+
+neutron_devel_distro_packages:
+  - git
+  - systemd-devel
+
+neutron_service_distro_packages:
+  - openstack-neutron
+  - openstack-neutron-ml2
+  - openstack-neutron-macvtap-agent
+  - openstack-neutron-metering-agent
+  - openstack-neutron-l2gw-agent
+  - python3-memcached
+  - python3-systemd
+
+neutron_optional_ovs_distro_packages:
+  - openstack-neutron-openvswitch
+
+neutron_optional_fwaas_distro_packages:
+  - openstack-neutron-fwaas
+
+neutron_optional_vpnaas_distro_packages:
+  - openstack-neutron-vpnaas
+
+neutron_vpnaas_distro_packages:
+  - libreswan
+
+_neutron_driver_vpnaas: >-
+  {{
+    (neutron_plugin_type == 'ml2.ovn') | ternary(
+      'neutron_vpnaas.services.vpn.device_drivers.ovn_ipsec.OvnLibreSwanDriver',
+      'neutron_vpnaas.services.vpn.device_drivers.libreswan_ipsec.LibreSwanDriver'
+    )
+  }}
+
+_neutron_vpnaas_service_provider: >-
+  {{
+    (neutron_plugin_type == 'ml2.ovn') | ternary(
+      'VPN:openswan:neutron_vpnaas.services.vpn.service_drivers.ovn_ipsec.IPsecOvnVPNDriver:default',
+      'VPN:openswan:neutron_vpnaas.services.vpn.service_drivers.ipsec.IPsecVPNDriver:default'
+    )
+  }}
+
+neutron_metadata_agent_distro_packages:
+  - haproxy
+
+neutron_remove_distro_packages: []
