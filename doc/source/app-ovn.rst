@@ -2,6 +2,11 @@
 Default Scenario - Open Virtual Network (OVN)
 =============================================
 
+.. contents::
+   :depth: 3
+   :local:
+   :backlinks: none
+
 Overview
 --------
 
@@ -21,7 +26,7 @@ familiar with OVN and networking-ovn projects and their configuration.
 
 * `Scenario: Open vSwitch <app-openvswitch.html>`_
 * `OVN Architecture Docs <https://www.ovn.org/en/architecture/>`_
-* `OpenStack Integration with OVN <https://docs.openstack.org/networking-ovn/latest/>`_
+* `OpenStack Integration with OVN <https://docs.openstack.org/neutron/latest/ovn/index.html>`_
 * `OVN OpenStack Tutorial <https://docs.ovn.org/en/stable/tutorials/ovn-openstack.html>`_
 
 Prerequisites
@@ -217,7 +222,7 @@ in ``openstack_user_config.yml`` or host vars.
     network_interface_mappings: "br-publicnet:bond1,br-privatenet:bond2"
 
 (Optional) DVR or Distributed L3 routing
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+++++++++++++++++++++++++++++++++++++++++
 
 DVR will be used for floating IPs if the ovn / enable_distributed_floating_ip
 flag is configured to True in the neutron server configuration.
@@ -236,6 +241,21 @@ Useful Open Virtual Network (OVN) Commands
 The following commands can be used to provide useful information about the
 state of Open vSwitch networking and configurations.
 
+.. note::
+
+  Commands towards OVN Southbound and Northbound databases are expected to be run
+  from ``neutron_ovn_northd`` hosts. OpenStack-Ansible places an openrc file
+  named `/root/ovnctl.rc` on these hosts. Once you ``source`` that file,
+  required environment variables will be set to connect to the database.
+  Alternatively, you can use ``--no-leader-only`` flag to connect to the
+  local database only instead of the leader one (which is default).
+
+Additional commands can be found in upstream OVN documentation and other
+resources listed on this page.
+
+Check state of NB/SB DB clusters
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 The following ad-hoc command can be executed to find the current state and the
 leader of the NB/SB database:
 
@@ -244,6 +264,8 @@ leader of the NB/SB database:
   ansible neutron_ovn_northd -m command -a "ovs-appctl -t /var/run/ovn/ovnnb_db.ctl cluster/status OVN_Northbound"
   ansible neutron_ovn_northd -m command -a "ovs-appctl -t /var/run/ovn/ovnsb_db.ctl cluster/status OVN_Southbound"
 
+Checking local state of Open vSwitch
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The ``ovs-vsctl list open_vswitch`` command provides information about the
 ``open_vswitch`` table in the local Open vSwitch database and can be run from
@@ -271,7 +293,6 @@ any network or compute host:
   system_type         : ubuntu
   system_version      : "20.04"
 
-
 If you want to check only for only a specific field from the ovs-vsctl output, like applied
 interface mappings, you can select it in the following way:
 
@@ -288,14 +309,11 @@ You can also get information about the agent UUID which will be stated in
   root@mnaio-controller1:~# ovs-vsctl get open . external_ids:system-id
   "a67926f2-9543-419a-903d-23e2aa308368"
 
-.. note::
+Get information from SouthBound database
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  Commands towards OVN Southbound and Northbound databases are expected to be run
-  from ``neutron_ovn_northd`` hosts. OpenStack-Ansible places an openrc file
-  named `/root/ovnctl.rc` on these hosts. Once you ``source`` that file,
-  required environment variables will be set to connect to the database.
-  Alternatively, you can use ``--no-leader-only`` flag to connect to the
-  local database only instead of the leader one (which is default).
+Chassis details
++++++++++++++++
 
 The ``ovn-sbctl show`` command provides information related to southbound
 connections. If used outside the ovn_northd container, specify the
@@ -356,6 +374,12 @@ be fetched from the table similarly to the ovs-vsctl way:
   root@mnaio-controller1:~# ovn-sbctl get Chassis ff66288c-5a7c-41fb-ba54-6c781f95a81e other_config:ovn-bridge-mappings
   "vlan:br-provider"
 
+Get information from NorthBound database
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Checking networks and ports
++++++++++++++++++++++++++++
+
 The ``ovn-nbctl show`` command provides information about networks, ports,
 and other objects known to OVN and demonstrates connectivity between the
 northbound database and neutron-server.
@@ -411,6 +435,9 @@ northbound database and neutron-server.
           logical ip: "10.3.3.49"
           type: "dnat_and_snat"
 
+Checking Floating IPs
++++++++++++++++++++++
+
 Floating IPs and Router SNAT are represented via NAT rules in the NB database,
 where FIP has type `dnat_and_snat`.
 You can fetch the list of NAT rules assigned to a specific router using the router
@@ -430,6 +457,8 @@ is the UUID of the router in Neutron database. Command will look like this:
   dnat_and_snat    lrp-16555e74-fbef-    192.168.25.246                      10.3.3.49
   snat                                   192.168.25.242                      10.3.3.0/24
 
+Check and migrate Logical Router between Chassis
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The mapping/location of the router to the gateway node can be established via
 logical ports of that router when the external network to which the router is
@@ -466,16 +495,12 @@ To list all gateway chassis on which the logical port is scheduled with their pr
   5335c34d-9233-47bd-92f1-fc7503270783     2
   cb6761f4-c14c-41f8-9654-16f3fc7cc7e6     1
 
-
 In order to migrate active router logical port to another node, you can
 execute the following command:
 
 .. code-block:: console
 
   root@mnaio-controller1:~# ovn-nbctl lrp-set-gateway-chassis lrp-16555e74-fbef-4ecb-918c-2fb76bf5d42d ff66288c-5a7c-41fb-ba54-6c781f95a81e 10
-
-Additional commands can be found in upstream OVN documentation and other
-resources listed on this page.
 
 In cases when a Geneve network acts as the external network for the router,
 Logical Router will be pinned to the chassis instead of its LRP:
@@ -486,7 +511,6 @@ Logical Router will be pinned to the chassis instead of its LRP:
   {always_learn_from_arp_request="false", chassis="5335c34d-9233-47bd-92f1-fc7503270783", dynamic_neigh_routers="true", mac_binding_age_threshold="0"}
 
 All LRPs of such routers will remain unbound.
-
 
 OVN database population
 -----------------------
@@ -505,7 +529,6 @@ For that, you can execute the following:
 Command ``neutron-ovn-db-sync-util`` is also used during migration from OVS to
 OVN. For that, you need to supply ``--ovn-neutron_sync_mode migrate`` instead
 of `repair` as shown in the example above.
-
 
 Notes
 -----
