@@ -6,12 +6,12 @@ Neutron role for OpenStack-Ansible
    :maxdepth: 2
 
    configure-network-services.rst
+   app-ovn.rst
    app-openvswitch.rst
    app-openvswitch-asap.rst
    app-openvswitch-dvr.rst
    app-openvswitch-dpdk.rst
    app-openvswitch-sfc.rst
-   app-ovn.rst
    app-nuage.rst
    app-nsx.rst
    app-genericswitch.rst

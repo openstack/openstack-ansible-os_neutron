@@ -1,15 +1,16 @@
-========================================
-Scenario - Open Virtual Network (OVN)
-========================================
+=============================================
+Default Scenario - Open Virtual Network (OVN)
+=============================================
 
 Overview
 --------
 
-Operators can choose to utilize the Open Virtual Network (OVN) mechanism
-driver (ML2/OVN) instead of ML2/LXB or ML2/OVS. This offers the possibility 
-of deploying virtual networks and routers using OVN with Open vSwitch, which
-replaces the agent-based models used by the legacy ML2/LXB and ML2/OVS
-architectures. This document outlines how to set it up in your environment.
+By default, OpenStack-Ansible provisions Open Virtual Network (OVN) mechanism
+driver (ML2/OVN) instead of ML2/LXB or ML2/OVS since 2023.1 (Antelope) release.
+This driver offers the possibility of deploying virtual networks and routers
+using OVN with Open vSwitch, which replaces the agent-based models used by the
+legacy ML2/LXB and ML2/OVS architectures.
+This document outlines how to set it up in your environment.
 
 Recommended Reading
 ~~~~~~~~~~~~~~~~~~~
