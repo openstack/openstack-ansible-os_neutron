@@ -468,7 +468,7 @@ neutron_services:
     service_name: neutron-server
     service_en: True
     start_order: 1
-    wsgi_app: "{{ neutron_use_uwsgi }}"
+    wsgi_app: "{{ neutron_use_uwsgi | bool }}"
     uwsgi_overrides: "{{ neutron_api_uwsgi_ini_overrides }}"
     uwsgi_bind_address: "{{ neutron_api_bind_address }}"
     uwsgi_port: "{{ neutron_service_port }}"
@@ -490,8 +490,8 @@ neutron_services:
     group: neutron_server
     service_name: neutron-rpc-server
     service_en: True
-    enabled: "{{ neutron_use_uwsgi }}"
-    state: "{{ neutron_use_uwsgi | ternary('started', 'stopped') }}"
+    enabled: "{{ neutron_use_uwsgi | bool }}"
+    state: "{{ neutron_use_uwsgi | bool | ternary('started', 'stopped') }}"
     init_config_overrides: "{{ neutron_rpc_server_init_overrides | combine(neutron_server_init_overrides) }}"
     start_order: 2
     execstarts: >-
