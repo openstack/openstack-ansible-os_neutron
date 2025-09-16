@@ -192,7 +192,6 @@ neutron_ovn_metadata_agent_init_overrides: {}
 ###
 ### UWSGI
 ###
-neutron_use_uwsgi: true
 neutron_wsgi_processes_max: 16
 neutron_wsgi_processes: "{{ [[ansible_facts['processor_vcpus'] | default(1), 1] | max * 2, neutron_wsgi_processes_max] | min }}"
 neutron_wsgi_threads: 1
