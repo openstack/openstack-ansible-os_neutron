@@ -451,7 +451,7 @@ neutron_services:
     service_name: neutron-server
     service_en: true
     start_order: 1
-    wsgi_app: "{{ neutron_use_uwsgi }}"
+    wsgi_app: "{{ neutron_use_uwsgi | bool }}"
     uwsgi_overrides: "{{ neutron_api_uwsgi_ini_overrides }}"
     uwsgi_bind_address: "{{ neutron_api_bind_address }}"
     uwsgi_port: "{{ neutron_service_port }}"
@@ -473,8 +473,8 @@ neutron_services:
     group: neutron_server
     service_name: neutron-rpc-server
     service_en: true
-    enabled: "{{ neutron_use_uwsgi }}"
-    state: "{{ neutron_use_uwsgi | ternary('started', 'stopped') }}"
+    enabled: "{{ neutron_use_uwsgi | bool }}"
+    state: "{{ (neutron_use_uwsgi | bool) | ternary('started', 'stopped') }}"
     init_config_overrides: "{{ neutron_rpc_server_init_overrides | combine(neutron_server_init_overrides) }}"
     start_order: 2
     execstarts: >-
@@ -487,8 +487,8 @@ neutron_services:
     group: neutron_server
     service_name: neutron-periodic-workers
     service_en: true
-    enabled: "{{ neutron_use_uwsgi }}"
-    state: "{{ neutron_use_uwsgi | ternary('started', 'stopped') }}"
+    enabled: "{{ neutron_use_uwsgi | bool }}"
+    state: "{{ (neutron_use_uwsgi | bool) | ternary('started', 'stopped') }}"
     init_config_overrides: "{{ neutron_periodic_workers_init_overrides | combine(neutron_server_init_overrides) }}"
     start_order: 2
     execstarts: >-
@@ -501,8 +501,8 @@ neutron_services:
     group: neutron_server
     service_name: neutron-ovn-maintenance-worker
     service_en: "{{ neutron_plugin_type == 'ml2.ovn' }}"
-    enabled: "{{ neutron_use_uwsgi and neutron_plugin_type == 'ml2.ovn' }}"
-    state: "{{ (neutron_use_uwsgi and neutron_plugin_type == 'ml2.ovn') | ternary('started', 'stopped') }}"
+    enabled: "{{ neutron_use_uwsgi | bool and neutron_plugin_type == 'ml2.ovn' }}"
+    state: "{{ (neutron_use_uwsgi | bool and neutron_plugin_type == 'ml2.ovn') | ternary('started', 'stopped') }}"
     init_config_overrides: "{{ neutron_ovn_maintenance_init_overrides | combine(neutron_server_init_overrides) }}"
     start_order: 2
     execstarts: >-
