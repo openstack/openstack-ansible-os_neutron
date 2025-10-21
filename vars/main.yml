@@ -56,7 +56,7 @@ neutron_optional_bgp_pip_packages:
   - "git+{{ neutron_dynamic_routing_git_repo }}@{{ neutron_dynamic_routing_git_install_branch }}#egg=neutron-dynamic-routing"
 
 neutron_optional_ovn_bgp_pip_packages:
-  - "git+{{ networking_ovn_bgp_git_repo }}@{{ networking_ovn_bgp_install_branch }}#egg=ovn-bgp-agent"
+  - "git+{{ networking_ovn_bgp_git_repo }}@{{ networking_ovn_bgp_git_install_branch }}#egg=ovn-bgp-agent"
 
 neutron_optional_fwaas_pip_packages:
   - "git+{{ neutron_fwaas_git_repo }}@{{ neutron_fwaas_git_install_branch }}#egg=neutron-fwaas"
