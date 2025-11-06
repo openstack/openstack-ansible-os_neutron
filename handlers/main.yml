@@ -13,6 +13,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+- name: Reload apparmor
+  ansible.builtin.service:
+    name: apparmor
+    state: reloaded
+
 - name: Stop services
   service:
     name: "{{ item.service_name }}"
