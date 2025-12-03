@@ -68,7 +68,7 @@
         - Restart neutron services
         - Restart uwsgi services
 
-    - name: Implement policy.yaml if there are overrides configured
+    - name: Implement policy.yaml file
       openstack.config_template.config_template:
         content: "{{ neutron_policy_overrides }}"
         dest: "{{ neutron_conf_version_dir }}/policy.yaml"
@@ -77,16 +77,7 @@
         mode: "0640"
         config_type: yaml
       when:
-        - neutron_policy_overrides | length > 0
-      tags:
-        - neutron-policy-override
-
-    - name: Remove legacy policy.yaml file
-      ansible.builtin.file:
-        path: "{{ neutron_conf_dir }}/policy.yaml"
-        state: absent
-      when:
-        - neutron_policy_overrides | length == 0
+        - neutron_services['neutron-server']['group'] in group_names
       tags:
         - neutron-policy-override
 
