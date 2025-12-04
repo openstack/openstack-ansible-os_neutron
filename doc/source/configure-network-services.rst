@@ -18,7 +18,6 @@ SR-IOV Support
   Provides the ability to provision virtual or physical functions to guest
   instances using SR-IOV and PCI passthrough. (Requires compatible NICs)
 
-
 Firewall service (optional)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -69,7 +68,6 @@ Follow the steps below to deploy FWaaS v2:
 
        # cd /opt/openstack-ansible/playbooks
        # openstack-ansible os-neutron-install.yml
-
 
 Virtual private network service - VPNaaS (optional)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -196,7 +194,6 @@ For more details on the implementation please reffer to the `VPNaaS OVN Spec`_
 
 .. _VPNaaS OVN Spec: https://opendev.org/openstack/neutron-specs/src/branch/master/specs/xena/vpnaas-ovn.rst
 
-
 BGP Dynamic Routing service (optional)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -233,7 +230,6 @@ Routing plugin.
        # cd /opt/openstack-ansible/playbooks
        # openstack-ansible os-neutron-install.yml
 
-
 OVN BGP Agent (optional)
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -256,7 +252,7 @@ variables:
 
 .. code-block:: yaml
 
-   neutron_ovn_bgp_enable: True
+   neutron_ovn_bgp_enable: true
    # This defines an AS to which ovn-bgp-agent will inject an VRF to FRR
    neutron_ovn_bgp_config:
       AS: 64513
@@ -293,7 +289,6 @@ variables:
    - ip route 203.0.113.10/32 198.51.100.1
    - ip route 203.0.113.10/32 198.51.100.1
 
-
 Once all required variables are set, running
 ``openstack-ansible os-neutron-install.yml`` should install and configure
 FRRouting on all of your ``neutron_ovn_controller`` as well as a new service
@@ -307,19 +302,17 @@ directly on OVN NB/SB databases, so it will not appear on
 .. _FRRouting: https://docs.frrouting.org/en/latest/bgp.html
 .. _BGP Supportability Matrix: https://docs.openstack.org/ovn-bgp-agent/latest/bgp_supportability_matrix.html
 
-
 SR-IOV Support (optional)
-~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The following procedure describes how to modify the OpenStack-Ansible
 configuration to enable Neutron SR-IOV support.
 
 .. _SR-IOV-Passthrough-For-Networking: https://wiki.openstack.org/wiki/SR-IOV-Passthrough-For-Networking
 
-
 #. Define SR-IOV capable physical host interface for a provider network
 
-   As part of every Openstack-Ansible installation, all provider networks
+   As part of every OpenStack-Ansible installation, all provider networks
    known to Neutron need to be configured inside the
    ``/etc/openstack_deploy/openstack_user_config.yml`` file.
    For each supported network type (e.g. vlan), the attribute
@@ -402,7 +395,6 @@ configuration to enable Neutron SR-IOV support.
       neutron_plugin_types:
         - ml2.sriov
 
-
 #. Execute the Neutron install playbook in order to update the configuration:
 
    .. code-block:: shell-session
@@ -410,7 +402,6 @@ configuration to enable Neutron SR-IOV support.
        # cd /opt/openstack-ansible/playbooks
        # openstack-ansible os-neutron-install.yml
        # openstack-ansible os-nova-install.yml
-
 
 #. Check Neutron SR-IOV agent state
 
@@ -427,8 +418,6 @@ configuration to enable Neutron SR-IOV support.
        | bb0c0385-394d-4e72-8bfe-26fd020df639 | NIC Switch agent | compute02 | :-)   | True           | neutron-sriov-nic-agent |
        +--------------------------------------+------------------+-----------+-------+----------------+-------------------------+
 
-
 Deployers can make changes to the SR-IOV nic agent default configuration
 options via the ``neutron_sriov_nic_agent_ini_overrides`` dict.
 Review the documentation on the `conf override`_ mechanism for more details.
-
