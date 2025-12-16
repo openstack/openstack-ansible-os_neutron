@@ -13,11 +13,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+_neutron_ovs_version: 3.5
+_neutron_ovn_version: 24.09
+
 neutron_repos:
   - centos-release-nfv-openvswitch
 
 neutron_ovs_distro_packages:
-  - openvswitch
+  - "openvswitch{{ _neutron_ovs_version }}"
 
 dpdk_service_name: openvswitch
 
@@ -55,14 +58,14 @@ neutron_distro_packages:
   - which
 
 neutron_ovn_distro_packages:
-  - openvswitch-ovn-common
+  - "ovn{{ _neutron_ovn_version }}"
 
 neutron_ovn_controller_distro_packages:
-  - openvswitch-ovn-host
+  - "ovn{{ _neutron_ovn_version }}-host"
   - haproxy
 
 neutron_ovn_northd_distro_packages:
-  - openvswitch-ovn-central
+  - "ovn{{ _neutron_ovn_version }}-central"
 
 neutron_devel_distro_packages:
   - git
