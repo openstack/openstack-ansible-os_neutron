@@ -19,8 +19,8 @@
   become_user: "{{ neutron_system_user_name }}"
   changed_when: false
   when:
-    - "ansible_local['openstack_ansible']['neutron']['need_db_expand'] | bool"
-    - "_neutron_is_first_play_host"
+    - ansible_local['openstack_ansible']['neutron']['need_db_expand'] | bool
+    - _neutron_is_first_play_host | bool
 
 - name: Disable the db expand fact
   community.general.ini_file:
@@ -37,7 +37,7 @@
   become: true
   become_user: "{{ neutron_system_user_name }}"
   when:
-    - "_neutron_is_first_play_host"
+    - _neutron_is_first_play_host | bool
   changed_when: false
   register: _offline_migrations_check
   failed_when:

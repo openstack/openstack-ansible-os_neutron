@@ -15,7 +15,7 @@
 
 - name: Preparing neutron config
   when:
-    - ((filtered_neutron_services|length) + (uwsgi_neutron_services|length)) > 0
+    - ((filtered_neutron_services | length) + (uwsgi_neutron_services | length)) > 0
   block:
     - name: Create plugins neutron dir
       ansible.builtin.file:

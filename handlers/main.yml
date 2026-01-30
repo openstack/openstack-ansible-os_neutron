@@ -65,7 +65,7 @@
     - "Restart provider services"
   when:
     - neutron_needs_openvswitch | bool
-    - not _neutron_ovs_disabled
+    - not _neutron_ovs_disabled | bool
 
 - name: Symlink neutron config directory
   ansible.builtin.file:
@@ -97,8 +97,8 @@
   become_user: "{{ neutron_system_user_name }}"
   changed_when: false
   when:
-    - "ansible_local['openstack_ansible']['neutron']['need_db_contract'] | bool"
-    - "_neutron_is_first_play_host"
+    - ansible_local['openstack_ansible']['neutron']['need_db_contract'] | bool
+    - _neutron_is_first_play_host | bool
   listen:
     - "Restart neutron services"
     - "venv changed"

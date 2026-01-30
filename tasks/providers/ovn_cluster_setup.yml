@@ -65,9 +65,9 @@
     dest: "{{ neutron_ovn_northd_opts_file }}"
     mode: "0644"
   when:
-    - "inventory_hostname == neutron_ovn_primary_cluster_node"
+    - inventory_hostname == neutron_ovn_primary_cluster_node
     - _check_cluster_db.rc != 0
-    - not leader_node
+    - not leader_node | bool
   register: ovn_northd_opts
 
 - name: Start ovn service
@@ -75,9 +75,9 @@
     name: "{{ neutron_ovn_northd_service_name }}"
     state: started
   when:
-    - "inventory_hostname == neutron_ovn_primary_cluster_node"
+    - inventory_hostname == neutron_ovn_primary_cluster_node
     - _check_cluster_db.rc != 0
-    - not leader_node
+    - not leader_node | bool
     - ovn_northd_opts.changed
 
 - name: Configure connection settings for ovn-nb and ovn-sb
@@ -87,9 +87,9 @@
     - "ovn-nbctl --inactivity-probe={{ neutron_ovn_nb_inactivity_probe }} set-connection p{{ ovn_proto }}:6641"
     - "ovn-sbctl --inactivity-probe={{ neutron_ovn_sb_inactivity_probe }} set-connection p{{ ovn_proto }}:6642"
   when:
-    - "inventory_hostname == neutron_ovn_primary_cluster_node"
+    - inventory_hostname == neutron_ovn_primary_cluster_node
     - _check_cluster_db.rc != 0
-    - not leader_node
+    - not leader_node | bool
     - ovn_northd_opts.changed
   loop_control:
     loop_var: cmd

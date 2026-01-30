@@ -130,7 +130,7 @@
   when:
     - neutron_services['neutron-openvswitch-agent']['group'] in group_names
     - neutron_plugin_type in ['ml2.ovs', 'ml2.ovs.dvr']
-    - neutron_provider_networks.network_interface_mappings is defined and (neutron_provider_networks.network_interface_mappings|length > 0)
+    - neutron_provider_networks.network_interface_mappings is defined and (neutron_provider_networks.network_interface_mappings | length > 0)
 
 # Adds a DPDK-accelerated bond interface to an OVS bridge
 - name: Add Bonds to Network Provider Bridges

@@ -138,5 +138,5 @@
   ansible.builtin.include_tasks: neutron_apparmor.yml
   when:
     - ansible_facts['pkg_mgr'] == 'apt'
-    - is_metal
+    - is_metal | bool
     - inventory_hostname in groups[neutron_role_project_group]

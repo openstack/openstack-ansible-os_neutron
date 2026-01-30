@@ -43,7 +43,7 @@
         - common-db
         - neutron-config
   when:
-    - "_neutron_is_first_play_host"
+    - _neutron_is_first_play_host | bool
   vars:
     _oslodb_setup_host: "{{ neutron_db_setup_host }}"
     _oslodb_ansible_python_interpreter: "{{ neutron_db_setup_python_interpreter }}"
@@ -65,7 +65,7 @@
         - common-mq
         - neutron-config
   when:
-    - "_neutron_is_first_play_host"
+    - _neutron_is_first_play_host | bool
   vars:
     _oslomsg_rpc_setup_host: "{{ neutron_oslomsg_rpc_setup_host }}"
     _oslomsg_rpc_userid: "{{ neutron_oslomsg_rpc_userid }}"
@@ -144,7 +144,7 @@
     pki_certificates: "{{ neutron_pki_certificates }}"
     pki_install_certificates: "{{ neutron_pki_install_certificates }}"
   when:
-    - neutron_backend_ssl
+    - neutron_backend_ssl | bool
     - neutron_services['neutron-server']['group'] in group_names
   tags:
     - always
@@ -167,7 +167,7 @@
     pki_handler_cert_installed: "ovn cert installed"
   when:
     - neutron_plugin_type == 'ml2.ovn'
-    - neutron_ovn_ssl
+    - neutron_ovn_ssl | bool
     - (neutron_services['neutron-ovn-controller']['group'] in group_names) or
       (neutron_services['neutron-ovn-northd']['group'] in group_names) or
       (neutron_services['neutron-server']['group'] in group_names)
@@ -255,7 +255,7 @@
       tags:
         - neutron-config
   when:
-    - "_neutron_is_first_play_host"
+    - _neutron_is_first_play_host | bool
   tags:
     - always
 
@@ -302,7 +302,7 @@
         type: "{{ neutron_service_type }}"
         description: "{{ neutron_service_description }}"
   when:
-    - "_neutron_is_first_play_host"
+    - _neutron_is_first_play_host | bool
   tags:
     - always
 
