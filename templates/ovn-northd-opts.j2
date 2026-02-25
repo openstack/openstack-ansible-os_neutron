@@ -27,4 +27,7 @@
   --ovn-sb-db-ssl-cert={{ [neutron_ovn_conf_dir, neutron_ovn_ssl_cert] | join('/') }} \
   --ovn-sb-db-ssl-ca-cert={{ [neutron_ovn_conf_dir, neutron_ovn_ssl_ca_cert] | join('/') }} \
   {% endif %}
+  --ovn-northd-log='{{ neutron_ovn_log_parameters | join(' ') }}' \
+  --ovn-nb-log='{{ neutron_ovn_log_parameters | join(' ') }}' \
+  --ovn-sb-log='{{ neutron_ovn_log_parameters | join(' ') }}' \
 "
