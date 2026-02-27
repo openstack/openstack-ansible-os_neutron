@@ -26,6 +26,23 @@
     filter: ansible_local
     gather_subset: "!all"
 
+- name: DNF cleanup tasks for OVN
+  when:
+    - ansible_facts['os_family'] | lower == 'redhat'
+    - neutron_plugin_type == 'ml2.ovn'
+    - neutron_services['neutron-ovn-northd']['group'] in group_names or
+        neutron_services['neutron-ovn-controller']['group'] in group_names
+  block:
+    - name: Gather information about installed OVN  # noqa: command-instead-of-module
+      ansible.builtin.command: rpm -qa ovn*
+      register: _ovn_installed
+      changed_when: false
+
+    - name: Remove OVN of mismatching versions
+      ansible.builtin.dnf:
+        name: "{{ _ovn_installed.stdout_lines | reject('search', 'ovn' ~ _neutron_ovn_version | string) }}"
+        state: absent
+
 - name: Install neutron role packages
   ansible.builtin.package:
     name: "{{ neutron_package_list }}"
