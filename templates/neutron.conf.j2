@@ -25,9 +25,6 @@ dns_domain = {{ neutron_dns_domain }}
 
 {% if neutron_services['neutron-server']['group'] in group_names %}
 
-# Enable SSL on the API server
-use_ssl = {{ neutron_backend_ssl }}
-
 # Availability zone
 {% if neutron_default_availability_zones %}
 default_availability_zones = {{ neutron_default_availability_zones | join(',') }}
