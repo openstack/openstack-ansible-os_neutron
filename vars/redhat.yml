@@ -14,7 +14,7 @@
 # limitations under the License.
 
 _neutron_ovs_version: 3.5
-_neutron_ovn_version: 24.09
+_neutron_ovn_version: 25.09
 
 neutron_repos:
   - centos-release-nfv-openvswitch
