@@ -235,7 +235,6 @@ root_helper_daemon = sudo {{ neutron_bin }}/neutron-rootwrap-daemon {{ neutron_c
 # Messaging
 [oslo_messaging_rabbit]
 rpc_conn_pool_size = {{ neutron_rpc_conn_pool_size }}
-heartbeat_in_pthread = {{ neutron_oslomsg_heartbeat_in_pthread }}
 rabbit_quorum_queue = {{ neutron_oslomsg_rabbit_quorum_queues }}
 rabbit_transient_quorum_queue = {{ neutron_oslomsg_rabbit_transient_quorum_queues }}
 rabbit_qos_prefetch_count = {{ neutron_oslomsg_rabbit_qos_prefetch_count }}
