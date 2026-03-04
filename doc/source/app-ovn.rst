@@ -457,8 +457,11 @@ is the UUID of the router in Neutron database. Command will look like this:
   dnat_and_snat    lrp-16555e74-fbef-    192.168.25.246                      10.3.3.49
   snat                                   192.168.25.242                      10.3.3.0/24
 
-Check and migrate Logical Router between Chassis
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Logical Router operations
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Locate Logical Router mapping to a Chassis
+++++++++++++++++++++++++++++++++++++++++++
 
 The mapping/location of the router to the gateway node can be established via
 logical ports of that router when the external network to which the router is
@@ -495,13 +498,6 @@ To list all gateway chassis on which the logical port is scheduled with their pr
   5335c34d-9233-47bd-92f1-fc7503270783     2
   cb6761f4-c14c-41f8-9654-16f3fc7cc7e6     1
 
-In order to migrate active router logical port to another node, you can
-execute the following command:
-
-.. code-block:: console
-
-  root@mnaio-controller1:~# ovn-nbctl lrp-set-gateway-chassis lrp-16555e74-fbef-4ecb-918c-2fb76bf5d42d ff66288c-5a7c-41fb-ba54-6c781f95a81e 10
-
 In cases when a Geneve network acts as the external network for the router,
 Logical Router will be pinned to the chassis instead of its LRP:
 
@@ -511,6 +507,95 @@ Logical Router will be pinned to the chassis instead of its LRP:
   {always_learn_from_arp_request="false", chassis="5335c34d-9233-47bd-92f1-fc7503270783", dynamic_neigh_routers="true", mac_binding_age_threshold="0"}
 
 All LRPs of such routers will remain unbound.
+
+Migrate a Logical Router between Chassis
+++++++++++++++++++++++++++++++++++++++++
+
+In order to migrate active router logical port to another node, you can
+execute the following command:
+
+.. code-block:: console
+
+  root@mnaio-controller1:~# ovn-nbctl lrp-set-gateway-chassis lrp-16555e74-fbef-4ecb-918c-2fb76bf5d42d ff66288c-5a7c-41fb-ba54-6c781f95a81e 10
+
+Find all Logical Routers on the Chassis
++++++++++++++++++++++++++++++++++++++++
+
+With OVS/LXB ML2 plugins it used to be quite trivial to find all L3 Routers
+which are running on the network node and could be achieved with a single
+command, like ``openstack router list --agent $L3_AGENT_UUID``.
+
+Unfortunately, it's a bit more complex with OVN as this command relies on
+L3 Router extension, which is not applicable for OVN.
+
+Easy way to find out routers hosted on a specific Chassis with OpenStack CLI
+would be through listing ports binded to such chassis. For example:
+
+.. code-block:: console
+
+  for port in $(openstack port list --device-owner network:router_gateway --host mnaio-compute1 -f value -c ID); do \
+    openstack port show $port -c device_id -f value; \
+  done
+
+However, this approach is slow and API-intensive, so can take a while to
+complete. Moreover, this will display only Neutron representation, which
+might not be absolutely accurate, as it's OVN SouthBound database who is
+in charge of actually binding ports to Chassis. So it is way more efficient,
+but also more complex, to fetch this data directly from SB DB.
+
+Firstly, we get a Chassis UUID from the SB DB and set it as ``CHASSIS_ID``
+environmental variable. After that we can list all Logical Routers hosted
+on this Chassis:
+
+.. code-block:: console
+
+  CHASSIS=($(ovn-sbctl --no-headings --no-leader-only --columns=_uuid,name find Chassis hostname=mnaio-compute1))
+  ovn-sbctl --format json --columns=external_ids find Port_Binding \
+    chassis=${CHASSIS[0]} | \
+    jq -r '.data[][][1][] | select(.[0] == "neutron:router_name") | .[1]' | sort | uniq
+
+Migrate all Logical Routers from Chassis
+++++++++++++++++++++++++++++++++++++++++
+
+While OVN is smart enough and will move all routers from the Chassis on
+stopping ``ovn-controller.service``, operators might want to explicitly
+empty out Chassis and remove it from any existing routers.
+
+This section does incorporate results of previous two sections, so it is
+assumed being already in context of how Logical Router migration happens in
+OVN as well as challenges behind listing all affected Logical Router Ports
+bound to the chassis.
+
+Below you may find an example of script which would perform migration of all
+Logical Routers from a specified by name Chassis to a selected destination.
+
+.. code-block:: console
+
+  SRC="mnaio-compute1"
+  DST="mnaio-compute2"
+  MAX_PRIO=10
+  CHASSIS=($(ovn-sbctl --no-headings --no-leader-only --columns=_uuid,name find Chassis hostname=${SRC}))
+  DEST_CHASSIS=($(ovn-sbctl --no-headings --no-leader-only --columns=_uuid,name find Chassis hostname=${DST}))
+  LRPS=$(ovn-sbctl --no-leader-only --format json --columns=options find Port_Binding chassis=${CHASSIS[0]} | jq -r '.data[][][1][] | select(.[0] == "distributed-port") | .[1]')
+  for lrp in ${LRPS}; do
+      ovn-nbctl  --no-leader-only lrp-del-gateway-chassis $lrp ${DEST_CHASSIS[1]}
+      ovn-nbctl  --no-leader-only lrp-set-gateway-chassis $lrp ${DEST_CHASSIS[1]} ${MAX_PRIO}
+      ovn-nbctl  --no-leader-only lrp-del-gateway-chassis $lrp ${CHASSIS[1]}
+      ovn-nbctl  --no-leader-only lrp-set-gateway-chassis $lrp ${CHASSIS[1]}
+  done
+
+Now let's elaborate what this script actually does:
+
+* Define source and destination Chassis by their hostnames via ``SRC`` and
+  ``DST``
+* Define resulting priority on the new ``DST`` Chassis. The number should be higher
+  or equal to the number of OVN Gateways in the deployment.
+* Fetch Logical Router Ports (LRPs) bound to the ``SRC`` Chassis
+* Remove ``DST`` Chassis from the list of applicable ones for LRP in order
+  to avoid repeated records with conflicting priorities
+* Re-add ``DST`` Chassis with ``MAX_PRIO`` priority to the LRP
+* Remove ``SRC`` from the list of Chassis for LRP.
+* Re-add ``SRC`` to the list of Chassis with the default (minimal) priority
 
 OVN database population
 -----------------------
