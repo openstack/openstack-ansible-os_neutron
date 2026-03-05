@@ -103,6 +103,7 @@
 
 # NOTE: This needs to be netdev for compute and system for network node
 # Should I set an override for network nodes (non-dpdk)to default 'system' rather than 'netdev'?
+# NOTE: This can fail first time when adding a bridge that is already defined on the system, so retry
 - name: Setup Network Provider Bridges
   openvswitch.openvswitch.openvswitch_bridge:
     bridge: "{{ bridge_mapping.split(':')[1] }}"
@@ -116,6 +117,8 @@
     - neutron_services['neutron-openvswitch-agent']['group'] in group_names
     - neutron_plugin_type in ['ml2.ovs', 'ml2.ovs.dvr']
     - neutron_provider_networks.network_mappings is defined
+  retries: 2
+  delay: 1
 
 # Adds a single host interface to an OVS bridge
 - name: Add ports to Network Provider Bridges

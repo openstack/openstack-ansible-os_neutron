@@ -13,6 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# NOTE: This can fail first time when adding a bridge that is already defined on the system, so retry
 - name: Setup Network Provider Bridges
   openvswitch.openvswitch.openvswitch_bridge:
     bridge: "{{ bridge_mapping.split(':')[1] }}"
@@ -26,6 +27,8 @@
     - neutron_plugin_type in ['ml2.ovs', 'ml2.ovs.dvr']
     - neutron_provider_networks.network_mappings is defined and (neutron_provider_networks.network_mappings|length > 0)
     - not ovs_dpdk_support
+  retries: 2
+  delay: 1
 
 - name: Add ports to Network Provider Bridges
   openvswitch.openvswitch.openvswitch_port:
