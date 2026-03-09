@@ -82,16 +82,15 @@ neutron_optional_nsx_pip_packages:
   - "git+{{ networking_nsx_git_repo }}@{{ networking_nsx_git_install_branch }}#egg=vmware-nsx"
   - "git+{{ networking_nsxlib_git_repo }}@{{ networking_nsxlib_git_install_branch }}#egg=vmware-nsxlib"
 
-neutron_venv_packages: >-
+neutron_venv_packages: |-
   {%- set pkg_list = neutron_pip_packages | union(neutron_user_pip_packages) %}
   {%- if neutron_bgp | bool %}
   {%-   set _ = pkg_list.extend(neutron_optional_bgp_pip_packages) %}
   {%- endif %}
   {%- if neutron_fwaas_v2 | bool %}
-  {%- set _ = pkg_list.extend(neutron_optional_fwaas_pip_packages) %}
+  {%-   set _ = pkg_list.extend(neutron_optional_fwaas_pip_packages) %}
   {%- endif %}
-  {%- if (neutron_ovn_bgp_enable | bool) and
-         (neutron_services['neutron-ovn-bgp-agent']['group'] in group_names) %}
+  {%- if (neutron_ovn_bgp_enable | bool) %}
   {%-   set _ = pkg_list.extend(neutron_optional_ovn_bgp_pip_packages) %}
   {%- endif %}
   {%- if neutron_vpnaas | bool %}
@@ -100,22 +99,17 @@ neutron_venv_packages: >-
   {%- if neutron_sfc | bool %}
   {%-   set _ = pkg_list.extend(neutron_optional_sfc_pip_packages) %}
   {%- endif %}
-  {%- if (neutron_plugin_type.split('.')[-1] == 'nuage') and
-         (neutron_services['neutron-server']['group'] in group_names) %}
-  {%-     set _ = pkg_list.extend(neutron_optional_nuage_pip_packages) %}
+  {%- if (neutron_plugin_type.split('.')[-1] == 'nuage') %}
+  {%-   set _ = pkg_list.extend(neutron_optional_nuage_pip_packages) %}
   {%- endif %}
-  {%- if ('ml2.genericswitch' in neutron_plugin_types) and
-         (neutron_services['neutron-server']['group'] in group_names) %}
-  {%-     set _ = pkg_list.extend(neutron_optional_ngs_pip_packages) %}
+  {%- if ('ml2.genericswitch' in neutron_plugin_types) %}
+  {%-   set _ = pkg_list.extend(neutron_optional_ngs_pip_packages) %}
   {%- endif %}
-  {%- if ('ml2.baremetal' in neutron_plugin_types) and
-         ((neutron_services['neutron-server']['group'] in group_names) or
-          (neutron_services['ironic-neutron-agent']['group'] in group_names)) %}
-  {%-     set _ = pkg_list.extend(neutron_optional_baremetal_pip_packages) %}
+  {%- if ('ml2.baremetal' in neutron_plugin_types) %}
+  {%-   set _ = pkg_list.extend(neutron_optional_baremetal_pip_packages) %}
   {%- endif %}
-  {%- if (neutron_plugin_type.split('.')[-1] == "nsx") and
-         (neutron_services['neutron-server']['group'] in group_names) %}
-  {%-     set _ = pkg_list.extend(neutron_optional_nsx_pip_packages) %}
+  {%- if (neutron_plugin_type.split('.')[-1] == "nsx") %}
+  {%-   set _ = pkg_list.extend(neutron_optional_nsx_pip_packages) %}
   {%- endif %}
   {{- pkg_list | unique }}
 
