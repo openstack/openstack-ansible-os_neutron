@@ -597,6 +597,13 @@ Now let's elaborate what this script actually does:
 * Remove ``SRC`` from the list of Chassis for LRP.
 * Re-add ``SRC`` to the list of Chassis with the default (minimal) priority
 
+.. note::
+
+   In environments with only two OVN gateway chassis, logical routers may
+   not automatically migrate when a gateway node is powered off or loses
+   connectivity. In practice, deployments with three or more gateway
+   chassis show more reliable automatic router failover.
+
 OVN database population
 -----------------------
 
