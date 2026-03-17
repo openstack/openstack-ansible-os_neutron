@@ -573,62 +573,83 @@ neutron_ovn_pki_intermediate_chain_path: >-
 neutron_ovn_pki_regen_cert: ""
 neutron_ovn_pki_certificates:
   - name: "neutron_ovn_{{ ansible_facts['hostname'] }}"
-    provider: ownca
     cn: "{{ ansible_facts['hostname'] }}"
-    san: "{{ 'DNS:' ~ ansible_facts['hostname'] ~ ',IP:' ~ neutron_ovn_node_address }}"
+    san:
+      dns:
+        - "{{ ansible_facts['hostname'] }}"
+      ip:
+        - "{{ neutron_ovn_node_address }}"
+    # standalone backend only
+    provider: ownca
     signed_by: "{{ neutron_ovn_pki_intermediate_cert_name }}"
 
 # OVN destination files for SSL certificates
 neutron_ovn_ssl_cert: "neutron_ovn.pem"
 neutron_ovn_ssl_key: "neutron_ovn.key"
 neutron_ovn_ssl_ca_cert: "neutron_ovn-ca.pem"
+# User supplied certificates/keys, provide the path to the files on the deployment host
+neutron_ovn_user_ssl_cert: ""
+neutron_ovn_user_ssl_key: ""
+neutron_ovn_user_ssl_ca_cert: ""
+
 neutron_ovn_conf_dir: "/etc/openvswitch"
 # Installation details for SSL certificates
 neutron_ovn_pki_install_certificates:
-  - src: "{{ neutron_ovn_user_ssl_cert | default(neutron_ovn_pki_certs_path ~ 'neutron_ovn_' ~ ansible_facts['hostname'] ~ '-chain.crt') }}"
-
+  - name: "neutron_ovn_{{ ansible_facts['hostname'] }}"
+    type: "certificate_chain"
     dest: "{{ [neutron_ovn_conf_dir, neutron_ovn_ssl_cert] | join('/') }}"
     owner: "{{ neutron_ovn_system_user_name }}"
     group: "{{ neutron_ovn_system_user_name }}"
-    mode: "0644"
     condition: "{{ (neutron_ovn_ssl and neutron_needs_openvswitch and neutron_plugin_type == 'ml2.ovn') }}"
-  - src: "{{ neutron_ovn_user_ssl_key | default(neutron_ovn_pki_keys_path ~ 'neutron_ovn_' ~ ansible_facts['hostname'] ~ '.key.pem') }}"
+    # standalone backend only
+    src: "{{ neutron_ovn_user_ssl_cert }}"
+  - name: "neutron_ovn_{{ ansible_facts['hostname'] }}"
+    type: "private_key"
     dest: "{{ [neutron_ovn_conf_dir, neutron_ovn_ssl_key] | join('/') }}"
     owner: "{{ neutron_ovn_system_user_name }}"
     group: "{{ neutron_ovn_system_user_name }}"
-    mode: "0600"
     condition: "{{ (neutron_ovn_ssl and neutron_needs_openvswitch) }}"
-  - src: "{{ neutron_ovn_user_ssl_ca_cert | default(neutron_ovn_pki_intermediate_chain_path) }}"
+    # standalone backend only
+    src: "{{ neutron_ovn_user_ssl_key }}"
+  - name: "neutron_ovn_{{ ansible_facts['hostname'] }}"
+    type: ca_bundle
     dest: "{{ [neutron_ovn_conf_dir, neutron_ovn_ssl_ca_cert] | join('/') }}"
     owner: "{{ (neutron_services['neutron-server']['group'] in group_names) | ternary(neutron_service_user_name, neutron_ovn_system_user_name) }}"
     group: "{{ (neutron_services['neutron-server']['group'] in group_names) | ternary(neutron_service_user_name, neutron_ovn_system_user_name) }}"
-    mode: "0644"
     condition: "{{ (neutron_ovn_ssl and neutron_needs_openvswitch and neutron_plugin_type == 'ml2.ovn') }}"
-  - src: "{{ neutron_ovn_user_ssl_cert | default(neutron_ovn_pki_certs_path ~ 'neutron_ovn_' ~ ansible_facts['hostname'] ~ '-chain.crt') }}"
+    # standalone backend only
+    src: "{{ neutron_ovn_user_ssl_ca_cert }}"
+  - name: "neutron_ovn_{{ ansible_facts['hostname'] }}"
+    type: "certificate_chain"
     dest: "{{ [neutron_conf_version_dir, neutron_ovn_ssl_cert] | join('/') }}"
     owner: "{{ neutron_service_user_name }}"
     group: "{{ neutron_service_user_name }}"
-    mode: "0644"
     condition: "{{ (neutron_ovn_ssl and neutron_plugin_type == 'ml2.ovn' and (filtered_neutron_services | length + uwsgi_neutron_services | length) > 0) }}"
-  - src: "{{ neutron_ovn_user_ssl_key | default(neutron_ovn_pki_keys_path ~ 'neutron_ovn_' ~ ansible_facts['hostname'] ~ '.key.pem') }}"
+    # standalone backend only
+    src: "{{ neutron_ovn_user_ssl_cert }}"
+  - name: "neutron_ovn_{{ ansible_facts['hostname'] }}"
+    type: "private_key"
     dest: "{{ [neutron_conf_version_dir, neutron_ovn_ssl_key] | join('/') }}"
     owner: "{{ neutron_service_user_name }}"
     group: "{{ neutron_service_user_name }}"
-    mode: "0600"
     condition: "{{ (neutron_ovn_ssl and neutron_plugin_type == 'ml2.ovn' and (filtered_neutron_services | length + uwsgi_neutron_services | length) > 0) }}"
-  - src: "{{ neutron_ovn_user_ssl_ca_cert | default(neutron_ovn_pki_intermediate_chain_path) }}"
+    # standalone backend only
+    src: "{{ neutron_ovn_user_ssl_key }}"
+  - name: "neutron_ovn_{{ ansible_facts['hostname'] }}"
+    type: ca_bundle
     dest: "{{ [neutron_conf_version_dir, neutron_ovn_ssl_ca_cert] | join('/') }}"
     owner: "{{ neutron_service_user_name }}"
     group: "{{ neutron_service_user_name }}"
-    mode: "0644"
     condition: "{{ (neutron_ovn_ssl and neutron_plugin_type == 'ml2.ovn' and (filtered_neutron_services | length + uwsgi_neutron_services | length) > 0) }}"
+    # standalone backend only
+    src: "{{ neutron_ovn_user_ssl_ca_cert }}"
 
 # Define user-provided SSL certificates in:
 # /etc/openstack_deploy/user_variables.yml
-# neutron_ovnnb_user_ssl_cert: <path to cert on ansible deployment host>
-# neutron_ovnnb_user_ssl_key: <path to cert on ansible deployment host>
-# neutron_ovnsb_user_ssl_cert: <path to cert on ansible deployment host>
-# neutron_ovnsb_user_ssl_key: <path to cert on ansible deployment host>
+neutron_ovnnb_user_ssl_cert: ""
+neutron_ovnnb_user_ssl_key: ""
+neutron_ovnsb_user_ssl_cert: ""
+neutron_ovnsb_user_ssl_key: ""
 
 ###
 ### DPDK Configuration
@@ -663,12 +684,14 @@ neutron_pki_keys_path: "{{ neutron_pki_dir ~ '/certs/private/' }}"
 neutron_pki_certs_path: "{{ neutron_pki_dir ~ '/certs/certs/' }}"
 neutron_pki_intermediate_cert_name: "{{ openstack_pki_service_intermediate_cert_name | default('ExampleCorpIntermediate') }}"
 neutron_pki_regen_cert: ""
-neutron_pki_san: "{{ openstack_pki_san | default('DNS:' ~ ansible_facts['hostname'] ~ ',IP:' ~ management_address) }}"
+neutron_pki_san: "{{ openstack_pki_san | default({'dns': [ansible_facts['hostname']], 'ip': [management_address]}) }}"
+neutron_pki_backend: "{{ openstack_pki_backend | default('standalone') }}"
 neutron_pki_certificates:
   - name: "neutron_{{ ansible_facts['hostname'] }}"
-    provider: ownca
     cn: "{{ ansible_facts['hostname'] }}"
     san: "{{ neutron_pki_san }}"
+    # standalone backend only
+    provider: ownca
     signed_by: "{{ neutron_pki_intermediate_cert_name }}"
 
 # neutron destination files for SSL certificates
@@ -677,17 +700,21 @@ neutron_ssl_key: "{{ neutron_conf_version_dir }}/neutron.key"
 
 # Installation details for SSL certificates
 neutron_pki_install_certificates:
-  - src: "{{ neutron_user_ssl_cert | default(neutron_pki_certs_path ~ 'neutron_' ~ ansible_facts['hostname'] ~ '-chain.crt') }}"
+  - name: "neutron_{{ ansible_facts['hostname'] }}"
+    type: "certificate_chain"
     dest: "{{ neutron_ssl_cert }}"
     owner: "{{ neutron_system_user_name }}"
     group: "{{ neutron_system_user_name }}"
-    mode: "0644"
-  - src: "{{ neutron_user_ssl_key | default(neutron_pki_keys_path ~ 'neutron_' ~ ansible_facts['hostname'] ~ '.key.pem') }}"
+    # standalone backend only
+    src: "{{ neutron_user_ssl_cert }}"
+  - name: "neutron_{{ ansible_facts['hostname'] }}"
+    type: "private_key"
     dest: "{{ neutron_ssl_key }}"
     owner: "{{ neutron_system_user_name }}"
     group: "{{ neutron_system_user_name }}"
-    mode: "0600"
+    # standalone backend only
+    src: "{{ neutron_user_ssl_key }}"
 
 # Define user-provided SSL certificates
-# neutron_user_ssl_cert: <path to cert on ansible deployment host>
-# neutron_user_ssl_key: <path to cert on ansible deployment host>
+neutron_user_ssl_cert: ""
+neutron_user_ssl_key: ""
