@@ -15,7 +15,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# checking if ovn db are clustered or not, if not then this is fresh node.
+# Checking if ovn db are clustered or not, if not then this is fresh node.
 - name: Check if ovn db is clustered
   ansible.builtin.command: ovsdb-tool db-is-clustered /var/lib/ovn/ovnnb_db.db
   ignore_errors: true
@@ -53,13 +53,13 @@
   changed_when: false
   register: _find_leader
 
-# set leader_node variable
+# Set leader_node variable
 - name: Set leader_node fact
   ansible.builtin.set_fact:
     leader_node: "{{ (_find_leader.results | selectattr('stdout', 'search', 'leader')) | map(attribute='container') | list }}"
 
 # This play only run first time to build cluster using primary node.
-- name: Setup ovn cluster using primary node.
+- name: Setup OVN cluster using primary node
   ansible.builtin.template:
     src: ovn-northd-opts.j2
     dest: "{{ neutron_ovn_northd_opts_file }}"
@@ -67,7 +67,7 @@
   when:
     - inventory_hostname == neutron_ovn_primary_cluster_node
     - _check_cluster_db.rc != 0
-    - not leader_node | bool
+    - (leader_node | default([]) | length) == 0
   register: ovn_northd_opts
 
 - name: Start ovn service
