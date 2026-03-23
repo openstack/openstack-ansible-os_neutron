@@ -63,7 +63,5 @@
   args:
     executable: /bin/bash
   with_items:
-    - profile: "usr.sbin.haproxy"
-      process: "haproxy"
     - profile: "bin.ping"
       process: "ping"
