@@ -337,6 +337,10 @@ filtered_neutron_services: |-
   {% endfor %}
   {{ services | sort(attribute='start_order') }}
 
+uwsgi_ini_default_overrides:
+  uwsgi:
+    start-time: '%t'
+
 uwsgi_neutron_services: |-
   {% set services = {} %}
   {% for name, service in neutron_services.items() %}
@@ -446,7 +450,7 @@ neutron_services:
     service_en: true
     start_order: 1
     wsgi_app: "{{ neutron_use_uwsgi | bool }}"
-    uwsgi_overrides: "{{ neutron_api_uwsgi_ini_overrides }}"
+    uwsgi_overrides: "{{ uwsgi_ini_default_overrides | combine(neutron_api_uwsgi_ini_overrides, recursive=true) }}"
     uwsgi_bind_address: "{{ neutron_api_bind_address }}"
     uwsgi_port: "{{ neutron_service_port }}"
     uwsgi_tls: "{{ neutron_backend_ssl | ternary(neutron_uwsgi_tls, {}) }}"
