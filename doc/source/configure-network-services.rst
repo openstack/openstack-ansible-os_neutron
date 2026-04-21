@@ -66,8 +66,7 @@ Follow the steps below to deploy FWaaS v2:
 
    .. code-block:: console
 
-       # cd /opt/openstack-ansible/playbooks
-       # openstack-ansible os-neutron-install.yml
+       # openstack-ansible openstack.osa.neutron
 
 Virtual private network service - VPNaaS (optional)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -121,15 +120,13 @@ The following procedure describes how to modify the
 
    .. code-block:: shell-session
 
-       # cd /opt/openstack-ansible/playbooks
-       # openstack-ansible os-neutron-install.yml
+       # openstack-ansible openstack.osa.neutron
 
 #. Execute the horizon install playbook to show the VPNaaS panels:
 
    .. code-block:: shell-session
 
-       # cd /opt/openstack-ansible/playbooks
-       # openstack-ansible os-horizon-install.yml
+       # openstack-ansible openstack.osa.horizon
 
 The VPNaaS default configuration options are changed through the
 `conf override`_ mechanism using the ``neutron_neutron_conf_overrides``
@@ -227,8 +224,7 @@ Routing plugin.
 
    .. code-block:: shell-session
 
-       # cd /opt/openstack-ansible/playbooks
-       # openstack-ansible os-neutron-install.yml
+       # openstack-ansible openstack.osa.neutron
 
 OVN BGP Agent (optional)
 ~~~~~~~~~~~~~~~~~~~~~~~~
@@ -399,9 +395,8 @@ configuration to enable Neutron SR-IOV support.
 
    .. code-block:: shell-session
 
-       # cd /opt/openstack-ansible/playbooks
-       # openstack-ansible os-neutron-install.yml
-       # openstack-ansible os-nova-install.yml
+       # openstack-ansible openstack.osa.neutron
+       # openstack-ansible openstack.osa.nova
 
 #. Check Neutron SR-IOV agent state
 

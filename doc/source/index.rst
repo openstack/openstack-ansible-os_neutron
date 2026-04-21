@@ -22,7 +22,7 @@ This role installs the following Systemd services:
 * neutron-agents
 
 To clone or view the source code for this repository, visit the role repository
-for `os_neutron <https://github.com/openstack/openstack-ansible-os_neutron>`_.
+for `os_neutron <https://opendev.org/openstack/openstack-ansible-os_neutron>`_.
 
 Default variables
 ~~~~~~~~~~~~~~~~~
@@ -30,11 +30,6 @@ Default variables
 .. literalinclude:: ../../defaults/main.yml
    :language: yaml
    :start-after: under the License.
-
-Dependencies
-~~~~~~~~~~~~
-
-This role needs pip >= 7.1 installed on the target host.
 
 Example playbook
 ~~~~~~~~~~~~~~~~

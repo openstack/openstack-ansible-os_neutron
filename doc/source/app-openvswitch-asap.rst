@@ -314,8 +314,12 @@ flow will be visible in the packet capture.
 
 The following command can be used to dump flows in the kernel datapath:
 
-:code:`# ovs-appctl dpctl/dump-flows type=ovs`
+.. code-block:: shell-session
+
+   # ovs-appctl dpctl/dump-flows type=ovs`
 
 The following command can be used to dump flows that are offloaded:
 
-:code:`# ovs-appctl dpctl/dump-flows type=offloaded`
+.. code-block:: shell-session
+
+   # ovs-appctl dpctl/dump-flows type=offloaded`

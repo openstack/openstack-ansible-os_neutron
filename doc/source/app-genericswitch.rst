@@ -22,7 +22,7 @@ to better understand deployment and configuration options:
 Prerequisites
 ~~~~~~~~~~~~~
 
-* `Ironic Bare-Metal Provisioning Service <https://github.com/openstack/openstack-ansible-os_ironic>`_
+* `Ironic Bare-Metal Provisioning Service <https://opendev.org/openstack/openstack-ansible-os_ironic>`_
 
 * `Supported Network Hardware <https://docs.openstack.org/networking-generic-switch/latest/supported-devices.html>`_
 

@@ -27,7 +27,7 @@ Prerequisites
 #. NSX-T has been deployed per its installation guide and compute nodes have
    been properly configured as transport nodes. See
    `NSX-T Data Center Installation Guide
-   <https://docs.vmware.com/en/VMware-NSX-T-Data-Center/3.0/installation/GUID-3E0C4CEC-D593-4395-84C4-150CD6285963.htm>` _.
+   <https://docs.vmware.com/en/VMware-NSX-T-Data-Center/3.0/installation/GUID-3E0C4CEC-D593-4395-84C4-150CD6285963.htm>`_.
 
 Configure Neutron to use the NSX plugin
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

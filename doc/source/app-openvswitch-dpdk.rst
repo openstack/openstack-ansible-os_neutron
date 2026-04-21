@@ -156,13 +156,13 @@ The remaining cores can be reserved for virtual machine instances.
 
 In this example, the breakdown would resemble the following:
 
-```
-| Reserved Cores         | Purpose               | node0     | node1 |
-| ---------------------- | --------------------- | --------- | ----- |
-| 0,8,16,24              | Host Operating System | 0,16      | 8,24  |
-| 1,9,17,25              | DPDK PMDs             | 1,17      | 9,25  |
-| 2-7,18-23              | Virtual Machines      | 2-7,18-23 | N/A   |
-```
+.. code-block:: console
+
+   | Reserved Cores         | Purpose               | node0     | node1 |
+   | ---------------------- | --------------------- | --------- | ----- |
+   | 0,8,16,24              | Host Operating System | 0,16      | 8,24  |
+   | 1,9,17,25              | DPDK PMDs             | 1,17      | 9,25  |
+   | 2-7,18-23              | Virtual Machines      | 2-7,18-23 | N/A   |
 
 The variables are overrides used to define this configuration are discussed
 in the following sections.
@@ -282,11 +282,12 @@ to a hexidecimal mask and defined using the ``ovs_dpdk_lcore_mask`` override.
 To convert to a hex mask you must first establish the binary mask of chosen
 cores using the following table:
 
-```
-| 31 | 30 | . | 24 | 23 | . | 17 | 16 | 15 | . | 9  | 8  | 7  | . | 1  | 0  |
-| -- | -- | - | -- | -- | - | -- | -- | -- | - | -- | -- | -- | - | -- | -- |
-| 0  | 0  | . | 1  | 0  | . | 0  | 1  | 0  | . | 0  | 1  | 0  | . | 0  | 1  |
-```
+.. code-block:: console
+
+   | 31 | 30 | . | 24 | 23 | . | 17 | 16 | 15 | . | 9  | 8  | 7  | . | 1  | 0  |
+   | -- | -- | - | -- | -- | - | -- | -- | -- | - | -- | -- | -- | - | -- | -- |
+   | 0  | 0  | . | 1  | 0  | . | 0  | 1  | 0  | . | 0  | 1  | 0  | . | 0  | 1  |
+
 
 The ellipses represent cores not shown. The binary mask for cores 0,8,16,24
 can be determined in the following way:
@@ -306,11 +307,11 @@ file or ``openstack_user_config.yml``:
 The mask for cores 1,9,17,25 reserved for DPDK PMDs can be determined in
 a similar fashion. The table would resemble the following:
 
-```
-| 31 | 30 | . | 25 | 24 | . | 17 | 16 | 15 | . | 9  | 8  | 7  | . | 1  | 0  |
-| -- | -- | - | -- | -- | - | -- | -- | -- | - | -- | -- | -- | - | -- | -- |
-| 0  | 0  | . | 1  | 0  | . | 1  | 0  | 0  | . | 1  | 0  | 0  | . | 1  | 0  |
-```
+.. code-block:: console
+
+   | 31 | 30 | . | 25 | 24 | . | 17 | 16 | 15 | . | 9  | 8  | 7  | . | 1  | 0  |
+   | -- | -- | - | -- | -- | - | -- | -- | -- | - | -- | -- | -- | - | -- | -- |
+   | 0  | 0  | . | 1  | 0  | . | 1  | 0  | 0  | . | 1  | 0  | 0  | . | 1  | 0  |
 
 The ellipses represent cores not shown. The binary mask for cores 1,9,17,254
 can be determined in the following way:
@@ -503,7 +504,7 @@ Post-installation
 
 Once the playbooks have been run and OVS/DPDK has been configured, it may be
 necessary to add a physical interface to the provider bridge before networking
-can be fully established *if* `network_interface` or `network_bond_interfaces`
+can be fully established if ``network_interface`` or ``network_bond_interfaces``
 have not been defined.
 
 On compute nodes, the following command can be used to attach a NIC port
