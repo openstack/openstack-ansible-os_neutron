@@ -74,12 +74,20 @@ neutron_apparmor_profile_overrides:
     condition: >-
       {{ (neutron_services['neutron-metadata-agent']['group'] in group_names or neutron_services['neutron-ovn-metadata-agent']['group'] in group_names) }}
 
+_neutron_package_names_condition: >-
+  {{
+    (
+      (ansible_facts['distribution'] | lower == 'debian' and ansible_facts['distribution_major_version'] is version('14', '>=')) or
+        (ansible_facts['distribution'] | lower == 'ubuntu' and ansible_facts['distribution_version'] is version('26.04', '>='))
+    )
+  }}
+
 neutron_distro_packages:
   - conntrack
   - dnsmasq-base
   - dnsmasq-utils
   - ebtables
-  - libxml2
+  - "{{ _neutron_package_names_condition | ternary('libxml2-16', 'libxml2') }}"
   - ipset
   - iptables
   - iputils-arping
