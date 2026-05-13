@@ -186,7 +186,7 @@
       paths:
         - "providers/"
   tags:
-    - neutron-install
+    - neutron-config
 
 - name: Importing neutron_post_install tasks
   ansible.builtin.import_tasks: neutron_post_install.yml
