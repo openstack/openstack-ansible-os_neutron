@@ -13,7 +13,6 @@ Neutron role for OpenStack-Ansible
    app-openvswitch-dpdk.rst
    app-openvswitch-sfc.rst
    app-nuage.rst
-   app-nsx.rst
    app-genericswitch.rst
 
 This role installs the following Systemd services:

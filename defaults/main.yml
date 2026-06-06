@@ -76,10 +76,6 @@ networking_baremetal_git_repo: https://opendev.org/openstack/networking-baremeta
 networking_baremetal_git_install_branch: master
 networking_generic_switch_git_repo: https://opendev.org/openstack/networking-generic-switch
 networking_generic_switch_git_install_branch: master
-networking_nsx_git_repo: https://opendev.org/x/vmware-nsx
-networking_nsx_git_install_branch: master
-networking_nsxlib_git_repo: https://opendev.org/x/vmware-nsxlib
-networking_nsxlib_git_install_branch: master
 
 neutron_upper_constraints_url: >-
   {{ requirements_git_url | default('https://releases.openstack.org/constraints/upper/' ~ requirements_git_install_branch | default('master')) }}
@@ -165,7 +161,6 @@ neutron_openvswitch_agent_ini_overrides: {}
 neutron_openvswitch_agent_init_overrides: {}
 neutron_ovn_bgp_agent_ini_overrides: {}
 neutron_ovn_bgp_agent_init_overrides: {}
-neutron_nsx_conf_ini_overrides: {}
 # Provide a list of access controls to update the default policy.json with.
 # These changes will be merged
 # with the access controls in the default policy.json. E.g.
