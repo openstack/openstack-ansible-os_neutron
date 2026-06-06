@@ -156,7 +156,6 @@ neutron_metering_agent_init_overrides: {}
 neutron_ml2_conf_ini_overrides: {}
 neutron_ml2_conf_genericswitch_ini_overrides: {}
 neutron_neutron_conf_overrides: {}
-neutron_nuage_conf_ini_overrides: {}
 neutron_openvswitch_agent_ini_overrides: {}
 neutron_openvswitch_agent_init_overrides: {}
 neutron_ovn_bgp_agent_ini_overrides: {}
