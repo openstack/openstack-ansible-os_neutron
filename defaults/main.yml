@@ -160,13 +160,15 @@ neutron_openvswitch_agent_ini_overrides: {}
 neutron_openvswitch_agent_init_overrides: {}
 neutron_ovn_bgp_agent_ini_overrides: {}
 neutron_ovn_bgp_agent_init_overrides: {}
-# Provide a list of access controls to update the default policy.json with.
+
+# Provide a list of access controls to update the default policy.yaml with.
 # These changes will be merged
-# with the access controls in the default policy.json. E.g.
+# with the access controls in the default policy.yaml. E.g.
 # neutron_policy_overrides:
-#   "create_subnet": "rule:admin_or_network_owner"
-#   "get_subnet": "rule:admin_or_owner or rule:shared"
+#   create_subnet: "(role:member and project_id:%(project_id)s) or role:admin"
+#   get_subnet: "(role:reader and project:%(project_id)s) or role:admin or role:service"
 neutron_policy_overrides: {}
+
 _neutron_rootwrap_conf_overrides:
   DEFAULT:
     filters_path: "{{ neutron_conf_dir }}/rootwrap.d,/usr/share/neutron/rootwrap"
