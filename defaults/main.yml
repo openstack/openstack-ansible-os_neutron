@@ -66,8 +66,6 @@ networking_ovn_bgp_git_repo: https://opendev.org/openstack/ovn-bgp-agent
 networking_ovn_bgp_git_install_branch: master
 networking_sfc_git_repo: https://opendev.org/openstack/networking-sfc
 networking_sfc_git_install_branch: master
-networking_bgpvpn_git_repo: https://opendev.org/openstack/networking-bgpvpn
-networking_bgpvpn_git_install_branch: master
 networking_baremetal_git_repo: https://opendev.org/openstack/networking-baremetal
 networking_baremetal_git_install_branch: master
 networking_generic_switch_git_repo: https://opendev.org/openstack/networking-generic-switch

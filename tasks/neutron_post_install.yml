@@ -168,19 +168,6 @@
     - "'service_conf_path' in item"
     - "'service_conf' in item"
 
-- name: Generate neutron bgpvpn networking configuration
-  ansible.builtin.template:
-    src: "networking_bgpvpn.conf.j2"
-    dest: "{{ neutron_conf_version_dir }}/networking_bgpvpn.conf"
-    owner: "root"
-    group: "{{ neutron_system_group_name }}"
-    mode: "0640"
-  notify:
-    - Restart neutron services
-    - Restart uwsgi services
-  when:
-    - "'bgpvpn' in neutron_plugin_base"
-
 - name: Copy vpnaas custom config files
   ansible.builtin.copy:
     src: "{{ item.src }}"
