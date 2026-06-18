@@ -77,7 +77,7 @@
   when:
     - inventory_hostname == neutron_ovn_primary_cluster_node
     - _check_cluster_db.rc != 0
-    - not leader_node | bool
+    - (leader_node | default([]) | length) == 0
     - ovn_northd_opts.changed
 
 - name: Configure connection settings for ovn-nb and ovn-sb
@@ -89,7 +89,7 @@
   when:
     - inventory_hostname == neutron_ovn_primary_cluster_node
     - _check_cluster_db.rc != 0
-    - not leader_node | bool
+    - (leader_node | default([]) | length) == 0
     - ovn_northd_opts.changed
   loop_control:
     loop_var: cmd
