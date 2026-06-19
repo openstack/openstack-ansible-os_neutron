@@ -479,7 +479,14 @@ neutron_nova_metadata_insecure: "{{ nova_metadata_insecure | default(False) }}"
 ###
 
 neutron_driver_fwaasv2: iptables_v2
-neutron_fwaasv2_service_provider: FIREWALL_V2:fwaas_db:neutron_fwaas.services.firewall.service_drivers.agents.agents.FirewallAgentDriver:default
+neutron_fwaasv2_service_provider: >-
+  {{
+     'FIREWALL_V2:fwaas_db:neutron_fwaas.services.firewall.service_drivers.' ~
+     (neutron_plugin_type == 'ml2.ovn') | ternary(
+       'ovn.firewall_l3_driver.OVNFwaasDriver:default',
+       'agents.agents.FirewallAgentDriver:default'
+     )
+  }}
 
 ###
 ### VPNaaS Configuration
