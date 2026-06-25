@@ -497,6 +497,22 @@ neutron_services:
     config_type: "ini"
     init_config_overrides: "{{ neutron_sriov_nic_agent_init_overrides }}"
     start_order: 3
+  neutron-ovn-agent:
+    group: neutron_ovn_controller
+    systemd_lock_dir: /run/lock/neutron-ovn-agent
+    service_name: neutron-ovn-agent
+    service_en: "{{ neutron_plugin_type == 'ml2.ovn' }}"
+    service_conf_path: "{{ neutron_conf_version_dir }}"
+    service_conf: plugins/ml2/ovn_agent.ini
+    service_rootwrap: rootwrap.d/ovn-plugin.filters
+    execstarts: >-
+      {{ neutron_bin }}/neutron-ovn-agent
+      --config-file {{ neutron_conf_dir }}/plugins/ml2/ovn_agent.ini
+      --config-file {{ neutron_conf_dir }}/plugins/ml2/ml2_conf.ini
+    config_overrides: "{{ neutron_ovn_agent_ini_overrides }}"
+    config_type: "ini"
+    init_config_overrides: "{{ neutron_ovn_agent_init_overrides }}"
+    start_order: 3
   neutron-ovn-northd:
     group: neutron_ovn_northd
     service_en: false
@@ -516,21 +532,13 @@ neutron_services:
     config_type: "ini"
     init_config_overrides: "{{ neutron_ovn_bgp_agent_init_overrides }}"
     start_order: 4
+  # TODO(noonedeadpunk): Remove the ovn-metadata agent defenition in 2027.2
   neutron-ovn-metadata-agent:
     group: neutron_ovn_controller
-    systemd_lock_dir: /run/lock/neutron-ovn-metadata
     service_name: neutron-ovn-metadata-agent
     service_en: "{{ neutron_plugin_type == 'ml2.ovn' }}"
-    service_conf_path: "{{ neutron_conf_version_dir }}"
-    service_conf: neutron_ovn_metadata_agent.ini
-    service_rootwrap: rootwrap.d/ovn-plugin.filters
-    execstarts: >-
-      {{ neutron_bin }}/neutron-ovn-metadata-agent --config-file {{ neutron_conf_dir }}/neutron.conf
-      --config-file {{ neutron_conf_dir }}/plugins/ml2/ml2_conf.ini --config-file {{ neutron_conf_dir }}/neutron_ovn_metadata_agent.ini
-    config_overrides: "{{ neutron_ovn_metadata_agent_ini_overrides }}"
-    config_type: "ini"
-    init_config_overrides: "{{ neutron_ovn_metadata_agent_init_overrides }}"
-    start_order: 3
+    state: absent
+    start_order: 1
   neutron-ovn-vpn-agent:
     group: neutron_ovn_gateway
     systemd_lock_dir: /run/lock/neutron-ovn-vpn-agent

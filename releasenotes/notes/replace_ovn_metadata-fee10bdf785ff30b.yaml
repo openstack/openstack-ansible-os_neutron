@@ -1,0 +1,19 @@
+---
+
+features:
+  - |
+    Introduced Neutron OVN Agent, which replaces OVN Metadata Agent.
+    List of extensions for the Agent can be controlled using variable
+    ``neutron_ovn_agent_extensions``.
+upgrade:
+  - |
+    Service ``neutron-ovn-metadata-agent`` has been deprecated and will
+    be stopped and removed during upgrade.
+    It has been superseded by ``neutron-ovn-agent`` with ``metadata``
+    extension.
+deprecations:
+  - |
+    Variables ``neutron_ovn_metadata_agent_ini_overrides`` and
+    ``neutron_ovn_metadata_agent_init_overrides`` were renamed to
+    ``neutron_ovn_agent_ini_overrides`` and
+    ``neutron_ovn_agent_init_overrides`` respectively

@@ -174,8 +174,20 @@ neutron_rpc_server_init_overrides: {}
 neutron_sriov_nic_agent_ini_overrides: {}
 neutron_sriov_nic_agent_init_overrides: {}
 neutron_ovn_maintenance_init_overrides: {}
-neutron_ovn_metadata_agent_ini_overrides: {}
-neutron_ovn_metadata_agent_init_overrides: {}
+neutron_ovn_agent_ini_overrides: >-
+  {{
+    {} | openstack.osa.deprecated(
+      old_var_name='neutron_ovn_metadata_agent_ini_overrides',
+      new_var_name='neutron_ovn_agent_ini_overrides',
+      removed_in='2026.2')
+  }}
+neutron_ovn_agent_init_overrides: >-
+  {{
+    {} | openstack.osa.deprecated(
+      old_var_name='neutron_ovn_metadata_agent_init_overrides',
+      new_var_name='neutron_ovn_agent_ini_overrides',
+      removed_in='2026.2')
+  }}
 
 ###
 ### UWSGI
@@ -532,6 +544,10 @@ neutron_ovsdb_manager: "p{{ [neutron_ovsdb_manager_proto, neutron_ovsdb_manager_
 neutron_ovsdb_manager_connection: "{{ [neutron_ovsdb_manager_proto, neutron_ovsdb_manager_host, neutron_ovsdb_manager_port] | select | join(':') }}"
 neutron_ovn_sb_inactivity_probe: 60000
 neutron_ovn_nb_inactivity_probe: 60000
+
+# OVN Agent
+neutron_ovn_agent_extensions:
+  - metadata
 
 # OVN BGP Agent
 neutron_ovn_bgp_enable: false

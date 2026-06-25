@@ -23,6 +23,8 @@
     name: "{{ item.service_name }}"
     state: "stopped"
     daemon_reload: true
+  when:
+    - item.state | default('started') != 'absent'
   with_items: "{{ filtered_neutron_services }}"
   register: _stop
   until: _stop is success
@@ -110,6 +112,8 @@
     state: "{{ item.state | default('started') }}"
     daemon_reload: true
   with_items: "{{ filtered_neutron_services }}"
+  when:
+    - not (item.state | default('started') in ('stopped', 'absent'))
   register: _start
   until: _start is success
   retries: 5
