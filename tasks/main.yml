@@ -231,21 +231,7 @@
     systemd_service_block_io_accounting: true
     systemd_service_memory_accounting: true
     systemd_service_tasks_accounting: true
-    systemd_services: |-
-      {%- set services = [] -%}
-      {%- for service in filtered_neutron_services -%}
-      {%-   set _ = service.update(
-              {
-                'enabled': 'yes',
-                'state': 'started',
-                'config_overrides': service.init_config_overrides
-              }
-            )
-      -%}
-      {%-   set _ = service.pop('init_config_overrides') -%}
-      {%-   set _ = services.append(service) -%}
-      {%- endfor %}
-      {{- services -}}
+    systemd_services: "{{ filtered_neutron_services }}"
   tags:
     - neutron-config
     - systemd-service
