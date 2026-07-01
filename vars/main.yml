@@ -328,10 +328,12 @@ filtered_neutron_services: |-
   {%     set _ = value.update(
             {
               'service_key': key,
-              'enabled': value['enabled'] | default(True),
+              'enabled': value['enabled'] | default(true),
               'state': value['state'] | default('started'),
+              'config_overrides': value['init_config_overrides'] | default({}),
             }
           ) %}
+  {%     set _ = value.pop('init_config_overrides') %}
   {%     set _ = services.append(value) %}
   {%   endif %}
   {% endfor %}
