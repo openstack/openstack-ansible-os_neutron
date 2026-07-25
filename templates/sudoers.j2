@@ -1,4 +1,4 @@
-# {{ ansible_managed }}
+# {{ openstack_ansible_managed | default('OpenStack-Ansible Managed') }}
 
 Defaults:{{ neutron_system_user_name }} !requiretty
 Defaults:{{ neutron_system_user_name }} secure_path="{{ neutron_bin }}:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"

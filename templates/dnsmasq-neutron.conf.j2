@@ -1,4 +1,4 @@
-# {{ ansible_managed }}
+# {{ openstack_ansible_managed | default('OpenStack-Ansible Managed') }}
 
 {% for key, value in neutron_dhcp_config.items() %}
 {{ key }}={{ value }}
