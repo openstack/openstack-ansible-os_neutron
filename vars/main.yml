@@ -187,7 +187,7 @@ neutron_plugins:
 
 neutron_ml2_mechanism_drivers: >-
   {%- set _var = [] -%}
-  {%- for plugin in [neutron_plugin_type] | union(neutron_plugin_types) -%}
+  {%- for plugin in [neutron_plugin_type] | community.general.lists_union(neutron_plugin_types) -%}
   {%-   if _var.append(neutron_plugins[plugin].mechanisms) -%}{%- endif -%}
   {%- endfor -%}
   {%- if neutron_l2_population | bool -%}
