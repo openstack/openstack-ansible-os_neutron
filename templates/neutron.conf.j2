@@ -82,7 +82,6 @@ ha_network_physical_name = {{ neutron_provider_networks.network_mappings_list[0]
 {% endif %}
 
 # Workers
-api_workers = {{ neutron_api_workers | default(neutron_api_threads) }}
 rpc_workers = {{ neutron_rpc_workers }}
 
 {% set num_dhcp_agent = (neutron_dhcp_agents_max | int) if neutron_dhcp_agents_max is defined else groups[neutron_services['neutron-dhcp-agent']['group']] | length %}
