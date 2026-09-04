@@ -87,14 +87,9 @@ rpc_workers = {{ neutron_rpc_workers }}
 {% set num_dhcp_agent = (neutron_dhcp_agents_max | int) if neutron_dhcp_agents_max is defined else groups[neutron_services['neutron-dhcp-agent']['group']] | length %}
 {% set dhcp_agents_max = num_dhcp_agent if num_dhcp_agent > 2 else 2 %}
 # DHCP
-{% if neutron_plugin_type == 'vmware.nsx' %}
-dhcp_agent_notification = False
-{% else %}
 dhcp_agent_notification = True
 dhcp_agents_per_network = {{ dhcp_agents_max }}
 dhcp_lease_duration = 86400
-{% endif %}
-
 
 # Driver for external DNS integration. (string value)
 {% if neutron_designate_enabled %}
@@ -113,7 +108,6 @@ send_events_interval = 2
 {% if neutron_designate_enabled %}
 
 [designate]
-
 # required by current dns integration implementation
 url = {{ designate_service_adminurl }}
 region_name = {{ neutron_service_region }}
