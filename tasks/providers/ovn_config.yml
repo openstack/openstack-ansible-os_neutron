@@ -62,44 +62,45 @@
     - neutron_services['neutron-ovn-controller']['group'] in group_names
     - neutron_ovsdb_manager not in existing_ovsdb_manager.stdout_lines
 
-# NOTE: This can fail first time when adding a bridge that is already defined on the system, so retry
-- name: Setup Network Provider Bridges
-  openvswitch.openvswitch.openvswitch_bridge:
-    bridge: "{{ bridge_mapping.split(':')[1] }}"
-    fail_mode: standalone
-    state: present
-  with_items: "{{ neutron_provider_networks.network_mappings.split(',') }}"
-  loop_control:
-    loop_var: bridge_mapping
+- name: Configure OVS Bridges
   when:
     - neutron_services['neutron-ovn-controller']['group'] in group_names
-    - neutron_provider_networks.network_mappings is defined and (neutron_provider_networks.network_mappings | length > 0)
-  retries: 2
-  delay: 1
+  block:
+    # NOTE: This can fail first time when adding a bridge that is already defined on the system, so retry
+    - name: Setup Network Provider Bridges
+      openvswitch.openvswitch.openvswitch_bridge:
+        bridge: "{{ bridge_mapping.split(':')[1] }}"
+        fail_mode: standalone
+        state: present
+      with_items: "{{ neutron_provider_networks.network_mappings.split(',') }}"
+      when:
+        - neutron_provider_networks.network_mappings is defined and (neutron_provider_networks.network_mappings | length > 0)
+      loop_control:
+        loop_var: bridge_mapping
+      retries: 2
+      delay: 1
 
-# NOTE(noonedeadpunk): When ovn-bgp-agent is in use, physical interfaces should not be added the OVS
-#                      bridge directly.
-- name: Add ports to Network Provider Bridges
-  vars:
-    _neutron_attach_ovs_port_for_bgp: >-
-      {{ (neutron_ovn_bgp_enable and neutron_services['neutron-ovn-bgp-agent']['group'] in group_names) | ternary('absent', 'present') }}
-  openvswitch.openvswitch.openvswitch_port:
-    bridge: "{{ interface_mapping.split(':')[0] }}"
-    port: "{{ interface_mapping.split(':')[1] }}"
-    state: "{{ _neutron_attach_ovs_port_for_bgp }}"
-  with_items: "{{ neutron_provider_networks.network_interface_mappings.split(',') }}"
-  loop_control:
-    loop_var: interface_mapping
-  when:
-    - neutron_services['neutron-ovn-controller']['group'] in group_names
-    - neutron_provider_networks.network_interface_mappings is defined and (neutron_provider_networks.network_interface_mappings | length > 0)
+    # NOTE(noonedeadpunk): When ovn-bgp-agent is in use, physical interfaces
+    #                      should not be added to the OVS bridge directly.
+    - name: Add ports to Network Provider Bridges
+      vars:
+        _neutron_attach_ovs_port_for_bgp: >-
+          {{ (neutron_ovn_bgp_enable and neutron_services['neutron-ovn-bgp-agent']['group'] in group_names) | ternary('absent', 'present') }}
+      openvswitch.openvswitch.openvswitch_port:
+        bridge: "{{ interface_mapping.split(':')[0] }}"
+        port: "{{ interface_mapping.split(':')[1] }}"
+        state: "{{ _neutron_attach_ovs_port_for_bgp }}"
+      with_items: "{{ neutron_provider_networks.network_interface_mappings.split(',') }}"
+      loop_control:
+        loop_var: interface_mapping
+      when:
+        - neutron_provider_networks.network_interface_mappings is defined and (neutron_provider_networks.network_interface_mappings | length > 0)
 
-- name: Set the OVN Bridge Mappings in OVS
-  ansible.builtin.command: "ovs-vsctl set open . external-ids:ovn-bridge-mappings={{ neutron_provider_networks.network_mappings }}"
-  changed_when: false
-  when:
-    - neutron_provider_networks.network_mappings is defined and (neutron_provider_networks.network_mappings | length > 0)
-    - neutron_services['neutron-ovn-controller']['group'] in group_names
+    - name: Set the OVN Bridge Mappings in OVS
+      ansible.builtin.command: "ovs-vsctl set open_vswitch . external-ids:ovn-bridge-mappings={{ neutron_provider_networks.network_mappings }}"
+      changed_when: false
+      when:
+        - neutron_provider_networks.network_mappings is defined and (neutron_provider_networks.network_mappings | length > 0)
 
 - name: Including ovn_cluster_setup tasks
   ansible.builtin.include_tasks: ovn_cluster_setup.yml
