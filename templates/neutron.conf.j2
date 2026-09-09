@@ -44,18 +44,6 @@ mac_generation_retries = 16
 # Authentication method
 auth_strategy = keystone
 
-# Drivers
-network_scheduler_driver = {{ neutron_driver_network_scheduler }}
-router_scheduler_driver = {{ neutron_driver_router_scheduler }}
-
-# Schedulers
-network_auto_schedule = True
-router_auto_schedule = True
-
-# Distributed virtual routing
-router_distributed = {{ neutron_plugins[neutron_plugin_type].router_distributed | default('False') }}
-enable_dvr = {{ neutron_plugins[neutron_plugin_type].router_distributed | default('False') }}
-
 # Agents
 agent_down_time = {{ neutron_agent_down_time }}
 
@@ -63,6 +51,12 @@ agent_down_time = {{ neutron_agent_down_time }}
 {%   if neutron_plugin_type.split('.')[0] == 'ml2' and num_l3_agent >= 2 %}
 {%     if neutron_services['neutron-openvswitch-agent']['service_en'] | bool %}
 {%     set max_l3_router = num_l3_agent if num_l3_agent > 2 else 2 %}
+# Distributed virtual routing
+enable_dvr = {{ neutron_plugins[neutron_plugin_type].router_distributed | default('False') }}
+router_auto_schedule = True
+router_distributed = {{ neutron_plugins[neutron_plugin_type].router_distributed | default('False') }}
+router_scheduler_driver = {{ neutron_driver_router_scheduler }}
+
 # L3HA
 l3_ha = True
 l3_ha_net_cidr = {{ neutron_l3_ha_net_cidr }}
@@ -81,6 +75,8 @@ rpc_workers = {{ neutron_rpc_workers }}
 {%   if num_dhcp_agent > 0 %}
 {%     set dhcp_agents_max = num_dhcp_agent if num_dhcp_agent > 2 else 2 %}
 # DHCP
+network_auto_schedule = True
+network_scheduler_driver = {{ neutron_driver_network_scheduler }}
 dhcp_agent_notification = True
 dhcp_agents_per_network = {{ dhcp_agents_max }}
 dhcp_lease_duration = 86400
