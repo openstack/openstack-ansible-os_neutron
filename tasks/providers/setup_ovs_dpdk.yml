@@ -62,29 +62,49 @@
     - neutron_services['neutron-openvswitch-agent']['group'] in group_names
 
 - name: Set DPDK lcore mask
-  ansible.builtin.command: "ovs-vsctl --no-wait set Open_vSwitch . other_config:dpdk-lcore-mask={{ ovs_dpdk_lcore_mask }}"
-  changed_when: false
+  openvswitch.openvswitch.openvswitch_db:
+    table: Open_vSwitch
+    record: .
+    col: other_config
+    key: dpdk-lcore-mask
+    value: "{{ ovs_dpdk_lcore_mask }}"
+    state: present
   when:
     - neutron_services['neutron-openvswitch-agent']['group'] in group_names
     - '"nova_compute" in group_names'
 
 - name: Set DPDK PMD cpu mask
-  ansible.builtin.command: "ovs-vsctl --no-wait set Open_vSwitch . other_config:pmd-cpu-mask={{ ovs_dpdk_pmd_cpu_mask }}"
-  changed_when: false
+  openvswitch.openvswitch.openvswitch_db:
+    table: Open_vSwitch
+    record: .
+    col: other_config
+    key: pmd-cpu-mask
+    value: "{{ ovs_dpdk_pmd_cpu_mask }}"
+    state: present
   when:
     - neutron_services['neutron-openvswitch-agent']['group'] in group_names
     - '"nova_compute" in group_names'
 
 - name: Set DPDK socket memory
-  ansible.builtin.command: "ovs-vsctl --no-wait set Open_vSwitch . other_config:dpdk-socket-mem={{ ovs_dpdk_socket_mem }}"
-  changed_when: false
+  openvswitch.openvswitch.openvswitch_db:
+    table: Open_vSwitch
+    record: .
+    col: other_config
+    key: dpdk-socket-mem
+    value: "{{ ovs_dpdk_socket_mem }}"
+    state: present
   when:
     - neutron_services['neutron-openvswitch-agent']['group'] in group_names
     - '"nova_compute" in group_names'
 
 - name: Enable DPDK support for openvswitch
-  ansible.builtin.command: "ovs-vsctl --no-wait set Open_vSwitch . other_config:dpdk-init=true"
-  changed_when: false
+  openvswitch.openvswitch.openvswitch_db:
+    table: Open_vSwitch
+    record: .
+    col: other_config
+    key: dpdk-init
+    value: "true"
+    state: present
   when:
     - neutron_services['neutron-openvswitch-agent']['group'] in group_names
     - '"nova_compute" in group_names'
