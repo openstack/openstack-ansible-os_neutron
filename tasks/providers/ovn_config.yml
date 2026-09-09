@@ -43,9 +43,16 @@
     - service.condition | default(true)
 
 - name: Set external-ids for Open vSwitch
-  ansible.builtin.command:
-    cmd: "ovs-vsctl set open_vswitch . external-ids:{{ neutron_ovn_ovs_filtered_external_ids.items() | map('join', '=') | join(' external-ids:') }}"
-  changed_when: false
+  openvswitch.openvswitch.openvswitch_db:
+    table: Open_vSwitch
+    record: .
+    col: external_ids
+    key: "{{ id.key }}"
+    value: "{{ id.value }}"
+    state: present
+  loop: "{{ neutron_ovn_ovs_filtered_external_ids | dict2items }}"
+  loop_control:
+    loop_var: id
 
 # Create an ovsdb manager for Nova (os-vif)
 - name: Register existing OVSDB Manager(s)
@@ -97,8 +104,13 @@
         - neutron_provider_networks.network_interface_mappings is defined and (neutron_provider_networks.network_interface_mappings | length > 0)
 
     - name: Set the OVN Bridge Mappings in OVS
-      ansible.builtin.command: "ovs-vsctl set open_vswitch . external-ids:ovn-bridge-mappings={{ neutron_provider_networks.network_mappings }}"
-      changed_when: false
+      openvswitch.openvswitch.openvswitch_db:
+        table: Open_vSwitch
+        record: .
+        col: external_ids
+        key: ovn-bridge-mappings
+        value: "{{ neutron_provider_networks.network_mappings }}"
+        state: present
       when:
         - neutron_provider_networks.network_mappings is defined and (neutron_provider_networks.network_mappings | length > 0)
 
