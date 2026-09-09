@@ -26,13 +26,9 @@ dns_domain = {{ neutron_dns_domain }}
 {% if neutron_services['neutron-server']['group'] in group_names %}
 
 # Availability zone
-{% if neutron_default_availability_zones %}
+{%   if neutron_default_availability_zones %}
 default_availability_zones = {{ neutron_default_availability_zones | join(',') }}
-{%   if neutron_default_availability_zones | length > 1 %}
-router_scheduler_driver = neutron.scheduler.l3_agent_scheduler.AZLeastRoutersScheduler
-network_scheduler_driver = neutron.scheduler.dhcp_agent_scheduler.AZAwareWeightScheduler
 {%   endif %}
-{% endif %}
 
 # Plugins
 core_plugin = {{ neutron_plugin_core }}
