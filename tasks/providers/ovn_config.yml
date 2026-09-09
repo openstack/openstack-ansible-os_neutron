@@ -42,37 +42,10 @@
   when:
     - service.condition | default(true)
 
-- name: Set openvswitch hostname
+- name: Set external-ids for Open vSwitch
+  ansible.builtin.command:
+    cmd: "ovs-vsctl set open_vswitch . external-ids:{{ neutron_ovn_ovs_filtered_external_ids.items() | map('join', '=') | join(' external-ids:') }}"
   changed_when: false
-  ansible.builtin.command: "ovs-vsctl set open_vswitch . external-ids:hostname='{{ ansible_facts['nodename'] }}'"
-  when:
-    - (neutron_services['neutron-ovn-controller']['group'] in group_names)
-
-- name: Set CMS Options for Gateway Scheduling
-  changed_when: false
-  ansible.builtin.command: "ovs-vsctl set Open_vSwitch . external-ids:ovn-cms-options=enable-chassis-as-gw,availability-zones={{ neutron_availability_zone }}"
-  when:
-    - '"neutron_ovn_gateway" in group_names'
-
-- name: Configure OVN Southbound Connection
-  changed_when: false
-  ansible.builtin.command: "ovs-vsctl set open . external-ids:ovn-remote={{ neutron_ovn_sb_connection }}"
-  when:
-    - neutron_services['neutron-ovn-controller']['group'] in group_names
-
-- name: Configure Supported OVN Overlay Protocols
-  changed_when: false
-  ansible.builtin.command: >-
-    ovs-vsctl set open . external-ids:ovn-encap-type={{ neutron_provider_networks.network_types.split(',') | intersect(
-      ['geneve', 'vxlan', 'stt']) | join(',') }}
-  when:
-    - neutron_services['neutron-ovn-controller']['group'] in group_names
-
-- name: Configure Encapsulation Address for Overlay Traffic
-  changed_when: false
-  ansible.builtin.command: "ovs-vsctl set open . external-ids:ovn-encap-ip={{ neutron_local_ip }}"
-  when:
-    - neutron_services['neutron-ovn-controller']['group'] in group_names
 
 # Create an ovsdb manager for Nova (os-vif)
 - name: Register existing OVSDB Manager(s)
