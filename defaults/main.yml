@@ -544,9 +544,9 @@ neutron_ovn_controller_service_name: ovn-controller
 neutron_ovn_l3_scheduler: leastloaded
 neutron_ovn_distributed_fip: false
 neutron_ovn_nb_connection: >-
-  {{ ovn_proto }}:{{ groups['neutron_ovn_northd'] | map('extract', hostvars, ['ansible_host']) | join(':6641,' + ovn_proto + ':') }}:6641
+  {{ ovn_proto }}:{{ groups['neutron_ovn_northd'] | map('extract', hostvars, ['management_address']) | join(':6641,' + ovn_proto + ':') }}:6641
 neutron_ovn_sb_connection: >-
-  {{ ovn_proto }}:{{ groups['neutron_ovn_northd'] | map('extract', hostvars, ['ansible_host']) | join(':6642,' + ovn_proto + ':') }}:6642
+  {{ ovn_proto }}:{{ groups['neutron_ovn_northd'] | map('extract', hostvars, ['management_address']) | join(':6642,' + ovn_proto + ':') }}:6642
 neutron_ovsdb_manager_host: 127.0.0.1
 neutron_ovsdb_manager_port: 6640
 neutron_ovsdb_manager_proto: tcp
