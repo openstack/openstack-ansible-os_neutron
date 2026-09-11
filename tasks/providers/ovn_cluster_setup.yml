@@ -58,56 +58,70 @@
   ansible.builtin.set_fact:
     leader_node: "{{ (_find_leader.results | selectattr('stdout', 'search', 'leader')) | map(attribute='container') | list }}"
 
-# This play only run first time to build cluster using primary node.
-- name: Setup OVN cluster using primary node
+- name: Join node to existing OVN cluster
+  when:
+    - _check_cluster_db.rc != 0
+    - (leader_node | default([]) | length) > 0
+  block:
+    - name: Configure temporary OVN options to join cluster
+      vars:
+        __neutron_ovn_cluster_leader_node: "{{ leader_node | first }}"
+      ansible.builtin.template:
+        src: ovn-northd-opts.j2
+        dest: "{{ neutron_ovn_northd_opts_file }}"
+        mode: "0644"
+
+    - name: Start OVN service to join cluster
+      ansible.builtin.service:
+        name: "{{ neutron_ovn_northd_service_name }}"
+        state: started
+
+    - name: Wait for OVN DBs to finish joining the cluster
+      ansible.builtin.command: "ovs-appctl -t /var/run/ovn/{{ db.sock }} cluster/status {{ db.name }}"
+      register: _cluster_status
+      until: "'Status: cluster member' in _cluster_status.stdout"
+      retries: 30
+      delay: 2
+      changed_when: false
+      loop:
+        - name: OVN_Northbound
+          sock: ovnnb_db.ctl
+        - name: OVN_Southbound
+          sock: ovnsb_db.ctl
+      loop_control:
+        loop_var: db
+
+- name: Deploy persistent OVN northd options
   ansible.builtin.template:
     src: ovn-northd-opts.j2
     dest: "{{ neutron_ovn_northd_opts_file }}"
     mode: "0644"
-  when:
-    - inventory_hostname == neutron_ovn_primary_cluster_node
-    - _check_cluster_db.rc != 0
-    - (leader_node | default([]) | length) == 0
-  register: ovn_northd_opts
-
-- name: Start ovn service
-  ansible.builtin.service:
-    name: "{{ neutron_ovn_northd_service_name }}"
-    state: started
-  when:
-    - inventory_hostname == neutron_ovn_primary_cluster_node
-    - _check_cluster_db.rc != 0
-    - (leader_node | default([]) | length) == 0
-    - ovn_northd_opts.changed
-
-- name: Configure connection settings for ovn-nb and ovn-sb
-  ansible.builtin.command: "{{ cmd }}"
-  changed_when: false
-  with_items:
-    - "ovn-nbctl --inactivity-probe={{ neutron_ovn_nb_inactivity_probe }} set-connection p{{ ovn_proto }}:6641"
-    - "ovn-sbctl --inactivity-probe={{ neutron_ovn_sb_inactivity_probe }} set-connection p{{ ovn_proto }}:6642"
-  when:
-    - inventory_hostname == neutron_ovn_primary_cluster_node
-    - _check_cluster_db.rc != 0
-    - (leader_node | default([]) | length) == 0
-    - ovn_northd_opts.changed
-  loop_control:
-    loop_var: cmd
-  register: _ovn_connection_settings
-  until: _ovn_connection_settings is success
-  retries: 5
-  delay: 2
-  tags:
-    - neutron_ovn-config
-
-# This play will add nodes in existing cluster using leader_node var.
-- name: Join new nodes to ovn cluster using leader node
-  ansible.builtin.template:
-    src: ovn-northd-opts.j2
-    dest: "{{ neutron_ovn_northd_opts_file }}"
-    mode: "0644"
-  when:
-    - _check_cluster_db.rc != 0
   notify:
     - start ovn service
     - restart ovn service
+
+- name: Bootstrap fresh OVN cluster on primary node
+  when:
+    - inventory_hostname == neutron_ovn_primary_cluster_node
+    - _check_cluster_db.rc != 0
+    - (leader_node | default([]) | length) == 0
+  block:
+    - name: Start primary OVN service
+      ansible.builtin.service:
+        name: "{{ neutron_ovn_northd_service_name }}"
+        state: started
+
+    - name: Configure connection settings for ovn-nb and ovn-sb
+      ansible.builtin.command: "{{ cmd }}"
+      changed_when: false
+      with_items:
+        - "ovn-nbctl --inactivity-probe={{ neutron_ovn_nb_inactivity_probe }} set-connection p{{ ovn_proto }}:6641"
+        - "ovn-sbctl --inactivity-probe={{ neutron_ovn_sb_inactivity_probe }} set-connection p{{ ovn_proto }}:6642"
+      loop_control:
+        loop_var: cmd
+      register: _ovn_connection_settings
+      until: _ovn_connection_settings is success
+      retries: 5
+      delay: 2
+      tags:
+        - neutron_ovn-config
