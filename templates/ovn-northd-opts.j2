@@ -2,10 +2,10 @@
 
 # OVN cluster parameters
 {{ neutron_ovn_northd_opts }}=" \
-  --db-nb-addr={{ ansible_host }} \
-  --db-sb-addr={{ ansible_host }} \
-  --db-nb-cluster-local-addr={{ ansible_host }} \
-  --db-sb-cluster-local-addr={{ ansible_host }} \
+  --db-nb-addr={{ management_address }} \
+  --db-sb-addr={{ management_address }} \
+  --db-nb-cluster-local-addr={{ management_address }} \
+  --db-sb-cluster-local-addr={{ management_address }} \
   {% if leader_node %}
   --db-nb-cluster-remote-addr={% for item in leader_node %}{{ item }} {% endfor %} \
   --db-sb-cluster-remote-addr={% for item in leader_node %}{{ item }} {% endfor %} \
