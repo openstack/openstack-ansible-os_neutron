@@ -113,7 +113,7 @@
 
     - name: Configure connection settings for ovn-nb and ovn-sb
       ansible.builtin.command: "{{ cmd }}"
-      changed_when: false
+      changed_when: true
       with_items:
         - "ovn-nbctl --inactivity-probe={{ neutron_ovn_nb_inactivity_probe }} set-connection p{{ ovn_proto }}:6641"
         - "ovn-sbctl --inactivity-probe={{ neutron_ovn_sb_inactivity_probe }} set-connection p{{ ovn_proto }}:6642"
@@ -123,5 +123,7 @@
       until: _ovn_connection_settings is success
       retries: 5
       delay: 2
+      notify:
+        - Sync OVN northd
       tags:
         - neutron_ovn-config
