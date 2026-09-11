@@ -6,9 +6,10 @@
   --db-sb-addr={{ management_address }} \
   --db-nb-cluster-local-addr={{ management_address }} \
   --db-sb-cluster-local-addr={{ management_address }} \
-  {% if leader_node %}
-  --db-nb-cluster-remote-addr={% for item in leader_node %}{{ item }} {% endfor %} \
-  --db-sb-cluster-remote-addr={% for item in leader_node %}{{ item }} {% endfor %} \
+  {% set remote_node = __neutron_ovn_cluster_leader_node | default(neutron_ovn_primary_cluster_node) %}
+  {% if inventory_hostname != remote_node %}
+  --db-nb-cluster-remote-addr={{ hostvars[remote_node]['management_address'] }} \
+  --db-sb-cluster-remote-addr={{ hostvars[remote_node]['management_address'] }} \
   {% endif %}
   --ovn-northd-nb-db={{ neutron_ovn_nb_connection }} \
   --ovn-northd-sb-db={{ neutron_ovn_sb_connection }} \
