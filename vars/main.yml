@@ -540,7 +540,6 @@ neutron_services:
     service_en: "{{ (neutron_plugin_type == 'ml2.ovn') and neutron_ovn_bgp_enable | bool }}"
     service_conf_path: "{{ neutron_conf_version_dir }}"
     service_conf: neutron_ovn_bgp_agent.ini
-    service_rootwrap: rootwrap.d/ovn-bgp.filters
     execstarts: "{{ neutron_bin }}/ovn-bgp-agent --config-file {{ neutron_conf_dir }}/neutron_ovn_bgp_agent.ini"
     config_overrides: "{{ neutron_ovn_bgp_agent_ini_overrides }}"
     config_type: "ini"
