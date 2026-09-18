@@ -151,3 +151,19 @@
   listen:
     - restart ovn service
     - ovn cert installed
+
+- name: Sync OVN northd
+  become: true
+  become_user: "{{ neutron_system_user_name }}"
+  changed_when: false
+  delegate_to: "{{ groups[neutron_services['neutron-server']['group']] | first }}"
+  run_once: true
+  ansible.builtin.command:
+    argv:
+      - "{{ neutron_bin }}/neutron-ovn-db-sync-util"
+      - --config-file
+      - "{{ neutron_conf_dir }}/neutron.conf"
+      - --config-file
+      - "{{ neutron_conf_dir }}/plugins/ml2/ml2_conf.ini"
+      - --ovn-neutron_sync_mode
+      - repair
