@@ -91,6 +91,35 @@
       loop_control:
         loop_var: db
 
+    - name: Remove orphaned members from OVN cluster
+      vars:
+        _neutron_ovn_orphan_members: |-
+          {% set orphans = [] %}
+          {% for res in _cluster_status.results %}
+          {%   for line in res.stdout_lines %}
+          {%     if ' at ' ~ [ovn_proto, management_address] | join(':') in line and '(self)' not in line %}
+          {%       set sid = line.strip().split() | first %}
+          {%       if sid %}
+          {%         set _ = orphans.append({'sock': res.db.sock, 'name': res.db.name, 'sid': sid}) %}
+          {%       endif %}
+          {%     endif %}
+          {%   endfor %}
+          {% endfor %}
+          {{ orphans }}
+      ansible.builtin.command:
+        argv:
+          - ovs-appctl
+          - -t
+          - "/var/run/ovn/{{ orphan.sock }}"
+          - cluster/kick
+          - "{{ orphan.name }}"
+          - "{{ orphan.sid }}"
+      loop: "{{ _neutron_ovn_orphan_members }}"
+      loop_control:
+        label: "{{ orphan.name }}: {{ orphan.sid }}"
+        loop_var: orphan
+      changed_when: true
+
 - name: Deploy persistent OVN northd options
   ansible.builtin.template:
     src: ovn-northd-opts.j2
