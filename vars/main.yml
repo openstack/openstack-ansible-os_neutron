@@ -43,7 +43,7 @@ neutron_needs_openvswitch: >-
 ###
 
 neutron_pip_packages:
-  - "git+{{ neutron_git_repo }}@{{ neutron_git_install_branch }}#egg=neutron"
+  - "neutron@git+{{ neutron_git_repo }}@{{ neutron_git_install_branch }}"
   - osprofiler
   - PyMySQL
   - oslo.cache[dogpile]
@@ -53,25 +53,25 @@ neutron_pip_packages:
 neutron_user_pip_packages: []
 
 neutron_optional_bgp_pip_packages:
-  - "git+{{ neutron_dynamic_routing_git_repo }}@{{ neutron_dynamic_routing_git_install_branch }}#egg=neutron-dynamic-routing"
+  - "neutron-dynamic-routing@git+{{ neutron_dynamic_routing_git_repo }}@{{ neutron_dynamic_routing_git_install_branch }}"
 
 neutron_optional_ovn_bgp_pip_packages:
-  - "git+{{ networking_ovn_bgp_git_repo }}@{{ networking_ovn_bgp_git_install_branch }}#egg=ovn-bgp-agent"
+  - "ovn-bgp-agent@git+{{ networking_ovn_bgp_git_repo }}@{{ networking_ovn_bgp_git_install_branch }}"
 
 neutron_optional_fwaas_pip_packages:
-  - "git+{{ neutron_fwaas_git_repo }}@{{ neutron_fwaas_git_install_branch }}#egg=neutron-fwaas"
+  - "neutron-fwaas@git+{{ neutron_fwaas_git_repo }}@{{ neutron_fwaas_git_install_branch }}"
 
 neutron_optional_vpnaas_pip_packages:
-  - "git+{{ neutron_vpnaas_git_repo }}@{{ neutron_vpnaas_git_install_branch }}#egg=neutron-vpnaas"
+  - "neutron-vpnaas@git+{{ neutron_vpnaas_git_repo }}@{{ neutron_vpnaas_git_install_branch }}"
 
 neutron_optional_sfc_pip_packages:
-  - "git+{{ networking_sfc_git_repo }}@{{ networking_sfc_git_install_branch }}#egg=networking-sfc"
+  - "networking-sfc@git+{{ networking_sfc_git_repo }}@{{ networking_sfc_git_install_branch }}"
 
 neutron_optional_baremetal_pip_packages:
-  - "git+{{ networking_baremetal_git_repo }}@{{ networking_baremetal_git_install_branch }}#egg=networking-baremetal"
+  - "networking-baremetal@git+{{ networking_baremetal_git_repo }}@{{ networking_baremetal_git_install_branch }}"
 
 neutron_optional_ngs_pip_packages:
-  - "git+{{ networking_generic_switch_git_repo }}@{{ networking_generic_switch_git_install_branch }}#egg=networking-generic-switch"
+  - "networking-generic-switch@git+{{ networking_generic_switch_git_repo }}@{{ networking_generic_switch_git_install_branch }}"
 
 neutron_venv_packages: |-
   {%- set pkg_list = neutron_pip_packages | union(neutron_user_pip_packages) %}
