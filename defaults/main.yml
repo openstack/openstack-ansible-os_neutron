@@ -88,10 +88,6 @@ neutron_venv_tag: "{{ venv_tag | default('untagged') }}"
 # Fatal Deprecations
 neutron_fatal_deprecations: false
 
-# If ``neutron_api_workers`` is unset the system will use half the number of available VCPUs to
-# compute the number of api workers to use with a default capping value of 16.
-# neutron_api_workers: 16
-
 ## Cap the maximun number of threads / workers when a user value is unspecified.
 neutron_api_threads_max: 16
 neutron_api_threads: "{{ [[ansible_facts['processor_vcpus'] | default(2) // 2, 1] | max, neutron_api_threads_max] | min }}"
