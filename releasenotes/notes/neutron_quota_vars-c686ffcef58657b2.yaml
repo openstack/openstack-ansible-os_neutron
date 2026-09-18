@@ -1,0 +1,14 @@
+---
+features:
+  - |
+    Introduced new variables ``neutron_default_quota_mapping`` and
+    ``neutron_user_quota_mapping`` which are simple dictionaries with goal
+    to replace individual variables for defining Neutron quota values.
+
+deprecations:
+  - |
+    Following Neutron variables were deprecated in favor of
+    ``neutron_default_quota_mapping``. Prior defaults are kept intact.
+    It is recommended to leverage ``neutron_user_quota_mapping`` for defining
+    individual quota overrides or re-define ``neutron_default_quota_mapping``
+    as a whole if your deployment has a lot of non-default quota mappings.

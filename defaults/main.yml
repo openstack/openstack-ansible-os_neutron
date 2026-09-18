@@ -202,24 +202,23 @@ neutron_uwsgi_tls:
 ###
 ### Quotas
 ###
-
 neutron_default_quota: -1
-neutron_quota_floatingip: 50
-neutron_quota_health_monitor: -1
-neutron_quota_member: -1
-neutron_quota_network: 100
-neutron_quota_network_gateway: 5
-neutron_quota_packet_filter: 100
-neutron_quota_pool: 10
-neutron_quota_port: 500
-neutron_quota_router: 10
-neutron_quota_security_group: 10
-neutron_quota_security_group_rule: 100
-neutron_quota_subnet: 100
-neutron_quota_vip: 10
-neutron_quota_firewall: 10
-neutron_quota_firewall_policy: 10
-neutron_quota_firewall_rule: 100
+neutron_default_quota_mapping:
+  floatingip: "{{ neutron_quota_floatingip | default(50) }}"
+  network: "{{ neutron_quota_network | default(100) }}"
+  port: "{{ neutron_quota_port | default(500) }}"
+  router: "{{ neutron_quota_router | default(10) }}"
+  router_route: 30
+  security_group: "{{ neutron_quota_security_group | default(10) }}"
+  security_group_rule: "{{ neutron_quota_security_group_rule | default(100) }}"
+  subnet: "{{ neutron_quota_subnet | default(100) }}"
+  rbac_policy: 10
+  firewall_group: 10
+  firewall_policy: "{{ neutron_quota_firewall_policy | default(10) }}"
+  firewall_rule: "{{ neutron_quota_firewall_rule | default(100) }}"
+# Allows to override individual value out of defaults as well as extend
+# the mapping with extra values without need to override everything.
+neutron_user_quota_mapping: {}
 
 ###
 ### DB (Galera) integration
