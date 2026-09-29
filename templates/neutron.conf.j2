@@ -88,6 +88,8 @@ rpc_workers = {{ neutron_rpc_workers }}
 dhcp_agent_notification = True
 dhcp_agents_per_network = {{ dhcp_agents_max }}
 dhcp_lease_duration = 86400
+{%   elif num_dhcp_agent | length == 0 and neutron_plugin_type == 'ml2.ovn' and neutron_plugin_types | length == 0 %}
+enable_traditional_dhcp = False
 {%   endif %}
 
 # Driver for external DNS integration. (string value)
