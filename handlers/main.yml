@@ -44,15 +44,19 @@
 # orphaned processes are cleaned up correctly.
 - name: Run neutron-l3-agent process cleanup
   ansible.builtin.shell: |
+    set -o pipefail
+
     cgroup_path=$(findmnt -t cgroup2 -r -n -f -o target)
     for ns_pid in $(cat ${cgroup_path}/neutron.slice/neutron-l3-agent.service/cgroup.procs); do
-      echo $(readlink -f "/proc/$ns_pid/exe") | egrep -qv "keepalived|haproxy|ipsec"
+      readlink -f "/proc/$ns_pid/exe" | grep -Eqv "keepalived|haproxy|ipsec"
       if [ $? -eq 0 ] || [ "{{ neutron_l3_cleanup_on_shutdown | bool }}" = "True" ]; then
         if kill -9 "$ns_pid"; then
           logger -s "old neutron-l3-agent pid found and has been cleaned up on: \"$ns_pid\""
         fi
       fi
     done
+  args:
+    executable: /bin/bash
   when: "'neutron-l3-agent' in (filtered_neutron_services | map(attribute='service_key') | list)"
   changed_when: false
   listen:
