@@ -1,0 +1,6 @@
+---
+upgrade:
+  - |
+    Neutron L3 and DHCP scheduling options will be defined in ``neutron.conf``
+    only when respective agents are present in deployment.
+    They will be removed from ``neutron.conf`` for OVN deployments.
