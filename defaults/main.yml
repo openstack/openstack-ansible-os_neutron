@@ -238,6 +238,10 @@ neutron_db_connection_recycle_time: "{{ openstack_db_connection_recycle_time | d
 neutron_galera_use_ssl: "{{ galera_use_ssl | default(False) }}"
 neutron_galera_ssl_ca_cert: "{{ galera_ssl_ca_cert | default('') }}"
 neutron_galera_port: "{{ galera_port | default('3306') }}"
+neutron_galera_readonly_address: "{{ neutron_galera_address }}"
+neutron_galera_readonly_connection_enabled: "{{ openstack_galera_readonly_connection_enabled | default(false) }}"
+neutron_galera_readonly_port: "{{ galera_readonly_port | default('3308') }}"
+neutron_galera_synchronous_reader: "{{ not neutron_galera_readonly_connection_enabled }}"
 
 ###
 ### Oslo Messaging
